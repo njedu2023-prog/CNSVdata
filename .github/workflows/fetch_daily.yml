@@ -28,6 +28,7 @@ jobs:
       - run: python scripts/fetch_moneyflow.py
         env:
           TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/build_preview_csv.py
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
