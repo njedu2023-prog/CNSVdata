@@ -1,8 +1,16 @@
+import json
+
 import pandas as pd
 
 from cnsvdata.common import now_string, write_json
-from cnsvdata.paths import PROCESSED_DIR, QUALITY_DIR
+from cnsvdata.paths import METADATA_DIR, PROCESSED_DIR, QUALITY_DIR
 from cnsvdata.validators import aggregate_status
+
+
+def read_json_or_empty(path):
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def read_parquet_or_none(path):
@@ -18,6 +26,18 @@ def open_trade_dates(calendar: pd.DataFrame | None) -> list[str]:
     if "is_open" in work.columns:
         work = work[pd.to_numeric(work["is_open"], errors="coerce").fillna(0).astype(int) == 1]
     return sorted(work["cal_date"].dropna().astype(str).unique().tolist())
+
+
+def latest_trade_date_from_metadata() -> str | None:
+    value = read_json_or_empty(METADATA_DIR / "latest_trade_date.json").get("latest_trade_date")
+    return str(value) if value else None
+
+
+def bounded_expected_dates(calendar: pd.DataFrame | None, latest: str | None) -> list[str]:
+    dates = open_trade_dates(calendar)
+    if not latest:
+        return dates
+    return [date for date in dates if date <= latest]
 
 
 def dates_in(df: pd.DataFrame | None, column: str = "trade_date") -> set[str]:
@@ -47,8 +67,9 @@ def build_gap_report() -> dict:
     daily = read_parquet_or_none(PROCESSED_DIR / "cnsv_daily.parquet")
     minute = read_parquet_or_none(PROCESSED_DIR / "cnsv_1min.parquet")
     moneyflow = read_parquet_or_none(PROCESSED_DIR / "cnsv_moneyflow.parquet")
-    expected = open_trade_dates(calendar)
-    latest = expected[-1] if expected else None
+    latest = latest_trade_date_from_metadata()
+    expected = bounded_expected_dates(calendar, latest)
+    latest = latest or (expected[-1] if expected else None)
     checks = [
         {"name": "trade_calendar_available", "status": "PASS" if expected else "FAIL", "open_trade_dates": len(expected)},
         missing_date_check("daily_missing_trade_dates", expected, dates_in(daily), latest, latest_fail=True),

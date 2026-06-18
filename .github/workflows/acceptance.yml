@@ -22,9 +22,13 @@ jobs:
       - run: pytest
       - run: python scripts/detect_data_gaps.py
       - run: python scripts/quality_check.py
+        if: always()
       - run: python scripts/build_data_manifest.py
+        if: always()
       - run: python scripts/acceptance_check.py
+        if: always()
       - run: python scripts/smoke_downstream_read.py
+        if: always()
       - run: python scripts/build_downstream_ready.py
         if: always()
       - run: python scripts/build_failure_summary.py
@@ -38,3 +42,7 @@ jobs:
           git diff --cached --quiet || git commit -m "data: update acceptance and quality snapshots"
           git push
         if: always()
+      - name: Fail if downstream is not ready
+        if: always()
+        run: |
+          python -c "import json, pathlib, sys; p=pathlib.Path('metadata/downstream_ready.json'); payload=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL','blocking_reason':'missing downstream_ready.json'}; print('downstream_ready:', payload.get('status'), payload.get('blocking_reason', '')); sys.exit(1 if payload.get('status') == 'FAIL' or payload.get('ready') is False else 0)"
