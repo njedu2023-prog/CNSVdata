@@ -243,6 +243,26 @@ data/quality/history/YYYY-MM-DD/
 metadata/history/YYYY-MM-DD/
 ```
 
+## 人工预览文件
+
+GitHub 不能直接把 Parquet 展开成表格。仓库会额外生成 CSV 预览文件，方便人工在网页上查看最近数据：
+
+```text
+data/preview/trade_calendar_latest.csv
+data/preview/cnsv_daily_latest.csv
+data/preview/cnsv_moneyflow_latest.csv
+data/preview/cnsv_1min_latest.csv
+data/preview/cnsv_5min_latest.csv
+data/preview/cnsv_15min_latest.csv
+data/preview/cnsv_30min_latest.csv
+data/preview/cnsv_60min_latest.csv
+data/preview/corporate_actions.csv
+data/preview/structural_breaks.csv
+data/preview/preview_manifest.csv
+```
+
+CSV 只用于人工检查；CNSV 正式读取仍以 `processed/*.parquet` 为准。
+
 ## 质量状态
 
 ```text
