@@ -62,6 +62,20 @@ def missing_date_check(name: str, expected: list[str], actual: set[str], latest:
     return {"name": name, "status": status, "missing_dates": missing, "missing_count": len(missing), "detail": detail}
 
 
+def lag_tolerant_missing_date_check(name: str, expected: list[str], actual: set[str], fail_consecutive: int = 2) -> dict:
+    missing = [date for date in expected if date not in actual]
+    status = "PASS"
+    detail = "no gaps"
+    recent = expected[-fail_consecutive:] if fail_consecutive else []
+    if recent and all(date in missing for date in recent):
+        status = "FAIL"
+        detail = "consecutive_recent_missing_dates"
+    elif missing:
+        status = "WARN"
+        detail = "latest_or_historical_gaps_detected"
+    return {"name": name, "status": status, "missing_dates": missing, "missing_count": len(missing), "detail": detail}
+
+
 def build_gap_report() -> dict:
     calendar = read_parquet_or_none(PROCESSED_DIR / "trade_calendar.parquet")
     daily = read_parquet_or_none(PROCESSED_DIR / "cnsv_daily.parquet")
@@ -74,7 +88,7 @@ def build_gap_report() -> dict:
         {"name": "trade_calendar_available", "status": "PASS" if expected else "FAIL", "open_trade_dates": len(expected)},
         missing_date_check("daily_missing_trade_dates", expected, dates_in(daily), latest, latest_fail=True),
         missing_date_check("minute_missing_trade_dates", expected, dates_in(minute), latest, latest_fail=True),
-        missing_date_check("moneyflow_missing_trade_dates", expected, dates_in(moneyflow), latest, latest_fail=False, fail_after=3),
+        lag_tolerant_missing_date_check("moneyflow_missing_trade_dates", expected, dates_in(moneyflow), fail_consecutive=2),
     ]
     status = aggregate_status(checks)
     return {

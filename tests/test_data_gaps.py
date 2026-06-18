@@ -1,6 +1,6 @@
 import pandas as pd
 
-from scripts.detect_data_gaps import bounded_expected_dates, dates_in, missing_date_check, open_trade_dates
+from scripts.detect_data_gaps import bounded_expected_dates, dates_in, lag_tolerant_missing_date_check, missing_date_check, open_trade_dates
 
 
 def test_open_trade_dates_filters_closed_days():
@@ -15,6 +15,16 @@ def test_bounded_expected_dates_excludes_future_calendar_dates():
 
 def test_latest_daily_gap_fails():
     check = missing_date_check("daily_missing_trade_dates", ["2026-06-18"], set(), "2026-06-18", latest_fail=True)
+    assert check["status"] == "FAIL"
+
+
+def test_lag_tolerant_moneyflow_allows_one_recent_gap():
+    check = lag_tolerant_missing_date_check("moneyflow_missing_trade_dates", ["2026-06-17", "2026-06-18"], {"2026-06-17"})
+    assert check["status"] == "WARN"
+
+
+def test_lag_tolerant_moneyflow_fails_consecutive_recent_gaps():
+    check = lag_tolerant_missing_date_check("moneyflow_missing_trade_dates", ["2026-06-17", "2026-06-18"], set())
     assert check["status"] == "FAIL"
 
 

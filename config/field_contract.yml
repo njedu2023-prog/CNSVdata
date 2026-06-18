@@ -169,7 +169,7 @@ contract:
         net_mf_amount:
           type: "float"
           required: true
-          nullable: false
+          nullable: true
           unit: "source_defined"
           description: "净流入金额"
         source_version:

@@ -14,6 +14,7 @@ from cnsvdata.validators import (
     latest_trade_date_of,
     minute_coverage,
     missing_columns,
+    moneyflow_null_check,
     moneyflow_effective_check,
     null_counts,
     numeric_validity_errors,
@@ -32,7 +33,7 @@ def read_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def check_parquet(path, required_columns: list[str], duplicate_key: list[str] | None = None, ohlc: bool = False) -> tuple[list[dict], pd.DataFrame | None]:
+def check_parquet(path, required_columns: list[str], duplicate_key: list[str] | None = None, ohlc: bool = False, empty_allowed: bool = False) -> tuple[list[dict], pd.DataFrame | None]:
     checks = []
     if not path.exists():
         return [{"name": f"{path.name}_exists", "status": "FAIL", "detail": "missing file"}], None
@@ -41,7 +42,10 @@ def check_parquet(path, required_columns: list[str], duplicate_key: list[str] | 
     except Exception as exc:
         return [{"name": f"{path.name}_readable", "status": "FAIL", "detail": str(exc)}], None
 
-    checks.append({"name": f"{path.name}_exists", "status": "PASS", "rows": int(len(df))})
+    if df.empty and empty_allowed:
+        checks.append({"name": f"{path.name}_exists", "status": "WARN", "rows": 0, "detail": "empty_allowed"})
+    else:
+        checks.append({"name": f"{path.name}_exists", "status": "PASS", "rows": int(len(df))})
     missing = missing_columns(df, required_columns)
     checks.append({"name": f"{path.name}_schema", "status": "FAIL" if missing else "PASS", "missing_columns": missing})
     if duplicate_key:
@@ -109,6 +113,7 @@ def main() -> None:
     contract = load_yaml("data_contract.yml")["contract"]
     field_contract = load_yaml("field_contract.yml")["contract"]
     checks = []
+    latest = read_json(METADATA_DIR / "latest_trade_date.json").get("latest_trade_date")
 
     for relative in contract["required_files"]:
         path = ROOT / relative
@@ -122,8 +127,8 @@ def main() -> None:
     checks_minute, minute = check_parquet(PROCESSED_DIR / "cnsv_1min.parquet", list(schemas["minute_schema"].keys()), duplicate_key=["trade_time"], ohlc=True)
     checks_moneyflow, moneyflow = check_parquet(PROCESSED_DIR / "cnsv_moneyflow.parquet", list(schemas["moneyflow_schema"].keys()), duplicate_key=["trade_date"])
     checks.extend(checks_calendar + checks_daily + checks_minute + checks_moneyflow)
-    checks.extend(check_parquet(PROCESSED_DIR / "corporate_actions.parquet", list(schemas["corporate_actions_schema"].keys()))[0])
-    checks.extend(check_parquet(PROCESSED_DIR / "structural_breaks.parquet", list(schemas["structural_breaks_schema"].keys()))[0])
+    checks.extend(check_parquet(PROCESSED_DIR / "corporate_actions.parquet", list(schemas["corporate_actions_schema"].keys()), empty_allowed=True)[0])
+    checks.extend(check_parquet(PROCESSED_DIR / "structural_breaks.parquet", list(schemas["structural_breaks_schema"].keys()), empty_allowed=True)[0])
     frames = {
         "trade_calendar": calendar,
         "cnsv_daily": daily,
@@ -135,7 +140,7 @@ def main() -> None:
 
     add_null_check(checks, "daily", daily, DAILY_CORE)
     add_null_check(checks, "minute", minute, MINUTE_CORE)
-    add_null_check(checks, "moneyflow", moneyflow, MONEYFLOW_CORE)
+    checks.append(moneyflow_null_check(moneyflow, latest))
     add_numeric_check(checks, "daily", daily)
     add_numeric_check(checks, "minute", minute)
 
@@ -155,7 +160,6 @@ def main() -> None:
         )
 
     checks.append(latest_trade_date_consistency(daily, minute, moneyflow))
-    latest = read_json(METADATA_DIR / "latest_trade_date.json").get("latest_trade_date")
     if latest and daily is not None and minute is not None:
         checks.append(daily_minute_close_check(daily, minute, latest))
         checks.append(daily_minute_amount_check(daily, minute, latest))

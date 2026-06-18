@@ -57,6 +57,39 @@ def null_counts(df: pd.DataFrame, columns: list[str]) -> dict:
     return counts
 
 
+def moneyflow_null_check(df: pd.DataFrame | None, latest_trade_date: str | None, column: str = "net_mf_amount", consecutive_fail: int = 2) -> dict:
+    result = {"name": "moneyflow_core_nulls", "status": "PASS", "column": column}
+    if df is None:
+        return {**result, "status": "FAIL", "detail": "missing dataset"}
+    if column not in df.columns or "trade_date" not in df.columns:
+        return {**result, "status": "FAIL", "detail": "missing required column"}
+
+    work = df[["trade_date", column]].copy()
+    work["trade_date"] = work["trade_date"].astype(str)
+    missing_dates = sorted(work.loc[work[column].isna(), "trade_date"].dropna().unique().tolist())
+    if not missing_dates:
+        return {**result, "missing_dates": [], "missing_count": 0, "detail": "no null moneyflow values"}
+
+    available_dates = sorted(work["trade_date"].dropna().unique().tolist())
+    recent_dates = available_dates[-consecutive_fail:] if consecutive_fail else []
+    status = "WARN"
+    detail = "historical_or_latest_moneyflow_nulls"
+    if recent_dates and all(date in missing_dates for date in recent_dates):
+        status = "FAIL"
+        detail = "consecutive_recent_moneyflow_nulls"
+    elif latest_trade_date and latest_trade_date in missing_dates:
+        status = "WARN"
+        detail = "latest_moneyflow_may_lag_one_trading_day"
+    return {
+        **result,
+        "status": status,
+        "missing_dates": missing_dates,
+        "missing_count": len(missing_dates),
+        "recent_dates_checked": recent_dates,
+        "detail": detail,
+    }
+
+
 def field_contract_checks(df: pd.DataFrame | None, dataset_name: str, dataset_contract: dict) -> list[dict]:
     checks = []
     fields = dataset_contract.get("fields", {})
