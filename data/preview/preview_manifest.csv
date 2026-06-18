@@ -1,11 +1,11 @@
-﻿path,status,rows,source
-data/preview/trade_calendar_latest.csv,written,260.0,data/processed/trade_calendar.parquet
-data/preview/cnsv_daily_latest.csv,written,260.0,data/processed/cnsv_daily.parquet
-data/preview/cnsv_moneyflow_latest.csv,written,260.0,data/processed/cnsv_moneyflow.parquet
-data/processed/cnsv_1min.parquet,missing,,
-data/processed/cnsv_5min.parquet,missing,,
-data/processed/cnsv_15min.parquet,missing,,
-data/processed/cnsv_30min.parquet,missing,,
-data/processed/cnsv_60min.parquet,missing,,
-data/processed/corporate_actions.parquet,missing,,
-data/processed/structural_breaks.parquet,missing,,
+preview_file,source_file,rows,columns,min_date,max_date,generated_at,status
+data/preview/trade_calendar_latest.csv,data/processed/trade_calendar.parquet,260,"cal_date,is_open,pretrade_date,exchange",2010-01-01,2026-12-31,2026-06-19 00:52:20,written
+data/preview/cnsv_daily_latest.csv,data/processed/cnsv_daily.parquet,260,"ts_code,trade_date,open,high,low,close,pre_close,change,pct_chg,vol,amount,source,fetched_at",2010-01-04,2026-06-18,2026-06-19 00:52:20,written
+data/preview/cnsv_moneyflow_latest.csv,data/processed/cnsv_moneyflow.parquet,260,"ts_code,trade_date,buy_sm_amount,sell_sm_amount,buy_md_amount,sell_md_amount,buy_lg_amount,sell_lg_amount,buy_elg_amount,sell_elg_amount,net_mf_amount,source,source_version,field_definition,fetched_at",2010-01-04,2026-06-18,2026-06-19 00:52:20,written
+data/preview/cnsv_1min_latest.csv,data/processed/cnsv_1min.parquet,0,,,,2026-06-19 00:52:20,missing_source
+data/preview/cnsv_5min_latest.csv,data/processed/cnsv_5min.parquet,0,,,,2026-06-19 00:52:20,missing_source
+data/preview/cnsv_15min_latest.csv,data/processed/cnsv_15min.parquet,0,,,,2026-06-19 00:52:20,missing_source
+data/preview/cnsv_30min_latest.csv,data/processed/cnsv_30min.parquet,0,,,,2026-06-19 00:52:20,missing_source
+data/preview/cnsv_60min_latest.csv,data/processed/cnsv_60min.parquet,0,,,,2026-06-19 00:52:20,missing_source
+data/preview/corporate_actions.csv,data/processed/corporate_actions.parquet,1,"ts_code,event_date,available_at,event_type,event_name,description,raw_source,impact_level,created_at",2025-09-01,2025-09-01,2026-06-19 00:52:20,written
+data/preview/structural_breaks.csv,data/processed/structural_breaks.parquet,3,"regime_id,start_date,end_date,description,reason,impact_fields,model_action,created_at",2010-01-01,2027-01-01,2026-06-19 00:52:20,written
