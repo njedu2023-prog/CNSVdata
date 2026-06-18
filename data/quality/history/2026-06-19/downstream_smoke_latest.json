@@ -1,0 +1,61 @@
+{
+  "status": "FAIL",
+  "generated_at": "2026-06-19 02:42:34",
+  "latest_trade_date": "2026-06-18",
+  "failed_count": 3,
+  "warn_count": 0,
+  "checks": [
+    {
+      "name": "read:metadata/data_manifest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "read:data/quality/data_quality_latest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "read:data/quality/acceptance_latest.json",
+      "status": "PASS"
+    },
+    {
+      "name": "quality_not_fail",
+      "status": "FAIL",
+      "quality_status": "FAIL"
+    },
+    {
+      "name": "acceptance_not_fail",
+      "status": "FAIL",
+      "acceptance_status": "FAIL"
+    },
+    {
+      "name": "read_cnsv_daily",
+      "status": "PASS",
+      "rows": 3839
+    },
+    {
+      "name": "cnsv_daily_core_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "read_cnsv_1min",
+      "status": "FAIL",
+      "detail": "missing"
+    },
+    {
+      "name": "read_cnsv_moneyflow",
+      "status": "PASS",
+      "rows": 3839
+    },
+    {
+      "name": "cnsv_moneyflow_core_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "latest_trade_date_available",
+      "status": "PASS",
+      "latest_trade_date": "2026-06-18"
+    }
+  ]
+}

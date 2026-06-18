@@ -10,48 +10,151 @@ true
 
 ## Top Failures
 
-### 1. missing_report:data/quality/data_quality_latest.json
+### 1. required_file:data/processed/cnsv_1min.parquet
 
 - Source: quality
 - Status: FAIL
-- Detail: report file is missing
-- Suggested action: rerun the acceptance workflow from the beginning
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
-### 2. missing_report:data/quality/acceptance_latest.json
+### 2. required_file:data/processed/cnsv_5min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 3. required_file:data/processed/cnsv_15min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 4. required_file:data/processed/cnsv_30min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 5. required_file:data/processed/cnsv_60min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 6. required_file:data/processed/corporate_actions.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 7. required_file:data/processed/structural_breaks.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 8. required_file:metadata/data_manifest.json
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: rerun build_data_manifest after source data and quality reports are updated
+
+### 9. cnsv_1min.parquet_exists
+
+- Source: quality
+- Status: FAIL
+- Detail: missing file
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 10. corporate_actions.parquet_exists
+
+- Source: quality
+- Status: FAIL
+- Detail: missing file
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 11. structural_breaks.parquet_exists
+
+- Source: quality
+- Status: FAIL
+- Detail: missing file
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 12. field_contract:cnsv_1min:readable
+
+- Source: quality
+- Status: FAIL
+- Detail: dataset_not_readable
+- Suggested action: inspect the source report and rerun the affected data pipeline step
+
+### 13. field_contract:cnsv_moneyflow:nullable
+
+- Source: quality
+- Status: FAIL
+- Detail: 
+- Suggested action: rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks
+
+### 14. moneyflow_core_nulls
+
+- Source: quality
+- Status: FAIL
+- Detail: 
+- Suggested action: rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks
+
+### 15. required_file:data/processed/cnsv_1min.parquet
 
 - Source: acceptance
 - Status: FAIL
-- Detail: report file is missing
-- Suggested action: rerun the acceptance workflow from the beginning
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
-### 3. missing_report:data/quality/downstream_smoke_latest.json
+### 16. required_file:data/processed/cnsv_5min.parquet
 
-- Source: smoke
+- Source: acceptance
 - Status: FAIL
-- Detail: report file is missing
-- Suggested action: rerun the acceptance workflow from the beginning
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
-### 4. daily_missing_trade_dates
+### 17. required_file:data/processed/cnsv_15min.parquet
 
-- Source: gaps
+- Source: acceptance
 - Status: FAIL
-- Detail: latest_trade_date_missing
-- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
-### 5. minute_missing_trade_dates
+### 18. required_file:data/processed/cnsv_30min.parquet
 
-- Source: gaps
+- Source: acceptance
 - Status: FAIL
-- Detail: latest_trade_date_missing
-- Suggested action: rerun fetch_minute, build_minute_bars, quality, acceptance, and smoke checks
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
-### 6. moneyflow_missing_trade_dates
+### 19. required_file:data/processed/cnsv_60min.parquet
 
-- Source: gaps
+- Source: acceptance
 - Status: FAIL
-- Detail: too_many_missing_dates
-- Suggested action: rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 20. required_file:data/processed/corporate_actions.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
 
 ## Top Warnings
 
-None
+### 1. daily_missing_trade_dates
+
+- Source: gaps
+- Status: WARN
+- Detail: historical_gaps_detected
+- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
