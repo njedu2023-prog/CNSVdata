@@ -36,7 +36,10 @@ python scripts/build_minute_bars.py
 python scripts/build_corporate_actions.py
 python scripts/build_structural_breaks.py
 python scripts/build_data_manifest.py
+python scripts/build_preview_csv.py
 python scripts/quality_check.py
+python scripts/acceptance_check.py
+python scripts/smoke_downstream_read.py
 pytest
 ```
 
@@ -49,6 +52,7 @@ fetch_daily.yml         16:10 BJT / 08:10 UTC
 fetch_minute.yml        16:20 BJT / 08:20 UTC
 build_processed.yml     16:30 BJT / 08:30 UTC
 data_quality_check.yml  16:40 BJT / 08:40 UTC
+acceptance.yml          16:50 BJT / 08:50 UTC
 ```
 
 ## CNSV 下游读取文件
@@ -105,8 +109,9 @@ data/quality/downstream_smoke_latest.json
 ```text
 1. pytest
 2. quality_check.py
-3. acceptance_check.py
-4. smoke_downstream_read.py
+3. build_data_manifest.py
+4. acceptance_check.py
+5. smoke_downstream_read.py
 ```
 
 只有当 `quality`、`acceptance`、`downstream smoke` 全部 `PASS` 时，CNSV 主系统才应正常读取。  
