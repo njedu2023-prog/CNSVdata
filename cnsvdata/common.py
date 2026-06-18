@@ -2,6 +2,7 @@ import hashlib
 import json
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import yaml
@@ -12,7 +13,7 @@ TZ = "Asia/Shanghai"
 
 
 def now_string() -> str:
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(ZoneInfo(TZ)).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def load_yaml(name: str) -> dict:
