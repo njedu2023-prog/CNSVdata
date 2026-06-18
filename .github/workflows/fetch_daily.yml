@@ -1,0 +1,34 @@
+name: Fetch daily data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "10 8 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python scripts/fetch_trade_calendar.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/fetch_cnsv_daily.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/fetch_moneyflow.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data metadata
+          git diff --cached --quiet || git commit -m "data: update daily cnsv data"
+          git push
