@@ -1,0 +1,22 @@
+contract:
+  version: "1.0.0"
+  timezone: "Asia/Shanghai"
+  required_files:
+    - data/processed/trade_calendar.parquet
+    - data/processed/cnsv_daily.parquet
+    - data/processed/cnsv_1min.parquet
+    - data/processed/cnsv_5min.parquet
+    - data/processed/cnsv_15min.parquet
+    - data/processed/cnsv_30min.parquet
+    - data/processed/cnsv_60min.parquet
+    - data/processed/cnsv_moneyflow.parquet
+    - data/processed/corporate_actions.parquet
+    - data/processed/structural_breaks.parquet
+    - metadata/latest_trade_date.json
+    - metadata/next_trade_date.json
+    - metadata/data_manifest.json
+    - data/quality/data_quality_latest.json
+  quality_status:
+    PASS: "CNSV may use the data normally."
+    WARN: "CNSV may observe with reduced confidence."
+    FAIL: "CNSV must not emit formal trading assistance."
