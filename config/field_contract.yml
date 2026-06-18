@@ -1,0 +1,184 @@
+contract:
+  version: "1.2.0"
+  timezone: "Asia/Shanghai"
+  datasets:
+    trade_calendar:
+      path: "data/processed/trade_calendar.parquet"
+      primary_key: ["cal_date"]
+      required: true
+      freshness:
+        max_lag_trading_days: 0
+      fields:
+        cal_date:
+          type: "string"
+          required: true
+          nullable: false
+          format: "YYYY-MM-DD"
+          description: "交易日历日期"
+        is_open:
+          type: "integer"
+          required: true
+          nullable: false
+          description: "是否开市，1 表示交易日"
+    cnsv_daily:
+      path: "data/processed/cnsv_daily.parquet"
+      primary_key: ["trade_date"]
+      required: true
+      freshness:
+        max_lag_trading_days: 0
+      fields:
+        ts_code:
+          type: "string"
+          required: true
+          nullable: false
+          source: "tushare.daily"
+          description: "证券代码"
+        trade_date:
+          type: "string"
+          required: true
+          nullable: false
+          format: "YYYY-MM-DD"
+          description: "交易日期"
+        open:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "开盘价"
+        high:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "最高价"
+        low:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "最低价"
+        close:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "收盘价"
+        pre_close:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "前收盘价"
+        vol:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "source_defined"
+          description: "成交量，保留数据源原始口径"
+        amount:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "source_defined"
+          description: "成交额，保留数据源原始口径"
+    cnsv_1min:
+      path: "data/processed/cnsv_1min.parquet"
+      primary_key: ["trade_time"]
+      required: true
+      freshness:
+        max_lag_trading_days: 0
+      fields:
+        ts_code:
+          type: "string"
+          required: true
+          nullable: false
+          source: "tushare.stk_mins"
+          description: "证券代码"
+        trade_time:
+          type: "datetime"
+          required: true
+          nullable: false
+          timezone: "Asia/Shanghai"
+          description: "分钟 bar 时间"
+        trade_date:
+          type: "string"
+          required: true
+          nullable: false
+          format: "YYYY-MM-DD"
+          description: "交易日期"
+        time:
+          type: "string"
+          required: true
+          nullable: false
+          description: "日内时间"
+        open:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "开盘价"
+        high:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "最高价"
+        low:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "最低价"
+        close:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "CNY"
+          description: "收盘价"
+        vol:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "source_defined"
+          description: "分钟成交量"
+        amount:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "source_defined"
+          description: "分钟成交额"
+    cnsv_moneyflow:
+      path: "data/processed/cnsv_moneyflow.parquet"
+      primary_key: ["trade_date"]
+      required: true
+      freshness:
+        max_lag_trading_days: 1
+      fields:
+        ts_code:
+          type: "string"
+          required: true
+          nullable: false
+          source: "tushare.moneyflow"
+          description: "证券代码"
+        trade_date:
+          type: "string"
+          required: true
+          nullable: false
+          format: "YYYY-MM-DD"
+          description: "交易日期"
+        net_mf_amount:
+          type: "float"
+          required: true
+          nullable: false
+          unit: "source_defined"
+          description: "净流入金额"
+        source_version:
+          type: "string"
+          required: true
+          nullable: false
+          description: "资金流来源版本"
+        field_definition:
+          type: "string"
+          required: true
+          nullable: false
+          description: "字段口径说明"
