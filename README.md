@@ -36,10 +36,7 @@ python scripts/build_minute_bars.py
 python scripts/build_corporate_actions.py
 python scripts/build_structural_breaks.py
 python scripts/build_data_manifest.py
-python scripts/build_preview_csv.py
 python scripts/quality_check.py
-python scripts/acceptance_check.py
-python scripts/smoke_downstream_read.py
 pytest
 ```
 
@@ -52,7 +49,6 @@ fetch_daily.yml         16:10 BJT / 08:10 UTC
 fetch_minute.yml        16:20 BJT / 08:20 UTC
 build_processed.yml     16:30 BJT / 08:30 UTC
 data_quality_check.yml  16:40 BJT / 08:40 UTC
-acceptance.yml          16:50 BJT / 08:50 UTC
 ```
 
 ## CNSV 下游读取文件
@@ -109,14 +105,85 @@ data/quality/downstream_smoke_latest.json
 ```text
 1. pytest
 2. quality_check.py
-3. build_data_manifest.py
-4. acceptance_check.py
-5. smoke_downstream_read.py
+3. acceptance_check.py
+4. smoke_downstream_read.py
 ```
 
 只有当 `quality`、`acceptance`、`downstream smoke` 全部 `PASS` 时，CNSV 主系统才应正常读取。  
 如果为 `WARN`，下游可读取但必须降低置信度。  
 如果为 `FAIL`，下游不得生成正式交易辅助结果。
+
+## V1.2 运维与验收流程
+
+V1.2 把验收闭环升级为可定位、可追溯、可回补、可供下游安全读取的生产流程。
+
+每日正常链路：
+
+```text
+fetch_daily
+fetch_minute
+build_processed
+data_quality_check
+acceptance
+archive_quality_snapshot
+```
+
+手动复检命令：
+
+```bash
+pip install -r requirements.txt
+pytest
+python scripts/detect_data_gaps.py
+python scripts/quality_check.py
+python scripts/build_data_manifest.py
+python scripts/acceptance_check.py
+python scripts/smoke_downstream_read.py
+python scripts/build_downstream_ready.py
+python scripts/build_failure_summary.py
+python scripts/archive_quality_snapshot.py
+```
+
+失败定位优先级：
+
+```text
+1. data/quality/failure_summary_latest.md
+2. data/quality/acceptance_latest.json
+3. data/quality/downstream_smoke_latest.json
+4. data/quality/data_quality_latest.json
+5. GitHub Actions logs
+```
+
+缺口检测与回补：
+
+```bash
+python scripts/detect_data_gaps.py
+python scripts/backfill_missing_data.py --from-gap-report
+python scripts/backfill_missing_data.py --start-date 20260601 --end-date 20260618 --daily
+python scripts/backfill_missing_data.py --start-date 20260601 --end-date 20260618 --minute
+python scripts/backfill_missing_data.py --start-date 20260601 --end-date 20260618 --moneyflow
+```
+
+CNSV 主系统应优先读取：
+
+```text
+metadata/downstream_ready.json
+```
+
+读取规则：
+
+```text
+ready = true  -> 可以读取
+ready = false -> 不得生成正式交易辅助结果
+status = WARN -> 可观察，但必须降低置信度
+status = FAIL -> 阻断
+```
+
+历史追溯文件会归档到：
+
+```text
+data/quality/history/YYYY-MM-DD/
+metadata/history/YYYY-MM-DD/
+```
 
 ## 质量状态
 

@@ -26,6 +26,11 @@ def quality_status() -> str:
     return read_json(ROOT / "data" / "quality" / "data_quality_latest.json").get("status", "UNKNOWN")
 
 
+def ready_status() -> str:
+    payload = read_json(METADATA_DIR / "downstream_ready.json")
+    return payload.get("status", "UNKNOWN")
+
+
 def date_range_for_df(df: pd.DataFrame) -> tuple[str | None, str | None]:
     for column in ("trade_date", "cal_date", "event_date", "start_date"):
         if column in df.columns and not df[column].dropna().empty:
@@ -81,6 +86,7 @@ def manifest_item(relative_path: str, generated_at: str) -> dict:
 def build_manifest(required_files: list[str]) -> dict:
     generated_at = now_string()
     latest = latest_trade_date()
+    field_contract = load_yaml("field_contract.yml")["contract"]
     files = [manifest_item(relative, generated_at) for relative in required_files]
     snapshot_seed = json.dumps(files, sort_keys=True, ensure_ascii=False).encode("utf-8")
     snapshot_hash = hashlib.sha256(snapshot_seed).hexdigest()
@@ -90,7 +96,9 @@ def build_manifest(required_files: list[str]) -> dict:
         "generated_at": generated_at,
         "latest_trade_date": latest,
         "next_trade_date": next_trade_date(),
+        "contract_version": field_contract.get("version", ""),
         "quality_status": quality_status(),
+        "ready_status": ready_status(),
         "source": "tushare",
         "files": files,
     }
@@ -107,7 +115,9 @@ def main() -> None:
             "data_snapshot_hash": snapshot_hash,
             "generated_at": manifest["generated_at"],
             "latest_trade_date": manifest["latest_trade_date"],
+            "contract_version": manifest["contract_version"],
             "quality_status": manifest["quality_status"],
+            "ready_status": manifest["ready_status"],
             "files": manifest["files"],
         },
         METADATA_DIR / "data_snapshot.json",
