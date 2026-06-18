@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/29098116/README.md)
 # CNSVdata
 
 `CNSVdata` 是 `CNSV` 中国船舶实盘人工量化波段系统的上游数据底座仓库。
@@ -37,6 +36,7 @@ python scripts/build_minute_bars.py
 python scripts/build_corporate_actions.py
 python scripts/build_structural_breaks.py
 python scripts/build_data_manifest.py
+python scripts/build_preview_csv.py
 python scripts/quality_check.py
 pytest
 ```
@@ -70,6 +70,26 @@ metadata/next_trade_date.json
 metadata/data_manifest.json
 data/quality/data_quality_latest.json
 ```
+
+## 人工预览文件
+
+GitHub 不能直接把 Parquet 展开成表格。仓库会额外生成 CSV 预览文件，方便人工在网页上查看最近数据：
+
+```text
+data/preview/trade_calendar_latest.csv
+data/preview/cnsv_daily_latest.csv
+data/preview/cnsv_moneyflow_latest.csv
+data/preview/cnsv_1min_latest.csv
+data/preview/cnsv_5min_latest.csv
+data/preview/cnsv_15min_latest.csv
+data/preview/cnsv_30min_latest.csv
+data/preview/cnsv_60min_latest.csv
+data/preview/corporate_actions.csv
+data/preview/structural_breaks.csv
+data/preview/preview_manifest.csv
+```
+
+CSV 只用于人工检查；CNSV 正式读取仍以 `processed/*.parquet` 为准。
 
 ## 质量状态
 
