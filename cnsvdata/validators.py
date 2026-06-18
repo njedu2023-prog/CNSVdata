@@ -57,6 +57,40 @@ def null_counts(df: pd.DataFrame, columns: list[str]) -> dict:
     return counts
 
 
+def field_contract_checks(df: pd.DataFrame | None, dataset_name: str, dataset_contract: dict) -> list[dict]:
+    checks = []
+    fields = dataset_contract.get("fields", {})
+    required_fields = [name for name, spec in fields.items() if spec.get("required")]
+    nullable_false = [name for name, spec in fields.items() if spec.get("nullable") is False]
+    if df is None:
+        return [
+            {
+                "name": f"field_contract:{dataset_name}:readable",
+                "status": "FAIL" if dataset_contract.get("required", True) else "WARN",
+                "detail": "dataset_not_readable",
+            }
+        ]
+
+    missing = missing_columns(df, required_fields)
+    checks.append(
+        {
+            "name": f"field_contract:{dataset_name}:required_fields",
+            "status": "FAIL" if missing else "PASS",
+            "missing_columns": missing,
+        }
+    )
+    nulls = null_counts(df, [column for column in nullable_false if column in df.columns])
+    bad_nulls = {column: count for column, count in nulls.items() if count}
+    checks.append(
+        {
+            "name": f"field_contract:{dataset_name}:nullable",
+            "status": "FAIL" if bad_nulls else "PASS",
+            "null_counts": nulls,
+        }
+    )
+    return checks
+
+
 def numeric_validity_errors(df: pd.DataFrame, columns: list[str]) -> dict:
     errors = {}
     for column in columns:
