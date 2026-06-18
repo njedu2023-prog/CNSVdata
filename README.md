@@ -36,7 +36,6 @@ python scripts/build_minute_bars.py
 python scripts/build_corporate_actions.py
 python scripts/build_structural_breaks.py
 python scripts/build_data_manifest.py
-python scripts/build_preview_csv.py
 python scripts/quality_check.py
 pytest
 ```
@@ -90,6 +89,29 @@ data/preview/preview_manifest.csv
 ```
 
 CSV 只用于人工检查；CNSV 正式读取仍以 `processed/*.parquet` 为准。
+
+## V1.1 专业验收闭环
+
+V1.1 新增专业验收与下游读取闭环：
+
+```text
+data/quality/acceptance_latest.json
+data/quality/downstream_smoke_latest.json
+.github/workflows/acceptance.yml
+```
+
+验收顺序：
+
+```text
+1. pytest
+2. quality_check.py
+3. acceptance_check.py
+4. smoke_downstream_read.py
+```
+
+只有当 `quality`、`acceptance`、`downstream smoke` 全部 `PASS` 时，CNSV 主系统才应正常读取。  
+如果为 `WARN`，下游可读取但必须降低置信度。  
+如果为 `FAIL`，下游不得生成正式交易辅助结果。
 
 ## 质量状态
 
