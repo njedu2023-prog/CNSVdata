@@ -1,0 +1,72 @@
+daily_schema:
+  ts_code: string
+  trade_date: string
+  open: float
+  high: float
+  low: float
+  close: float
+  pre_close: float
+  change: float
+  pct_chg: float
+  vol: float
+  amount: float
+  source: string
+  fetched_at: string
+
+minute_schema:
+  ts_code: string
+  trade_time: string
+  trade_date: string
+  time: string
+  open: float
+  high: float
+  low: float
+  close: float
+  vol: float
+  amount: float
+  source: string
+  fetched_at: string
+
+moneyflow_schema:
+  ts_code: string
+  trade_date: string
+  buy_sm_amount: float
+  sell_sm_amount: float
+  buy_md_amount: float
+  sell_md_amount: float
+  buy_lg_amount: float
+  sell_lg_amount: float
+  buy_elg_amount: float
+  sell_elg_amount: float
+  net_mf_amount: float
+  source: string
+  source_version: string
+  field_definition: string
+  fetched_at: string
+
+trade_calendar_schema:
+  cal_date: string
+  is_open: int
+  pretrade_date: string
+  exchange: string
+
+corporate_actions_schema:
+  ts_code: string
+  event_date: string
+  available_at: string
+  event_type: string
+  event_name: string
+  description: string
+  raw_source: string
+  impact_level: string
+  created_at: string
+
+structural_breaks_schema:
+  regime_id: string
+  start_date: string
+  end_date: string
+  description: string
+  reason: string
+  impact_fields: string
+  model_action: string
+  created_at: string
