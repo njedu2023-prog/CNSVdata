@@ -9,6 +9,7 @@ from cnsvdata.validators import (
     daily_minute_amount_check,
     daily_minute_close_check,
     duplicate_count,
+    field_contract_checks,
     invalid_a_share_minute_times,
     latest_trade_date_of,
     minute_coverage,
@@ -106,6 +107,7 @@ def latest_trade_date_consistency(daily, minute, moneyflow) -> dict:
 def main() -> None:
     schemas = load_yaml("schema.yml")
     contract = load_yaml("data_contract.yml")["contract"]
+    field_contract = load_yaml("field_contract.yml")["contract"]
     checks = []
 
     for relative in contract["required_files"]:
@@ -122,6 +124,14 @@ def main() -> None:
     checks.extend(checks_calendar + checks_daily + checks_minute + checks_moneyflow)
     checks.extend(check_parquet(PROCESSED_DIR / "corporate_actions.parquet", list(schemas["corporate_actions_schema"].keys()))[0])
     checks.extend(check_parquet(PROCESSED_DIR / "structural_breaks.parquet", list(schemas["structural_breaks_schema"].keys()))[0])
+    frames = {
+        "trade_calendar": calendar,
+        "cnsv_daily": daily,
+        "cnsv_1min": minute,
+        "cnsv_moneyflow": moneyflow,
+    }
+    for dataset_name, dataset_contract in field_contract["datasets"].items():
+        checks.extend(field_contract_checks(frames.get(dataset_name), dataset_name, dataset_contract))
 
     add_null_check(checks, "daily", daily, DAILY_CORE)
     add_null_check(checks, "minute", minute, MINUTE_CORE)

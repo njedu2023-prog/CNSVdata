@@ -4,12 +4,14 @@ from pathlib import Path
 import pandas as pd
 
 from cnsvdata.common import load_yaml, now_string, write_json
-from cnsvdata.paths import METADATA_DIR, QUALITY_DIR, ROOT
+from cnsvdata.paths import METADATA_DIR, PROCESSED_DIR, QUALITY_DIR, ROOT
 from cnsvdata.validators import (
     aggregate_status,
     daily_minute_amount_check,
     daily_minute_close_check,
+    field_contract_checks,
     latest_trade_date_of,
+    missing_columns,
     moneyflow_effective_check,
 )
 
@@ -128,6 +130,7 @@ def quality_status_check() -> dict:
 
 def build_acceptance_report() -> dict:
     contract = load_yaml("data_contract.yml")["contract"]
+    field_contract = load_yaml("field_contract.yml")["contract"]
     required_files = contract["required_files"]
     latest_payload = read_json(METADATA_DIR / "latest_trade_date.json")
     latest = latest_payload.get("latest_trade_date")
@@ -153,6 +156,9 @@ def build_acceptance_report() -> dict:
 
     manifest_checks, manifest = manifest_check(required_files)
     checks.extend(manifest_checks)
+    dataset_by_path = {spec.get("path"): name for name, spec in field_contract["datasets"].items()}
+    for relative, dataset_name in dataset_by_path.items():
+        checks.extend(field_contract_checks(frames.get(relative), dataset_name, field_contract["datasets"][dataset_name]))
     checks.append(quality_status_check())
 
     status = aggregate_status(checks)
