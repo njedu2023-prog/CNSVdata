@@ -1,0 +1,11 @@
+path,status,rows,source
+data/preview/trade_calendar_latest.csv,written,260.0,data/processed/trade_calendar.parquet
+data/preview/cnsv_daily_latest.csv,written,260.0,data/processed/cnsv_daily.parquet
+data/preview/cnsv_moneyflow_latest.csv,written,260.0,data/processed/cnsv_moneyflow.parquet
+data/processed/cnsv_1min.parquet,missing,,
+data/processed/cnsv_5min.parquet,missing,,
+data/processed/cnsv_15min.parquet,missing,,
+data/processed/cnsv_30min.parquet,missing,,
+data/processed/cnsv_60min.parquet,missing,,
+data/processed/corporate_actions.parquet,missing,,
+data/processed/structural_breaks.parquet,missing,,
