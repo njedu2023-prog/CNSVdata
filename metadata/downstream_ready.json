@@ -1,12 +1,12 @@
 {
-  "ready": false,
-  "status": "FAIL",
-  "generated_at": "2026-06-19 02:42:34",
+  "ready": true,
+  "status": "WARN",
+  "generated_at": "2026-06-19 03:06:58",
   "latest_trade_date": "2026-06-18",
-  "quality_status": "FAIL",
-  "acceptance_status": "FAIL",
-  "smoke_status": "FAIL",
+  "quality_status": "WARN",
+  "acceptance_status": "WARN",
+  "smoke_status": "WARN",
   "contract_version": "1.2.0",
-  "manifest_snapshot_id": "cnsvdata-2026-06-18-a784f0228e13",
-  "blocking_reason": "quality_check failed"
+  "manifest_snapshot_id": "cnsvdata-2026-06-18-a650a58d62e4",
+  "blocking_reason": null
 }
