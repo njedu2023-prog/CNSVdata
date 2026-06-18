@@ -20,13 +20,21 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
       - run: pytest
+      - run: python scripts/detect_data_gaps.py
       - run: python scripts/quality_check.py
       - run: python scripts/build_data_manifest.py
       - run: python scripts/acceptance_check.py
       - run: python scripts/smoke_downstream_read.py
+      - run: python scripts/build_downstream_ready.py
+        if: always()
+      - run: python scripts/build_failure_summary.py
+        if: always()
+      - run: python scripts/archive_quality_snapshot.py
+        if: always()
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/quality metadata
-          git diff --cached --quiet || git commit -m "data: update acceptance reports"
+          git diff --cached --quiet || git commit -m "data: update acceptance and quality snapshots"
           git push
+        if: always()
