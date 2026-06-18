@@ -1,0 +1,6 @@
+tushare:
+  token_env: "TUSHARE_TOKEN"
+  retry_times: 3
+  retry_sleep_seconds: 5
+  minute_freq: "1min"
+  minute_batch_limit: 8000
