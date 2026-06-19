@@ -1,8 +1,8 @@
 {
-  "status": "WARN",
-  "generated_at": "2026-06-19 14:50:13",
+  "status": "PASS",
+  "generated_at": "2026-06-19 15:36:23",
   "failed_count": 0,
-  "warn_count": 1,
+  "warn_count": 0,
   "checks": [
     {
       "name": "required_file:data/processed/trade_calendar.parquet",
@@ -266,30 +266,14 @@
     },
     {
       "name": "moneyflow_core_nulls",
-      "status": "WARN",
+      "status": "PASS",
       "column": "net_mf_amount",
-      "missing_dates": [
-        "2010-02-09",
-        "2010-03-08",
-        "2010-04-16",
-        "2010-06-18",
-        "2010-07-01",
-        "2010-07-05",
-        "2010-07-08",
-        "2010-07-13",
-        "2010-07-15",
-        "2010-08-25",
-        "2010-09-21",
-        "2011-06-03",
-        "2011-09-30",
-        "2011-11-23"
-      ],
-      "missing_count": 14,
-      "recent_dates_checked": [
-        "2026-06-17",
-        "2026-06-18"
-      ],
-      "detail": "historical_or_latest_moneyflow_nulls"
+      "missing_dates": [],
+      "missing_count": 0,
+      "detail": "no null moneyflow values",
+      "derived_count": 0,
+      "source_null_count": 0,
+      "missing_component_columns": []
     },
     {
       "name": "daily_numeric_validity",

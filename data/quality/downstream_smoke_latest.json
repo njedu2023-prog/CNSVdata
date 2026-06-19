@@ -1,9 +1,9 @@
 {
-  "status": "WARN",
-  "generated_at": "2026-06-19 14:50:15",
+  "status": "PASS",
+  "generated_at": "2026-06-19 15:36:23",
   "latest_trade_date": "2026-06-18",
   "failed_count": 0,
-  "warn_count": 2,
+  "warn_count": 0,
   "checks": [
     {
       "name": "read:metadata/data_manifest.json",
@@ -19,13 +19,13 @@
     },
     {
       "name": "quality_not_fail",
-      "status": "WARN",
-      "quality_status": "WARN"
+      "status": "PASS",
+      "quality_status": "PASS"
     },
     {
       "name": "acceptance_not_fail",
-      "status": "WARN",
-      "acceptance_status": "WARN"
+      "status": "PASS",
+      "acceptance_status": "PASS"
     },
     {
       "name": "read_cnsv_daily",

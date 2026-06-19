@@ -1,76 +1,21 @@
 {
   "ready": true,
-  "status": "WARN",
-  "generated_at": "2026-06-19 14:50:15",
+  "status": "PASS",
+  "generated_at": "2026-06-19 15:36:24",
   "latest_trade_date": "2026-06-18",
-  "quality_status": "WARN",
-  "data_gaps_status": "WARN",
-  "acceptance_status": "WARN",
-  "smoke_status": "WARN",
+  "quality_status": "PASS",
+  "data_gaps_status": "PASS",
+  "acceptance_status": "PASS",
+  "smoke_status": "PASS",
   "contract_version": "1.2.0",
-  "manifest_snapshot_id": "cnsvdata-2026-06-18-e5fd8e4be9f9",
+  "manifest_snapshot_id": "cnsvdata-2026-06-18-75fb9898e595",
   "blocking_reason": null,
-  "warnings": [
-    {
-      "source": "quality",
-      "name": "moneyflow_core_nulls",
-      "detail": "historical_or_latest_moneyflow_nulls",
-      "missing_count": 14
-    },
-    {
-      "source": "data_gaps",
-      "name": "daily_missing_trade_dates",
-      "detail": "historical_gaps_detected",
-      "missing_count": 156
-    },
-    {
-      "source": "data_gaps",
-      "name": "minute_missing_trade_dates",
-      "detail": "historical_gaps_detected",
-      "missing_count": 3987
-    },
-    {
-      "source": "data_gaps",
-      "name": "minute_missing_minutes",
-      "detail": "",
-      "missing_count": 0
-    },
-    {
-      "source": "data_gaps",
-      "name": "moneyflow_missing_trade_dates",
-      "detail": "latest_or_historical_gaps_detected",
-      "missing_count": 156
-    },
-    {
-      "source": "acceptance",
-      "name": "quality_status",
-      "detail": "",
-      "missing_count": 0
-    },
-    {
-      "source": "acceptance",
-      "name": "data_gaps_status",
-      "detail": "",
-      "missing_count": 0
-    },
-    {
-      "source": "smoke",
-      "name": "quality_not_fail",
-      "detail": "",
-      "missing_count": 0
-    },
-    {
-      "source": "smoke",
-      "name": "acceptance_not_fail",
-      "detail": "",
-      "missing_count": 0
-    }
-  ],
+  "warnings": [],
   "allowed_usage": {
     "can_develop_cnsv_main_program": true,
     "can_run_daily_ingest": true,
-    "can_run_backtest": false,
-    "can_use_moneyflow_as_strong_factor": false,
+    "can_run_backtest": true,
+    "can_use_moneyflow_as_strong_factor": true,
     "can_generate_formal_signal": false
   }
 }
