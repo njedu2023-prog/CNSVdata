@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at": "2026-06-19 15:36:22",
+  "generated_at": "2026-06-19 17:18:59",
   "latest_trade_date": "2026-06-18",
   "checks": [
     {
@@ -4420,7 +4420,5 @@
     "impact": ""
   },
   "unresolved_gaps": [],
-  "suggested_backfill_commands": [
-    "python scripts/backfill_missing_data.py --minute"
-  ]
+  "suggested_backfill_commands": []
 }

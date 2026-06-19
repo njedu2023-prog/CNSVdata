@@ -29,7 +29,17 @@ None
 
 ## Suggested Backfill Commands
 
-- `python scripts/backfill_missing_data.py --minute`
+None
+
+## Minute Backfill Plan
+
+- SOP: `docs/minute_backfill_sop.md`
+- Decision: not_required_for_current_readiness
+- Reason: minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.
+- Coverage scope: available_window:2026-06-09..2026-06-18
+- Active missing trade dates: 0
+- Historical missing count: 3987
+- Command when required: `python scripts/backfill_missing_data.py --minute`
 
 ## Allowed Usage
 
@@ -41,4 +51,4 @@ None
 
 ## Next Action
 
-start CNSV main program connection development with WARN limitations documented
+start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented
