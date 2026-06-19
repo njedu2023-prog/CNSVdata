@@ -46,6 +46,18 @@ def dates_in(df: pd.DataFrame | None, column: str = "trade_date") -> set[str]:
     return set(df[column].dropna().astype(str).unique().tolist())
 
 
+def recent_expected_dates(expected: list[str], window: int = 20) -> list[str]:
+    return expected[-window:] if window and len(expected) > window else expected
+
+
+def expected_from_coverage_start(expected: list[str], actual: set[str], latest: str | None) -> list[str]:
+    if not actual:
+        return recent_expected_dates(expected)
+    start = min(actual)
+    scoped = [date for date in expected if date >= start and (not latest or date <= latest)]
+    return scoped or recent_expected_dates(expected)
+
+
 def missing_date_check(name: str, expected: list[str], actual: set[str], latest: str | None, latest_fail: bool, fail_after: int | None = None) -> dict:
     missing = [date for date in expected if date not in actual]
     status = "PASS"
@@ -99,6 +111,17 @@ def latest_minute_coverage(minute: pd.DataFrame | None, latest: str | None) -> d
     }
 
 
+def minute_minutes_check(coverage: dict, min_ratio: float = 0.99) -> dict:
+    ratio = coverage.get("coverage_ratio", 0)
+    return {
+        "name": "minute_missing_minutes",
+        "status": "PASS" if ratio >= min_ratio else "WARN",
+        "missing_minutes": coverage.get("missing_minutes", []),
+        "coverage_ratio": ratio,
+        "min_coverage_ratio": min_ratio,
+    }
+
+
 def unresolved_gap(name: str, status: str, missing_dates: list[str], reason: str, impact: str) -> dict | None:
     if not missing_dates:
         return None
@@ -135,17 +158,27 @@ def build_gap_report() -> dict:
     daily_dates = dates_in(daily)
     minute_dates = dates_in(minute)
     moneyflow_dates = dates_in(moneyflow)
-    daily_check = missing_date_check("daily_missing_trade_dates", expected, daily_dates, latest, latest_fail=True)
-    minute_check = missing_date_check("minute_missing_trade_dates", expected, minute_dates, latest, latest_fail=True)
-    moneyflow_check = lag_tolerant_missing_date_check("moneyflow_missing_trade_dates", expected, moneyflow_dates, fail_consecutive=3)
-    coverage = minute_coverage(minute) if minute is not None else {"coverage_ratio": 0, "missing_minutes": []}
+    recent_expected = recent_expected_dates(expected)
+    minute_expected = expected_from_coverage_start(expected, minute_dates, latest)
+    daily_historical = missing_date_check("daily_historical_missing_trade_dates", expected, daily_dates, latest, latest_fail=False)
+    minute_historical = missing_date_check("minute_historical_missing_trade_dates", expected, minute_dates, latest, latest_fail=False)
+    moneyflow_historical = lag_tolerant_missing_date_check("moneyflow_historical_missing_trade_dates", expected, moneyflow_dates, fail_consecutive=0)
+    daily_check = missing_date_check("daily_missing_trade_dates", recent_expected, daily_dates, latest, latest_fail=True)
+    minute_check = missing_date_check("minute_missing_trade_dates", minute_expected, minute_dates, latest, latest_fail=True)
+    moneyflow_check = lag_tolerant_missing_date_check("moneyflow_missing_trade_dates", recent_expected, moneyflow_dates, fail_consecutive=3)
+    latest_minute = minute[minute["trade_date"].astype(str) == latest] if minute is not None and latest and "trade_date" in minute.columns else None
+    coverage = minute_coverage(latest_minute) if latest_minute is not None else {"coverage_ratio": 0, "missing_minutes": []}
     latest_coverage = latest_minute_coverage(minute, latest)
     moneyflow_lag = consecutive_missing_lag(expected, moneyflow_dates)
+    minute_intraday_check = minute_minutes_check(coverage)
 
     daily_report = {
         "status": daily_check["status"],
         "missing_trade_dates": daily_check["missing_dates"],
         "missing_count": daily_check["missing_count"],
+        "historical_missing_trade_dates": daily_historical["missing_dates"],
+        "historical_missing_count": daily_historical["missing_count"],
+        "coverage_scope": "recent_20_trading_days",
         "latest_trade_date_present": bool(latest and latest in daily_dates),
         "impact": "historical gaps can affect backtests and training" if daily_check["missing_dates"] else "",
     }
@@ -153,8 +186,11 @@ def build_gap_report() -> dict:
         "status": minute_check["status"],
         "missing_trade_dates": minute_check["missing_dates"],
         "missing_count": minute_check["missing_count"],
+        "historical_missing_trade_dates": minute_historical["missing_dates"],
+        "historical_missing_count": minute_historical["missing_count"],
         "missing_minutes": coverage.get("missing_minutes", []),
         "coverage_ratio": coverage.get("coverage_ratio", 0),
+        "coverage_scope": f"available_window:{minute_expected[0]}..{minute_expected[-1]}" if minute_expected else "available_window:empty",
         "latest_trade_date_present": latest_coverage["latest_trade_date_present"],
         "latest_trade_date_coverage": latest_coverage,
         "impact": "historical minute gaps can affect intraday backtests and training" if minute_check["missing_dates"] else "",
@@ -163,6 +199,9 @@ def build_gap_report() -> dict:
         "status": moneyflow_check["status"],
         "missing_trade_dates": moneyflow_check["missing_dates"],
         "missing_count": moneyflow_check["missing_count"],
+        "historical_missing_trade_dates": moneyflow_historical["missing_dates"],
+        "historical_missing_count": moneyflow_historical["missing_count"],
+        "coverage_scope": "recent_20_trading_days",
         "latest_lag_trading_days": moneyflow_lag,
         "latest_trade_date_present": bool(latest and latest in moneyflow_dates),
         "impact": "moneyflow WARN means it can only be used as a low confidence auxiliary factor" if moneyflow_check["missing_dates"] else "",
@@ -180,7 +219,7 @@ def build_gap_report() -> dict:
         {"name": "trade_calendar_available", "status": "PASS" if expected else "FAIL", "open_trade_dates": len(expected)},
         daily_check,
         minute_check,
-        {"name": "minute_missing_minutes", "status": "WARN" if coverage.get("missing_minutes") else "PASS", "missing_minutes": coverage.get("missing_minutes", []), "coverage_ratio": coverage.get("coverage_ratio", 0)},
+        minute_intraday_check,
         moneyflow_check,
     ]
     status = aggregate_status(checks)
@@ -193,6 +232,12 @@ def build_gap_report() -> dict:
         "minute_missing_trade_dates": minute_check,
         "minute_missing_minutes": checks[3],
         "moneyflow_missing_trade_dates": moneyflow_check,
+        "historical_reference": {
+            "daily_missing_count": daily_historical["missing_count"],
+            "minute_missing_count": minute_historical["missing_count"],
+            "moneyflow_missing_count": moneyflow_historical["missing_count"],
+            "status_impact": "informational_only",
+        },
         "daily": daily_report,
         "minute": minute_report,
         "moneyflow": moneyflow_report,

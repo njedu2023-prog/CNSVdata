@@ -211,7 +211,9 @@ WARN 规则：
 corporate_actions / structural_breaks 文件存在但为空 -> WARN empty_allowed，不阻断接线开发
 moneyflow 最新 1 个交易日延迟 -> WARN，不阻断接线开发
 moneyflow 连续多交易日缺失或核心行情缺失 -> FAIL
-历史缺口 -> WARN，必须在 failure_summary 和 data_gaps 中说明影响与回补命令
+历史缺口 -> 作为 historical_reference 记录，不参与当前 downstream_ready WARN
+minute 缺口 -> 只检查 Tushare 已覆盖窗口和最新交易日，不用 2010 起全历史日历制造永久 WARN
+moneyflow net_mf_amount 为空但买卖分项存在 -> 从分项派生修复，并在质量报告中记录 derived_count
 ```
 
 当 `moneyflow` 为 WARN 时，CNSV 主系统只能把它作为低置信辅助信息，不能作为强置信因子。历史 daily/minute/moneyflow 缺口会影响回测和训练，回补完成并重新验收前不得把 WARN 数据升级为正式回测输入。

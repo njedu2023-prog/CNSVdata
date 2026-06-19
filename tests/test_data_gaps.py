@@ -1,6 +1,15 @@
 import pandas as pd
 
-from scripts.detect_data_gaps import bounded_expected_dates, dates_in, lag_tolerant_missing_date_check, missing_date_check, open_trade_dates
+from scripts.detect_data_gaps import (
+    bounded_expected_dates,
+    dates_in,
+    expected_from_coverage_start,
+    lag_tolerant_missing_date_check,
+    minute_minutes_check,
+    missing_date_check,
+    open_trade_dates,
+    recent_expected_dates,
+)
 
 
 def test_open_trade_dates_filters_closed_days():
@@ -30,3 +39,19 @@ def test_lag_tolerant_moneyflow_fails_consecutive_recent_gaps():
 
 def test_dates_in_handles_missing_dataframe():
     assert dates_in(None) == set()
+
+
+def test_recent_expected_dates_limits_historical_noise():
+    expected = [f"2026-06-{day:02d}" for day in range(1, 31)]
+    assert recent_expected_dates(expected, window=3) == ["2026-06-28", "2026-06-29", "2026-06-30"]
+
+
+def test_minute_expected_dates_start_at_available_coverage():
+    expected = ["2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04"]
+    actual = {"2026-06-03", "2026-06-04"}
+    assert expected_from_coverage_start(expected, actual, "2026-06-04") == ["2026-06-03", "2026-06-04"]
+
+
+def test_minute_missing_minutes_uses_coverage_threshold():
+    coverage = {"coverage_ratio": 0.9917, "missing_minutes": ["2026-06-18 11:30:00"]}
+    assert minute_minutes_check(coverage)["status"] == "PASS"

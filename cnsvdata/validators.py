@@ -13,6 +13,8 @@ MONEYFLOW_CORE_COLUMNS = [
     "sell_elg_amount",
     "net_mf_amount",
 ]
+MONEYFLOW_BUY_COLUMNS = ["buy_sm_amount", "buy_md_amount", "buy_lg_amount", "buy_elg_amount"]
+MONEYFLOW_SELL_COLUMNS = ["sell_sm_amount", "sell_md_amount", "sell_lg_amount", "sell_elg_amount"]
 
 
 def aggregate_status(checks: list[dict]) -> str:
@@ -57,6 +59,30 @@ def null_counts(df: pd.DataFrame, columns: list[str]) -> dict:
     return counts
 
 
+def derive_moneyflow_net_amount(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    work = df.copy()
+    component_columns = MONEYFLOW_BUY_COLUMNS + MONEYFLOW_SELL_COLUMNS
+    missing_components = [column for column in component_columns if column not in work.columns]
+    stats = {
+        "derived_count": 0,
+        "source_null_count": int(work["net_mf_amount"].isna().sum()) if "net_mf_amount" in work.columns else None,
+        "missing_component_columns": missing_components,
+    }
+    if "net_mf_amount" not in work.columns or missing_components:
+        return work, stats
+
+    for column in component_columns + ["net_mf_amount"]:
+        work[column] = pd.to_numeric(work[column], errors="coerce")
+    has_component = work[component_columns].notna().any(axis=1)
+    target = work["net_mf_amount"].isna() & has_component
+    if target.any():
+        buys = work.loc[target, MONEYFLOW_BUY_COLUMNS].fillna(0).sum(axis=1)
+        sells = work.loc[target, MONEYFLOW_SELL_COLUMNS].fillna(0).sum(axis=1)
+        work.loc[target, "net_mf_amount"] = buys - sells
+        stats["derived_count"] = int(target.sum())
+    return work, stats
+
+
 def moneyflow_null_check(df: pd.DataFrame | None, latest_trade_date: str | None, column: str = "net_mf_amount", consecutive_fail: int = 2) -> dict:
     result = {"name": "moneyflow_core_nulls", "status": "PASS", "column": column}
     if df is None:
@@ -64,11 +90,13 @@ def moneyflow_null_check(df: pd.DataFrame | None, latest_trade_date: str | None,
     if column not in df.columns or "trade_date" not in df.columns:
         return {**result, "status": "FAIL", "detail": "missing required column"}
 
-    work = df[["trade_date", column]].copy()
+    repaired, repair_stats = derive_moneyflow_net_amount(df)
+    work = repaired[["trade_date", column]].copy()
     work["trade_date"] = work["trade_date"].astype(str)
     missing_dates = sorted(work.loc[work[column].isna(), "trade_date"].dropna().unique().tolist())
     if not missing_dates:
-        return {**result, "missing_dates": [], "missing_count": 0, "detail": "no null moneyflow values"}
+        detail = "derived_from_components" if repair_stats["derived_count"] else "no null moneyflow values"
+        return {**result, "missing_dates": [], "missing_count": 0, "detail": detail, **repair_stats}
 
     available_dates = sorted(work["trade_date"].dropna().unique().tolist())
     recent_dates = available_dates[-consecutive_fail:] if consecutive_fail else []
@@ -87,6 +115,7 @@ def moneyflow_null_check(df: pd.DataFrame | None, latest_trade_date: str | None,
         "missing_count": len(missing_dates),
         "recent_dates_checked": recent_dates,
         "detail": detail,
+        **repair_stats,
     }
 
 

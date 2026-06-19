@@ -2,6 +2,7 @@ import pandas as pd
 
 from cnsvdata.validators import (
     aggregate_status,
+    derive_moneyflow_net_amount,
     duplicate_count,
     invalid_a_share_minute_times,
     missing_columns,
@@ -59,3 +60,26 @@ def test_moneyflow_consecutive_recent_nulls_fail():
     df = pd.DataFrame({"trade_date": ["2026-06-17", "2026-06-18"], "net_mf_amount": [None, None]})
     check = moneyflow_null_check(df, "2026-06-18")
     assert check["status"] == "FAIL"
+
+
+def test_moneyflow_net_amount_can_be_derived_from_components():
+    df = pd.DataFrame(
+        {
+            "trade_date": ["2010-02-09"],
+            "buy_sm_amount": [10],
+            "sell_sm_amount": [1],
+            "buy_md_amount": [20],
+            "sell_md_amount": [2],
+            "buy_lg_amount": [30],
+            "sell_lg_amount": [3],
+            "buy_elg_amount": [40],
+            "sell_elg_amount": [None],
+            "net_mf_amount": [None],
+        }
+    )
+    repaired, stats = derive_moneyflow_net_amount(df)
+    assert stats["derived_count"] == 1
+    assert repaired.loc[0, "net_mf_amount"] == 94
+    check = moneyflow_null_check(df, "2010-02-09")
+    assert check["status"] == "PASS"
+    assert check["detail"] == "derived_from_components"
