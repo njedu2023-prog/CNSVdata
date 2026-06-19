@@ -1,10 +1,10 @@
 {
   "status": "WARN",
-  "generated_at": "2026-06-19 03:16:36",
-  "snapshot_id": "cnsvdata-2026-06-18-7debd05570bc",
+  "generated_at": "2026-06-19 14:50:14",
+  "snapshot_id": "cnsvdata-2026-06-18-e5fd8e4be9f9",
   "latest_trade_date": "2026-06-18",
   "failed_count": 0,
-  "warn_count": 1,
+  "warn_count": 2,
   "checks": [
     {
       "name": "required_file:data/processed/trade_calendar.parquet",
@@ -357,6 +357,12 @@
       "name": "quality_status",
       "status": "WARN",
       "quality_status": "WARN"
+    },
+    {
+      "name": "data_gaps_status",
+      "status": "WARN",
+      "data_gaps_status": "WARN",
+      "unresolved_gaps": 3
     }
   ]
 }
