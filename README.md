@@ -50,10 +50,11 @@ pytest
 北京时间对应 UTC 定时：
 
 ```text
-fetch_daily.yml         16:10 BJT / 08:10 UTC
-fetch_minute.yml        16:20 BJT / 08:20 UTC
-build_processed.yml     16:30 BJT / 08:30 UTC
-data_quality_check.yml  16:40 BJT / 08:40 UTC
+fetch_daily.yml         18:10 BJT / 10:10 UTC
+fetch_minute.yml        18:40 BJT / 10:40 UTC
+build_processed.yml     19:10 BJT / 11:10 UTC
+data_quality_check.yml  19:40 BJT / 11:40 UTC
+acceptance.yml          20:10 BJT / 12:10 UTC
 ```
 
 ## CNSV 下游读取文件

@@ -3,7 +3,7 @@ name: Data quality check
 on:
   workflow_dispatch:
   schedule:
-    - cron: "40 8 * * 1-5"
+    - cron: "40 11 * * 1-5"
   pull_request:
 
 permissions:
