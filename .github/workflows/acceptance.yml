@@ -30,9 +30,17 @@ jobs:
           python-version: "3.11"
       - run: pip install -r requirements.txt
       - run: pytest
+      - run: python scripts/fetch_cnsv_daily.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
       - run: python scripts/fetch_cnsv_1min.py
         env:
           TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/fetch_moneyflow.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/build_processed_daily.py
+        if: always()
       - run: python scripts/build_minute_bars.py
         if: always()
       - run: python scripts/build_corporate_actions.py

@@ -36,7 +36,12 @@ python scripts/build_minute_bars.py
 python scripts/build_corporate_actions.py
 python scripts/build_structural_breaks.py
 python scripts/build_data_manifest.py
+python scripts/detect_data_gaps.py
 python scripts/quality_check.py
+python scripts/acceptance_check.py
+python scripts/smoke_downstream_read.py
+python scripts/build_downstream_ready.py
+python scripts/build_failure_summary.py
 pytest
 ```
 
@@ -68,6 +73,11 @@ metadata/latest_trade_date.json
 metadata/next_trade_date.json
 metadata/data_manifest.json
 data/quality/data_quality_latest.json
+data/quality/data_gaps_latest.json
+data/quality/acceptance_latest.json
+data/quality/downstream_smoke_latest.json
+data/quality/failure_summary_latest.md
+metadata/downstream_ready.json
 ```
 
 ## 人工预览文件
@@ -104,14 +114,18 @@ data/quality/downstream_smoke_latest.json
 
 ```text
 1. pytest
-2. quality_check.py
-3. acceptance_check.py
-4. smoke_downstream_read.py
+2. detect_data_gaps.py
+3. quality_check.py
+4. acceptance_check.py
+5. smoke_downstream_read.py
+6. build_downstream_ready.py
 ```
 
-只有当 `quality`、`acceptance`、`downstream smoke` 全部 `PASS` 时，CNSV 主系统才应正常读取。  
-如果为 `WARN`，下游可读取但必须降低置信度。  
-如果为 `FAIL`，下游不得生成正式交易辅助结果。
+`metadata/downstream_ready.json` 是 CNSV 主系统唯一主开关。CNSV 主系统先读这个文件，再决定是否读取 processed parquet。
+
+只有当 `quality`、`data_gaps`、`acceptance`、`downstream smoke` 均未 `FAIL` 时，`ready` 才允许为 `true`。  
+`WARN` 允许主程序接线开发和日常观察，但不代表数据可直接用于正式回测、训练或交易信号。  
+`FAIL` 表示阻断，下游不得生成正式交易辅助结果。
 
 ## V1.2 运维与验收流程
 
@@ -150,7 +164,8 @@ python scripts/archive_quality_snapshot.py
 2. data/quality/acceptance_latest.json
 3. data/quality/downstream_smoke_latest.json
 4. data/quality/data_quality_latest.json
-5. GitHub Actions logs
+5. data/quality/data_gaps_latest.json
+6. GitHub Actions logs
 ```
 
 缺口检测与回补：
@@ -173,10 +188,33 @@ metadata/downstream_ready.json
 
 ```text
 ready = true  -> 可以读取
-ready = false -> 不得生成正式交易辅助结果
-status = WARN -> 可观察，但必须降低置信度
+ready = false -> 不得读取为正式下游输入
+status = PASS -> 可用于数据接线、日常读取和回测数据输入
+status = WARN -> 可用于主程序接线开发和观察，不得用于正式回测、训练或正式信号
 status = FAIL -> 阻断
 ```
+
+`allowed_usage` 字段给出下游允许范围：
+
+```text
+can_develop_cnsv_main_program      -> 是否允许开始 CNSV 主仓库接线开发
+can_run_daily_ingest               -> 是否允许继续每日采集和观察
+can_run_backtest                   -> 是否允许作为正式回测/训练输入
+can_use_moneyflow_as_strong_factor -> 是否允许把 moneyflow 当作强置信因子
+can_generate_formal_signal         -> 本仓库始终为 false，本仓库不生成正式信号
+```
+
+WARN 规则：
+
+```text
+核心行情 parquet 缺失、不可读、schema 缺失、最新交易日核心行情缺失 -> FAIL
+corporate_actions / structural_breaks 文件存在但为空 -> WARN empty_allowed，不阻断接线开发
+moneyflow 最新 1 个交易日延迟 -> WARN，不阻断接线开发
+moneyflow 连续多交易日缺失或核心行情缺失 -> FAIL
+历史缺口 -> WARN，必须在 failure_summary 和 data_gaps 中说明影响与回补命令
+```
+
+当 `moneyflow` 为 WARN 时，CNSV 主系统只能把它作为低置信辅助信息，不能作为强置信因子。历史 daily/minute/moneyflow 缺口会影响回测和训练，回补完成并重新验收前不得把 WARN 数据升级为正式回测输入。
 
 历史追溯文件会归档到：
 

@@ -128,6 +128,20 @@ def quality_status_check() -> dict:
     return {"name": "quality_status", "status": status, "quality_status": status}
 
 
+def data_gaps_status_check() -> dict:
+    path = QUALITY_DIR / "data_gaps_latest.json"
+    payload = read_json(path)
+    status = payload.get("status")
+    if not path.exists() or status not in {"PASS", "WARN", "FAIL"}:
+        return {"name": "data_gaps_status", "status": "FAIL", "detail": "missing_or_invalid_data_gaps"}
+    return {
+        "name": "data_gaps_status",
+        "status": status,
+        "data_gaps_status": status,
+        "unresolved_gaps": len(payload.get("unresolved_gaps", []) or []),
+    }
+
+
 def build_acceptance_report() -> dict:
     contract = load_yaml("data_contract.yml")["contract"]
     field_contract = load_yaml("field_contract.yml")["contract"]
@@ -160,6 +174,7 @@ def build_acceptance_report() -> dict:
     for relative, dataset_name in dataset_by_path.items():
         checks.extend(field_contract_checks(frames.get(relative), dataset_name, field_contract["datasets"][dataset_name]))
     checks.append(quality_status_check())
+    checks.append(data_gaps_status_check())
 
     status = aggregate_status(checks)
     failed = [check for check in checks if check["status"] == "FAIL"]

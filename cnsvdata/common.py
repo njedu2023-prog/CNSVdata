@@ -30,6 +30,13 @@ def write_parquet(df: pd.DataFrame, path: Path) -> None:
     df.to_parquet(path, index=False)
 
 
+def merge_existing_parquet(df: pd.DataFrame, path: Path, subset: list[str], sort_by: str) -> pd.DataFrame:
+    if path.exists():
+        existing = pd.read_parquet(path)
+        df = pd.concat([existing, df], ignore_index=True)
+    return df.drop_duplicates(subset=subset, keep="last").sort_values(sort_by).reset_index(drop=True)
+
+
 def write_json(payload: dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -16,6 +17,7 @@ POST_STEPS = [
     "scripts/build_processed_daily.py",
     "scripts/build_minute_bars.py",
     "scripts/build_data_manifest.py",
+    "scripts/detect_data_gaps.py",
     "scripts/quality_check.py",
     "scripts/acceptance_check.py",
     "scripts/smoke_downstream_read.py",
@@ -40,7 +42,15 @@ def datasets_from_gap_report() -> list[str]:
     if not path.exists():
         return []
     payload = json.loads(path.read_text(encoding="utf-8"))
+    return datasets_from_gap_payload(payload)
+
+
+def datasets_from_gap_payload(payload: dict) -> list[str]:
     datasets = []
+    for dataset in ("daily", "minute", "moneyflow"):
+        report = payload.get(dataset, {})
+        if report.get("missing_trade_dates") or report.get("missing_minutes"):
+            datasets.append(dataset)
     for check in payload.get("checks", []):
         if check.get("missing_count", 0) <= 0:
             continue
@@ -67,8 +77,8 @@ def selected_datasets(args: argparse.Namespace) -> list[str]:
     return sorted(set(datasets))
 
 
-def run_step(script: str) -> dict:
-    result = subprocess.run([sys.executable, script], cwd=ROOT, text=True, capture_output=True)
+def run_step(script: str, env: dict | None = None) -> dict:
+    result = subprocess.run([sys.executable, script], cwd=ROOT, text=True, capture_output=True, env=env)
     return {
         "script": script,
         "status": "PASS" if result.returncode == 0 else "FAIL",
@@ -81,6 +91,11 @@ def run_step(script: str) -> dict:
 def main() -> None:
     args = parse_args()
     datasets = selected_datasets(args)
+    env = os.environ.copy()
+    if args.start_date:
+        env["CNSVDATA_BACKFILL_START_DATE"] = args.start_date
+    if args.end_date:
+        env["CNSVDATA_BACKFILL_END_DATE"] = args.end_date
     filled = []
     failed = []
     if not datasets:
@@ -88,7 +103,7 @@ def main() -> None:
 
     for dataset in datasets:
         for script in FETCH_BY_DATASET[dataset]:
-            result = run_step(script)
+            result = run_step(script, env=env)
             item = {"dataset": dataset, "script": script, "status": result["status"]}
             if result["status"] == "PASS":
                 filled.append(item)
@@ -97,7 +112,7 @@ def main() -> None:
 
     if not failed:
         for script in POST_STEPS:
-            result = run_step(script)
+            result = run_step(script, env=env)
             if result["status"] == "FAIL":
                 failed.append({"dataset": "post_check", "script": script, "status": "FAIL", "detail": result})
 

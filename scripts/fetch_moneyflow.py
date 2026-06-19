@@ -1,4 +1,6 @@
-from cnsvdata.common import load_yaml, normalize_trade_date, now_string, write_parquet
+import os
+
+from cnsvdata.common import load_yaml, merge_existing_parquet, normalize_trade_date, now_string, write_parquet
 from cnsvdata.paths import PROCESSED_DIR, RAW_DIR
 from cnsvdata.tushare_client import call_with_retry, get_tushare_pro
 
@@ -6,7 +8,12 @@ from cnsvdata.tushare_client import call_with_retry, get_tushare_pro
 def main() -> None:
     target = load_yaml("target.yml")["target"]
     pro = get_tushare_pro()
-    df = call_with_retry(pro.moneyflow, ts_code=target["ts_code"], start_date="20100101")
+    start_date = os.getenv("CNSVDATA_BACKFILL_START_DATE", "20100101")
+    end_date = os.getenv("CNSVDATA_BACKFILL_END_DATE", "")
+    kwargs = {"ts_code": target["ts_code"], "start_date": start_date}
+    if end_date:
+        kwargs["end_date"] = end_date
+    df = call_with_retry(pro.moneyflow, **kwargs)
     df["trade_date"] = df["trade_date"].map(normalize_trade_date)
     df["source"] = "tushare"
     df["source_version"] = "tushare.moneyflow"
@@ -18,6 +25,7 @@ def main() -> None:
         "source", "source_version", "field_definition", "fetched_at",
     ]
     df = df[keep].sort_values("trade_date")
+    df = merge_existing_parquet(df, PROCESSED_DIR / "cnsv_moneyflow.parquet", ["trade_date"], "trade_date")
     write_parquet(df, RAW_DIR / "cnsv_moneyflow_raw.parquet")
     write_parquet(df, PROCESSED_DIR / "cnsv_moneyflow.parquet")
 
