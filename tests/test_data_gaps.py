@@ -9,6 +9,7 @@ from scripts.detect_data_gaps import (
     missing_date_check,
     open_trade_dates,
     recent_expected_dates,
+    suggested_backfill_commands,
 )
 
 
@@ -55,3 +56,12 @@ def test_minute_expected_dates_start_at_available_coverage():
 def test_minute_missing_minutes_uses_coverage_threshold():
     coverage = {"coverage_ratio": 0.9917, "missing_minutes": ["2026-06-18 11:30:00"]}
     assert minute_minutes_check(coverage)["status"] == "PASS"
+
+
+def test_passed_minute_tolerated_missing_bar_does_not_suggest_backfill():
+    commands = suggested_backfill_commands(
+        {"status": "PASS", "missing_trade_dates": []},
+        {"status": "PASS", "missing_trade_dates": [], "missing_minutes": ["2026-06-18 13:00:00"]},
+        {"status": "PASS", "missing_trade_dates": []},
+    )
+    assert commands == []

@@ -100,6 +100,33 @@ def usage_lines(allowed_usage: dict) -> list[str]:
     return lines
 
 
+def build_backfill_plan(gaps: dict) -> dict:
+    minute = gaps.get("minute", {}) if isinstance(gaps.get("minute"), dict) else {}
+    historical = gaps.get("historical_reference", {}) if isinstance(gaps.get("historical_reference"), dict) else {}
+    active_missing = minute.get("missing_trade_dates", []) if isinstance(minute.get("missing_trade_dates", []), list) else []
+    missing_minutes = minute.get("missing_minutes", []) if isinstance(minute.get("missing_minutes", []), list) else []
+    minute_status = minute.get("status", gaps.get("status", "FAIL"))
+    if minute_status == "PASS" and not active_missing:
+        decision = "not_required_for_current_readiness"
+        reason = "minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational."
+    else:
+        decision = "backfill_required_before_formal_backtest"
+        reason = "minute active gaps exist or current coverage is below the configured threshold."
+    return {
+        "sop": "docs/minute_backfill_sop.md",
+        "dataset": "minute",
+        "decision": decision,
+        "reason": reason,
+        "coverage_scope": minute.get("coverage_scope", ""),
+        "active_missing_trade_dates": active_missing,
+        "active_missing_count": len(active_missing),
+        "tolerated_missing_minutes": missing_minutes if minute_status == "PASS" else [],
+        "historical_missing_count": int(historical.get("minute_missing_count", 0) or 0),
+        "command_when_required": "python scripts/backfill_missing_data.py --minute",
+        "post_check": "pytest && python scripts/detect_data_gaps.py && python scripts/quality_check.py && python scripts/acceptance_check.py",
+    }
+
+
 def render_markdown(payload: dict) -> str:
     lines = [
         "# CNSVdata Failure Summary",
@@ -163,6 +190,22 @@ def render_markdown(payload: dict) -> str:
         lines.append("None")
     for command in payload.get("suggested_backfill_commands", []):
         lines.append(f"- `{command}`")
+    plan = payload.get("backfill_plan", {})
+    lines.extend(["", "## Minute Backfill Plan", ""])
+    if not plan:
+        lines.append("None")
+    else:
+        lines.extend(
+            [
+                f"- SOP: `{plan.get('sop', '')}`",
+                f"- Decision: {plan.get('decision', '')}",
+                f"- Reason: {plan.get('reason', '')}",
+                f"- Coverage scope: {plan.get('coverage_scope', '')}",
+                f"- Active missing trade dates: {plan.get('active_missing_count', 0)}",
+                f"- Historical missing count: {plan.get('historical_missing_count', 0)}",
+                f"- Command when required: `{plan.get('command_when_required', '')}`",
+            ]
+        )
     lines.extend(["", "## Allowed Usage", ""])
     lines.extend(usage_lines(payload.get("allowed_usage", {})))
     lines.extend(["", "## Next Action", "", payload.get("next_action", "Inspect the source report and rerun affected checks.")])
@@ -176,7 +219,8 @@ def build_summary() -> dict:
     gaps = read_json(QUALITY_DIR / "data_gaps_latest.json")
     allowed_usage = downstream.get("allowed_usage", {})
     blocking = status == "FAIL"
-    next_action = "start CNSV main program connection development with WARN limitations documented"
+    backfill_plan = build_backfill_plan(gaps)
+    next_action = "start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented"
     if blocking:
         next_action = failures[0]["suggested_action"] if failures else "rerun the acceptance workflow from the beginning"
     elif warnings:
@@ -193,6 +237,7 @@ def build_summary() -> dict:
         "top_warnings": warnings[:20],
         "concrete_missing_dates": extract_concrete_missing_dates(gaps),
         "suggested_backfill_commands": gaps.get("suggested_backfill_commands", []) if isinstance(gaps.get("suggested_backfill_commands", []), list) else [],
+        "backfill_plan": backfill_plan,
         "allowed_usage": allowed_usage,
         "next_action": next_action,
     }

@@ -178,6 +178,14 @@ python scripts/backfill_missing_data.py --start-date 20260601 --end-date 2026061
 python scripts/backfill_missing_data.py --start-date 20260601 --end-date 20260618 --moneyflow
 ```
 
+分钟回补 SOP：
+
+```text
+docs/minute_backfill_sop.md
+```
+
+当前窗口 `minute.status = PASS` 时，`historical_reference.minute_missing_count` 只作为历史参考，不作为当前 WARN/FAIL。只有当最新覆盖窗口缺交易日、覆盖率低于阈值、或正式回测/训练明确需要历史区间时，才执行 minute backfill。
+
 CNSV 主系统应优先读取：
 
 ```text
@@ -202,6 +210,15 @@ can_run_daily_ingest               -> 是否允许继续每日采集和观察
 can_run_backtest                   -> 是否允许作为正式回测/训练输入
 can_use_moneyflow_as_strong_factor -> 是否允许把 moneyflow 当作强置信因子
 can_generate_formal_signal         -> 本仓库始终为 false，本仓库不生成正式信号
+```
+
+CNSV 主仓库 CI 接入规则：
+
+```text
+每次 ingest 后必须先读取 metadata/downstream_ready.json
+ready = false 时拒绝接入 processed 数据
+formal signal 默认禁止
+只有 allowed_usage.can_generate_formal_signal = true 时，formal signal 生成才允许解锁
 ```
 
 WARN 规则：

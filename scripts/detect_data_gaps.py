@@ -137,12 +137,12 @@ def unresolved_gap(name: str, status: str, missing_dates: list[str], reason: str
 
 def suggested_backfill_commands(daily: dict, minute: dict, moneyflow: dict) -> list[str]:
     commands = []
-    if daily.get("missing_trade_dates"):
+    if daily.get("status") != "PASS" and daily.get("missing_trade_dates"):
         commands.append("python scripts/backfill_missing_data.py --from-gap-report")
         commands.append("python scripts/backfill_missing_data.py --daily")
-    if minute.get("missing_trade_dates") or minute.get("missing_minutes"):
+    if minute.get("status") != "PASS" and (minute.get("missing_trade_dates") or minute.get("missing_minutes")):
         commands.append("python scripts/backfill_missing_data.py --minute")
-    if moneyflow.get("missing_trade_dates"):
+    if moneyflow.get("status") != "PASS" and moneyflow.get("missing_trade_dates"):
         commands.append("python scripts/backfill_missing_data.py --moneyflow")
     return list(dict.fromkeys(commands))
 
