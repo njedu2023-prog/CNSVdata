@@ -1,8 +1,11 @@
-from cnsvdata.intraday import build_latest_snapshot_from_source
+from cnsvdata.intraday import build_latest_snapshot_from_source, build_missing_source_ready
 
 
 def main() -> None:
-    build_latest_snapshot_from_source()
+    try:
+        build_latest_snapshot_from_source()
+    except SystemExit:
+        build_missing_source_ready()
 
 
 if __name__ == "__main__":
