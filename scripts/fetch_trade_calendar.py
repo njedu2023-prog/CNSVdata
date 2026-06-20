@@ -1,9 +1,12 @@
 from cnsvdata.common import load_yaml, normalize_trade_date, now_string, write_json, write_parquet
-from cnsvdata.paths import METADATA_DIR, PROCESSED_DIR, RAW_DIR
+from cnsvdata.paths import DATA_DIR, METADATA_DIR, PROCESSED_DIR, RAW_DIR
 from cnsvdata.tushare_client import call_with_retry, get_tushare_pro
 
 
 def main() -> None:
+    daily_raw_dir = DATA_DIR / "daily" / "raw"
+    daily_processed_dir = DATA_DIR / "daily" / "processed"
+    daily_metadata_dir = METADATA_DIR / "daily"
     config = load_yaml("calendar.yml")["calendar"]
     pro = get_tushare_pro()
     raw = call_with_retry(
@@ -20,6 +23,8 @@ def main() -> None:
 
     write_parquet(raw, RAW_DIR / "trade_calendar_raw.parquet")
     write_parquet(raw, PROCESSED_DIR / "trade_calendar.parquet")
+    write_parquet(raw, daily_raw_dir / "trade_calendar_raw.parquet")
+    write_parquet(raw, daily_processed_dir / "trade_calendar.parquet")
 
     open_days = raw.loc[raw["is_open"] == 1, "cal_date"].tolist()
     today = now_string()[:10]
@@ -38,6 +43,16 @@ def main() -> None:
     )
     write_json(
         {
+            "line": "daily",
+            "latest_trade_date": latest,
+            "source": "tushare",
+            "generated_at": generated_at,
+            "timezone": config["timezone"],
+        },
+        daily_metadata_dir / "daily_latest_trade_date.json",
+    )
+    write_json(
+        {
             "current_trade_date": latest,
             "next_trade_date": next_trade,
             "source": "tushare",
@@ -45,6 +60,17 @@ def main() -> None:
             "timezone": config["timezone"],
         },
         METADATA_DIR / "next_trade_date.json",
+    )
+    write_json(
+        {
+            "line": "daily",
+            "current_trade_date": latest,
+            "next_trade_date": next_trade,
+            "source": "tushare",
+            "generated_at": generated_at,
+            "timezone": config["timezone"],
+        },
+        daily_metadata_dir / "daily_next_trade_date.json",
     )
 
 

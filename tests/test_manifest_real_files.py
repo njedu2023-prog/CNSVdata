@@ -23,3 +23,4 @@ def test_file_sha256_and_manifest_item_shape(tmp_path):
     assert min_date == "2026-06-18"
     assert max_date == "2026-06-18"
     assert {"path", "exists", "rows", "columns", "sha256", "file_size", "status"} <= set(item)
+

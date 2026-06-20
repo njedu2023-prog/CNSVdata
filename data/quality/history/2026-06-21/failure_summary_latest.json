@@ -1,36 +1,150 @@
 {
-  "status": "PASS",
-  "generated_at": "2026-06-21 00:43:02",
-  "blocking": false,
-  "blocking_reason": null,
-  "can_cnsv_main_start": true,
-  "failed_count": 0,
+  "status": "FAIL",
+  "generated_at": "2026-06-19 00:52:41",
+  "blocking": true,
+  "failed_count": 29,
   "warn_count": 0,
-  "top_failures": [],
-  "top_warnings": [],
-  "concrete_missing_dates": {},
-  "suggested_backfill_commands": [],
-  "backfill_plan": {
-    "sop": "docs/minute_backfill_sop.md",
-    "dataset": "minute",
-    "decision": "not_required_for_current_readiness",
-    "reason": "minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.",
-    "coverage_scope": "available_window:2026-06-09..2026-06-18",
-    "active_missing_trade_dates": [],
-    "active_missing_count": 0,
-    "tolerated_missing_minutes": [
-      "2026-06-18 13:00:00"
-    ],
-    "historical_missing_count": 3987,
-    "command_when_required": "python scripts/backfill_missing_data.py --minute",
-    "post_check": "pytest && python scripts/detect_data_gaps.py && python scripts/quality_check.py && python scripts/acceptance_check.py"
-  },
-  "allowed_usage": {
-    "can_develop_cnsv_main_program": true,
-    "can_run_daily_ingest": true,
-    "can_run_backtest": true,
-    "can_use_moneyflow_as_strong_factor": true,
-    "can_generate_formal_signal": false
-  },
-  "next_action": "start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented"
+  "top_failures": [
+    {
+      "source": "quality",
+      "name": "required_file:data/processed/cnsv_1min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "required_file:data/processed/cnsv_5min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "required_file:data/processed/cnsv_15min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "required_file:data/processed/cnsv_30min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "required_file:data/processed/cnsv_60min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "cnsv_1min.parquet_exists",
+      "status": "FAIL",
+      "detail": "missing file",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "quality",
+      "name": "field_contract:cnsv_1min:readable",
+      "status": "FAIL",
+      "detail": "dataset_not_readable",
+      "suggested_action": "inspect the source report and rerun the affected data pipeline step"
+    },
+    {
+      "source": "quality",
+      "name": "field_contract:cnsv_moneyflow:nullable",
+      "status": "FAIL",
+      "detail": "",
+      "suggested_action": "rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks"
+    },
+    {
+      "source": "quality",
+      "name": "moneyflow_core_nulls",
+      "status": "FAIL",
+      "detail": "",
+      "suggested_action": "rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks"
+    },
+    {
+      "source": "acceptance",
+      "name": "required_file:data/processed/cnsv_1min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "required_file:data/processed/cnsv_5min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "required_file:data/processed/cnsv_15min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "required_file:data/processed/cnsv_30min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "required_file:data/processed/cnsv_60min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "parquet_readable:cnsv_1min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "parquet_readable:cnsv_5min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "parquet_readable:cnsv_15min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "parquet_readable:cnsv_30min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "parquet_readable:cnsv_60min.parquet",
+      "status": "FAIL",
+      "detail": "missing",
+      "suggested_action": "run detect_data_gaps and backfill_missing_data for the affected dataset"
+    },
+    {
+      "source": "acceptance",
+      "name": "latest_trade_date_consistency",
+      "status": "FAIL",
+      "detail": "minute latest date mismatch",
+      "suggested_action": "rerun fetch_minute, build_minute_bars, quality, acceptance, and smoke checks"
+    }
+  ],
+  "top_warnings": []
 }

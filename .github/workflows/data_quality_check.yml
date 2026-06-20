@@ -26,7 +26,7 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/quality metadata
+          git add data/quality/*.json data/quality/*.md metadata/data_manifest.json metadata/data_snapshot.json metadata/downstream_ready.json metadata/history || true
           git diff --cached --quiet || git commit -m "data: update quality reports"
           git push
         if: github.event_name != 'pull_request'

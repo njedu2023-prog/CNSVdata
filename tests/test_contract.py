@@ -11,3 +11,4 @@ def test_data_contract_required_files_are_safe_relative_paths():
         path = Path(item)
         assert not path.is_absolute()
         assert ".." not in path.parts
+

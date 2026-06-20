@@ -1,16 +1,66 @@
 {
   "line": "daily",
   "repo": "CNSVdata",
-  "generated_at": "2026-06-21 00:12:25",
+  "generated_at": "2026-06-21 01:12:27",
   "manifest_path": "metadata/daily/daily_manifest.json",
   "quality_path": "data/quality/daily/daily_quality_latest.json",
-  "legacy_compatibility": true,
+  "legacy_compatibility": false,
   "canonical_line": "daily",
   "files": [
-    {"name": "cnsv_daily", "canonical_path": "data/daily/processed/cnsv_daily.parquet", "legacy_path": "data/processed/cnsv_daily.parquet", "path": "data/processed/cnsv_daily.parquet", "exists": true, "sha256": "26952bc92f7dc1e2c644e3707fe32a6dad0af90d982d7d06013b75fac081cca1", "size_bytes": 195519, "legacy_compatibility": true, "canonical_line": "daily"},
-    {"name": "cnsv_moneyflow", "canonical_path": "data/daily/processed/cnsv_moneyflow.parquet", "legacy_path": "data/processed/cnsv_moneyflow.parquet", "path": "data/processed/cnsv_moneyflow.parquet", "exists": true, "sha256": "3b6deb5c33bca8098bfacba722335268d2cb2c89eedcf12e661b5474518520ed", "size_bytes": 277429, "legacy_compatibility": true, "canonical_line": "daily"},
-    {"name": "corporate_actions", "canonical_path": "data/daily/processed/corporate_actions.parquet", "legacy_path": "data/processed/corporate_actions.parquet", "path": "data/processed/corporate_actions.parquet", "exists": true, "sha256": "792b1b1063f3ba15421107acd41b7ab82c0fc04ef723e91c5b077f435b1bfb01", "size_bytes": 6083, "legacy_compatibility": true, "canonical_line": "daily"},
-    {"name": "structural_breaks", "canonical_path": "data/daily/processed/structural_breaks.parquet", "legacy_path": "data/processed/structural_breaks.parquet", "path": "data/processed/structural_breaks.parquet", "exists": true, "sha256": "1e7c49d650756bcf165a3fb0445947dc65fcc58fd67e7cb89496cbb3dd49b4df", "size_bytes": 5938, "legacy_compatibility": true, "canonical_line": "daily"},
-    {"name": "trade_calendar", "canonical_path": "data/daily/processed/trade_calendar.parquet", "legacy_path": "data/processed/trade_calendar.parquet", "path": "data/processed/trade_calendar.parquet", "exists": true, "sha256": "95a0a6ca52f8605cfad466f95a8e782c797f19a43a7cb657ac838e11998fdf8f", "size_bytes": 63611, "legacy_compatibility": true, "canonical_line": "daily"}
+    {
+      "name": "cnsv_daily",
+      "canonical_path": "data/daily/processed/cnsv_daily.parquet",
+      "legacy_path": "data/processed/cnsv_daily.parquet",
+      "path": "data/daily/processed/cnsv_daily.parquet",
+      "exists": true,
+      "sha256": "24680da14312d13f74450caad1ff583e159ef5e7d614a2686a249d032bd2d50a",
+      "size_bytes": 195519,
+      "legacy_compatibility": false,
+      "canonical_line": "daily"
+    },
+    {
+      "name": "cnsv_moneyflow",
+      "canonical_path": "data/daily/processed/cnsv_moneyflow.parquet",
+      "legacy_path": "data/processed/cnsv_moneyflow.parquet",
+      "path": "data/daily/processed/cnsv_moneyflow.parquet",
+      "exists": true,
+      "sha256": "c733c2fab07484f89231b13af750dbee934b773e3dd77102b7d16f4008ce00ed",
+      "size_bytes": 277944,
+      "legacy_compatibility": false,
+      "canonical_line": "daily"
+    },
+    {
+      "name": "corporate_actions",
+      "canonical_path": "data/daily/processed/corporate_actions.parquet",
+      "legacy_path": "data/processed/corporate_actions.parquet",
+      "path": "data/daily/processed/corporate_actions.parquet",
+      "exists": true,
+      "sha256": "9e274aeb7e2d665ce30c1cc13dccac6dfb586820d9168d6d72d75d7b133dfaba",
+      "size_bytes": 6083,
+      "legacy_compatibility": false,
+      "canonical_line": "daily"
+    },
+    {
+      "name": "structural_breaks",
+      "canonical_path": "data/daily/processed/structural_breaks.parquet",
+      "legacy_path": "data/processed/structural_breaks.parquet",
+      "path": "data/daily/processed/structural_breaks.parquet",
+      "exists": true,
+      "sha256": "ad350b2aa6430f36b1370b65e84021451dcfe6b681335648e815afff6b0f2557",
+      "size_bytes": 5938,
+      "legacy_compatibility": false,
+      "canonical_line": "daily"
+    },
+    {
+      "name": "trade_calendar",
+      "canonical_path": "data/daily/processed/trade_calendar.parquet",
+      "legacy_path": "data/processed/trade_calendar.parquet",
+      "path": "data/daily/processed/trade_calendar.parquet",
+      "exists": true,
+      "sha256": "95a0a6ca52f8605cfad466f95a8e782c797f19a43a7cb657ac838e11998fdf8f",
+      "size_bytes": 63611,
+      "legacy_compatibility": false,
+      "canonical_line": "daily"
+    }
   ]
 }

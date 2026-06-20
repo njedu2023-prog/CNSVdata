@@ -6,11 +6,21 @@
   "trade_date": "",
   "asof_time": "14:00",
   "snapshot_type": "missing_source",
-  "generated_at": "2026-06-21 00:12:45",
-  "reason": ["missing_intraday_minute_source"],
+  "generated_at": "2026-06-21 01:09:07",
+  "reason": [
+    "missing_intraday_minute_source",
+    "insufficient_intraday_history"
+  ],
   "required_source": "data/intraday/raw/cnsv_1min_intraday_1400.parquet",
   "files": [
-    {"path": "data/intraday/raw/cnsv_1min_intraday_1400.parquet", "exists": false, "status": "missing"}
+    {
+      "path": "data/intraday/raw/cnsv_1min_intraday_1400.parquet",
+      "exists": false,
+      "status": "missing"
+    }
   ],
-  "lineage": {"feature_window": "09:30-11:30,13:00-14:00", "future_data_guard": "trade_time <= 14:00"}
+  "lineage": {
+    "feature_window": "09:30-11:30,13:00-14:00",
+    "future_data_guard": "trade_time <= 14:00"
+  }
 }

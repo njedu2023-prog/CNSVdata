@@ -1,7 +1,9 @@
 import pandas as pd
 
 from cnsvdata.common import load_yaml, now_string, write_parquet
-from cnsvdata.paths import PROCESSED_DIR
+from cnsvdata.paths import DATA_DIR, PROCESSED_DIR
+
+SCHEMA = ["ts_code", "event_date", "available_at", "event_type", "event_name", "description", "raw_source", "impact_level", "created_at"]
 
 SCHEMA = ["ts_code", "event_date", "available_at", "event_type", "event_name", "description", "raw_source", "impact_level", "created_at"]
 
@@ -15,6 +17,7 @@ def main() -> None:
     df["created_at"] = created_at
     df = df[SCHEMA]
     write_parquet(df, PROCESSED_DIR / "corporate_actions.parquet")
+    write_parquet(df, DATA_DIR / "daily" / "processed" / "corporate_actions.parquet")
 
 
 if __name__ == "__main__":

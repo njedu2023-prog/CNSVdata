@@ -1,0 +1,13 @@
+{
+  "line": "intraday_1400",
+  "status": "FAIL",
+  "generated_at": "2026-06-21 01:09:07",
+  "history_days_required": 150,
+  "required_trade_days": 150,
+  "actual_trade_days": 0,
+  "generated_snapshots": 0,
+  "reason": "insufficient_intraday_history",
+  "blocking_reason": "missing_intraday_minute_source",
+  "can_train_model": false,
+  "source": "tushare"
+}

@@ -1,11 +1,13 @@
 import os
 
 from cnsvdata.common import load_yaml, merge_existing_parquet, normalize_trade_date, now_string, write_parquet
-from cnsvdata.paths import PROCESSED_DIR, RAW_DIR
+from cnsvdata.paths import DATA_DIR, PROCESSED_DIR, RAW_DIR
 from cnsvdata.tushare_client import call_with_retry, get_tushare_pro
 
 
 def main() -> None:
+    daily_raw_dir = DATA_DIR / "daily" / "raw"
+    daily_processed_dir = DATA_DIR / "daily" / "processed"
     target = load_yaml("target.yml")["target"]
     pro = get_tushare_pro()
     start_date = os.getenv("CNSVDATA_BACKFILL_START_DATE", "20100101")
@@ -28,6 +30,8 @@ def main() -> None:
     df = merge_existing_parquet(df, PROCESSED_DIR / "cnsv_daily.parquet", ["trade_date"], "trade_date")
     write_parquet(df, RAW_DIR / "cnsv_daily_raw.parquet")
     write_parquet(df, PROCESSED_DIR / "cnsv_daily.parquet")
+    write_parquet(df, daily_raw_dir / "cnsv_daily_raw.parquet")
+    write_parquet(df, daily_processed_dir / "cnsv_daily.parquet")
 
 
 if __name__ == "__main__":

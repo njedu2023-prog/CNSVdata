@@ -1,0 +1,30 @@
+{
+  "line": "intraday_1400",
+  "status": "PASS",
+  "generated_at": "2026-06-21 01:09:14",
+  "rows": 0,
+  "checks": [
+    {
+      "name": "no_prediction_columns",
+      "status": "PASS",
+      "forbidden_columns": []
+    },
+    {
+      "name": "feature_names_no_label_or_future",
+      "status": "PASS",
+      "bad_feature_columns": []
+    },
+    {
+      "name": "feature_version_present",
+      "status": "PASS"
+    },
+    {
+      "name": "label_version_present",
+      "status": "PASS"
+    },
+    {
+      "name": "professional_feature_columns_present",
+      "status": "PASS"
+    }
+  ]
+}

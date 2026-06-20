@@ -240,13 +240,16 @@ def write_latest_intraday_minutes(df: pd.DataFrame) -> Path:
 
 
 def build_missing_source_ready(reason: str = MISSING_SOURCE_REASON) -> dict:
+    reasons = [reason]
+    if INSUFFICIENT_HISTORY_REASON not in reasons:
+        reasons.append(INSUFFICIENT_HISTORY_REASON)
     payload = {
         "line": "intraday_1400",
         "project": "CNSV intraday",
         "repo": "CNSVdata",
         "ready": False,
         "status": "FAIL",
-        "reason": [reason],
+        "reason": reasons,
         "blocking_reason": reason,
         "latest_snapshot_path": None,
         "quality_path": "data/quality/intraday/intraday_quality_latest.json",
@@ -261,8 +264,26 @@ def build_missing_source_ready(reason: str = MISSING_SOURCE_REASON) -> dict:
         "created_at": now_string(),
     }
     write_json(payload, INTRADAY_METADATA_DIR / "intraday_ready_1400.json")
+    write_json(intraday_downstream_contract(payload), INTRADAY_METADATA_DIR / "intraday_downstream_contract.json")
     write_json(
-        {"line": "intraday_1400", "status": "FAIL", "reason": [reason], "generated_at": now_string()},
+        {
+            "line": "intraday_1400",
+            "project": "CNSV intraday",
+            "repo": "CNSVdata",
+            "status": "FAIL",
+            "trade_date": "",
+            "asof_time": ASOF_TIME_SHORT,
+            "snapshot_type": "missing_source",
+            "generated_at": now_string(),
+            "reason": reasons,
+            "required_source": _display_path(INTRADAY_RAW_PATH),
+            "files": [{"path": _display_path(INTRADAY_RAW_PATH), "exists": False, "status": "missing"}],
+            "lineage": {"feature_window": "09:30-11:30,13:00-14:00", "future_data_guard": "trade_time <= 14:00"},
+        },
+        INTRADAY_METADATA_DIR / "intraday_manifest_1400.json",
+    )
+    write_json(
+        {"line": "intraday_1400", "status": "FAIL", "reason": reasons, "generated_at": now_string()},
         INTRADAY_QUALITY_DIR / "intraday_quality_latest.json",
     )
     return payload
@@ -484,6 +505,7 @@ def write_snapshot_bundle(df: pd.DataFrame, trade_date: str, snapshot_type: str 
     write_json(manifest, paths.manifest)
     write_json(manifest, INTRADAY_METADATA_DIR / "intraday_manifest_1400.json")
     write_json(ready, INTRADAY_METADATA_DIR / "intraday_ready_1400.json")
+    write_json(intraday_downstream_contract(ready), INTRADAY_METADATA_DIR / "intraday_downstream_contract.json")
     write_json(quality, INTRADAY_QUALITY_DIR / "intraday_quality_latest.json")
     return {"paths": paths, "summary": summary, "quality": quality, "manifest": manifest, "ready": ready}
 
@@ -575,6 +597,20 @@ def build_t1_truth() -> pd.DataFrame:
         "reference_path": "data/intraday/reference/t1_close_reference.parquet",
         "generated_at": now_string(),
     }, LABEL_ROOT / "t1_truth_quality.json")
+    write_json({
+        "line": "intraday_1400",
+        "label_version": LABEL_VERSION,
+        "reference_path": "data/intraday/reference/t1_close_reference.parquet",
+        "outputs": [
+            "data/intraday/labels/t1_truth/t1_truth_vs_1400_latest.parquet",
+            "data/intraday/labels/t1_truth/t1_truth_vs_1400_latest.csv",
+            "data/intraday/labels/t1_truth/t1_truth_manifest.json",
+            "data/intraday/labels/t1_truth/t1_truth_quality.json",
+        ],
+        "rows": int(len(truth)),
+        "ready_rows": int(truth["truth_ready"].sum()) if not truth.empty else 0,
+        "created_at": now_string(),
+    }, LABEL_ROOT / "t1_truth_manifest.json")
     return truth
 
 
@@ -598,21 +634,75 @@ def check_trainset_no_future_leak(trainset: pd.DataFrame) -> dict:
     }
 
 
+def _snapshot_feature_row(snapshot: pd.Series | dict) -> dict:
+    get = snapshot.get
+    asof_price = pd.to_numeric(get("asof_price_1400"), errors="coerce")
+    open_price = pd.to_numeric(get("open_0930"), errors="coerce")
+    high = pd.to_numeric(get("high_until_1400"), errors="coerce")
+    low = pd.to_numeric(get("low_until_1400"), errors="coerce")
+    vwap = pd.to_numeric(get("vwap_until_1400"), errors="coerce")
+    volume = pd.to_numeric(get("volume_until_1400"), errors="coerce")
+    amount = pd.to_numeric(get("amount_until_1400"), errors="coerce")
+    def safe(value, default=0.0):
+        return float(value) if pd.notna(value) else default
+    return {
+        "feature_return_from_open_to_1400": safe(get("return_from_open_to_1400")),
+        "feature_return_from_vwap_to_1400": safe(get("return_from_vwap_to_1400")),
+        "feature_high_drawdown_until_1400": safe(get("high_drawdown_until_1400")),
+        "feature_low_rebound_until_1400": safe(get("low_rebound_until_1400")),
+        "feature_intraday_volatility_until_1400": safe(get("feature_intraday_volatility_until_1400")),
+        "feature_volume_until_1400": safe(volume),
+        "feature_amount_until_1400": safe(amount),
+        "feature_morning_volume_ratio": safe(get("feature_morning_volume_ratio")),
+        "feature_afternoon_volume_ratio": safe(get("feature_afternoon_volume_ratio")),
+        "feature_vwap_deviation": safe(asof_price / vwap - 1 if pd.notna(asof_price) and pd.notna(vwap) and vwap else pd.NA),
+        "feature_price_slope_morning": safe(get("feature_price_slope_morning")),
+        "feature_price_slope_afternoon": safe(get("feature_price_slope_afternoon")),
+        "feature_volume_slope_afternoon": safe(get("feature_volume_slope_afternoon")),
+        "feature_range_until_1400": safe((high - low) / open_price if pd.notna(high) and pd.notna(low) and pd.notna(open_price) and open_price else pd.NA),
+        "feature_close_position_until_1400": safe((asof_price - low) / (high - low) if pd.notna(asof_price) and pd.notna(high) and pd.notna(low) and high != low else pd.NA),
+    }
+
+
 def build_t1_intraday_trainset() -> pd.DataFrame:
     truth_path = LABEL_ROOT / "t1_truth_vs_1400_latest.parquet"
     truth = pd.read_parquet(truth_path) if truth_path.exists() else build_t1_truth()
+    snapshots = _snapshot_records()
+    snapshot_map = {}
+    if not snapshots.empty:
+        for _, snapshot in snapshots.iterrows():
+            key = (compact_trade_date(snapshot.get("trade_date", "")), snapshot.get("ts_code", _target().get("ts_code", "600150.SH")))
+            snapshot_map[key] = snapshot
     rows = []
     for _, row in truth.iterrows():
         if not bool(row.get("truth_ready")):
             continue
         record = {column: row.get(column) for column in LABEL_COLUMNS if column not in {"truth_ready", "truth_status"}}
-        record.update({column: 0.0 for column in FEATURE_COLUMNS})
+        key = (compact_trade_date(row.get("trade_date", "")), row.get("ts_code", _target().get("ts_code", "600150.SH")))
+        record.update(_snapshot_feature_row(snapshot_map.get(key, {})))
         record.update({"feature_version": FEATURE_VERSION, "label_version": LABEL_VERSION, "created_at": now_string()})
         rows.append(record)
     trainset = pd.DataFrame(rows, columns=TRAINSET_COLUMNS)
     ML_ROOT.mkdir(parents=True, exist_ok=True)
     write_parquet(trainset, ML_ROOT / "t1_intraday_trainset.parquet")
     trainset.to_csv(ML_ROOT / "t1_intraday_trainset_latest.csv", index=False, encoding="utf-8-sig")
+    write_json({
+        "line": "intraday_1400",
+        "feature_version": FEATURE_VERSION,
+        "feature_columns": FEATURE_COLUMNS,
+        "feature_source": "data/intraday/snapshots_or_replay/*/1400/intraday_snapshot_1400.json",
+        "forbidden_feature_inputs": [
+            "next_close", "actual_return_vs_1400", "actual_up_label", "actual_down_label",
+            "actual_flat_label", "actual_limitup_label", "created_at", "formal_signal",
+        ],
+        "created_at": now_string(),
+    }, ML_ROOT / "feature_manifest.json")
+    write_json({
+        "line": "intraday_1400",
+        "label_version": LABEL_VERSION,
+        "label_columns": [c for c in LABEL_COLUMNS if c not in {"truth_ready", "truth_status", "created_at"}],
+        "created_at": now_string(),
+    }, ML_ROOT / "label_manifest.json")
     write_json(check_trainset_no_future_leak(trainset), ML_ROOT / "trainset_quality.json")
     return trainset
 
@@ -628,9 +718,10 @@ def replay_intraday_history(history_days: int = DEFAULT_HISTORY_DAYS) -> dict:
             "required_trade_days": history_days,
             "actual_trade_days": 0,
             "generated_snapshots": 0,
-            "reason": MISSING_SOURCE_REASON,
+            "reason": INSUFFICIENT_HISTORY_REASON,
+            "blocking_reason": MISSING_SOURCE_REASON,
             "can_train_model": False,
-            "source": "intraday_raw",
+            "source": "tushare",
         }
         write_json(payload, INTRADAY_QUALITY_DIR / "intraday_replay_latest.json")
         build_missing_source_ready()
@@ -692,11 +783,19 @@ def intraday_acceptance_report() -> dict:
     checks = [
         {"name": "ready_exists", "status": "PASS" if ready_path.exists() else "FAIL"},
         {"name": "raw_exists", "status": "PASS" if INTRADAY_RAW_PATH.exists() else "FAIL", "reason": None if INTRADAY_RAW_PATH.exists() else MISSING_SOURCE_REASON},
+        {"name": "downstream_contract_exists", "status": "PASS" if (INTRADAY_METADATA_DIR / "intraday_downstream_contract.json").exists() else "WARN"},
+        {"name": "manifest_exists", "status": "PASS" if (INTRADAY_METADATA_DIR / "intraday_manifest_1400.json").exists() else "FAIL"},
         {"name": "replay_history", "status": "PASS" if replay.get("actual_trade_days", 0) >= DEFAULT_HISTORY_DAYS else "WARN", "reason": None if replay.get("actual_trade_days", 0) >= DEFAULT_HISTORY_DAYS else INSUFFICIENT_HISTORY_REASON},
         {"name": "t1_truth_exists", "status": "PASS" if (LABEL_ROOT / "t1_truth_vs_1400_latest.parquet").exists() else "WARN"},
+        {"name": "t1_truth_manifest_exists", "status": "PASS" if (LABEL_ROOT / "t1_truth_manifest.json").exists() else "WARN"},
         {"name": "trainset_exists", "status": "PASS" if (ML_ROOT / "t1_intraday_trainset.parquet").exists() else "WARN"},
+        {"name": "feature_manifest_exists", "status": "PASS" if (ML_ROOT / "feature_manifest.json").exists() else "WARN"},
+        {"name": "label_manifest_exists", "status": "PASS" if (ML_ROOT / "label_manifest.json").exists() else "WARN"},
         {"name": "formal_signal_disabled", "status": "PASS"},
     ]
+    if (ML_ROOT / "t1_intraday_trainset.parquet").exists():
+        trainset = pd.read_parquet(ML_ROOT / "t1_intraday_trainset.parquet")
+        checks.extend(check_trainset_no_future_leak(trainset)["checks"])
     status = "FAIL" if any(c["status"] == "FAIL" for c in checks) else ("WARN" if any(c["status"] == "WARN" for c in checks) else "PASS")
     report = {"line": "intraday_1400", "status": status, "generated_at": now_string(), "checks": checks, "ready": ready}
     write_json(report, INTRADAY_QUALITY_DIR / "intraday_acceptance_latest.json")

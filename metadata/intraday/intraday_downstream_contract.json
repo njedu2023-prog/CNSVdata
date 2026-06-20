@@ -1,0 +1,12 @@
+{
+  "line": "intraday_1400",
+  "provider_repo": "CNSVdata",
+  "consumer_repo": "CNSV",
+  "consumer_program": "CNSV_intraday_main",
+  "ready_path": "metadata/intraday/intraday_ready_1400.json",
+  "manifest_path": "metadata/intraday/intraday_manifest_1400.json",
+  "can_run_daily_model": false,
+  "can_run_intraday_model": false,
+  "can_generate_formal_signal": false,
+  "created_at": "2026-06-21 01:09:07"
+}

@@ -1,0 +1,14 @@
+{
+  "line": "intraday_1400",
+  "label_version": "t1_close_vs_1400_v1",
+  "reference_path": "data/intraday/reference/t1_close_reference.parquet",
+  "outputs": [
+    "data/intraday/labels/t1_truth/t1_truth_vs_1400_latest.parquet",
+    "data/intraday/labels/t1_truth/t1_truth_vs_1400_latest.csv",
+    "data/intraday/labels/t1_truth/t1_truth_manifest.json",
+    "data/intraday/labels/t1_truth/t1_truth_quality.json"
+  ],
+  "rows": 0,
+  "ready_rows": 0,
+  "created_at": "2026-06-21 01:09:14"
+}

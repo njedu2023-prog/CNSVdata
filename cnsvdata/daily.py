@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pandas as pd
+
 from cnsvdata.common import file_sha256, now_string, write_json
 from cnsvdata.paths import DATA_DIR, METADATA_DIR, PROCESSED_DIR, QUALITY_DIR, ROOT
 
@@ -53,6 +55,33 @@ def _file_entry(name: str, canonical: Path, legacy: Path) -> dict:
     }
 
 
+def _read_first_existing(name: str) -> pd.DataFrame:
+    for path in (DAILY_CORE_FILES[name], LEGACY_DAILY_CORE_FILES[name]):
+        if path.exists():
+            return pd.read_parquet(path)
+    return pd.DataFrame()
+
+
+def _daily_trade_dates() -> tuple[str | None, str | None]:
+    daily = _read_first_existing("cnsv_daily")
+    latest = None
+    if not daily.empty and "trade_date" in daily.columns:
+        dates = sorted(daily["trade_date"].dropna().astype(str).str[:10].str.replace("-", "", regex=False).unique())
+        latest = dates[-1] if dates else None
+    calendar = _read_first_existing("trade_calendar")
+    next_trade_date = None
+    if latest and not calendar.empty:
+        column = "cal_date" if "cal_date" in calendar.columns else "trade_date"
+        if column in calendar.columns:
+            cal = calendar.copy()
+            if "is_open" in cal.columns:
+                cal = cal[pd.to_numeric(cal["is_open"], errors="coerce") == 1]
+            dates = sorted(cal[column].dropna().astype(str).str[:10].str.replace("-", "", regex=False).unique())
+            next_dates = [date for date in dates if date > latest]
+            next_trade_date = next_dates[0] if next_dates else None
+    return latest, next_trade_date
+
+
 def build_daily_manifest() -> dict:
     DAILY_METADATA_DIR.mkdir(parents=True, exist_ok=True)
     files = [
@@ -93,13 +122,14 @@ def build_daily_ready() -> dict:
     manifest = build_daily_manifest()
     required = {"cnsv_daily", "cnsv_moneyflow", "trade_calendar"}
     missing = [item["name"] for item in manifest["files"] if item["name"] in required and not item["exists"]]
+    latest_trade_date, next_trade_date = _daily_trade_dates()
     status = "FAIL" if missing else "PASS"
     ready = {
         "line": "daily",
         "repo": "CNSVdata",
         "ready": not missing,
         "status": status,
-        "latest_trade_date": None,
+        "latest_trade_date": latest_trade_date,
         "manifest_path": "metadata/daily/daily_manifest.json",
         "quality_path": "data/quality/daily/daily_quality_latest.json",
         "allowed_usage": {
@@ -114,6 +144,17 @@ def build_daily_ready() -> dict:
     }
     write_json(ready, DAILY_METADATA_DIR / "daily_ready.json")
     write_json(daily_downstream_contract(ready), DAILY_METADATA_DIR / "daily_downstream_contract.json")
+    write_json({"line": "daily", "latest_trade_date": latest_trade_date, "created_at": now_string()}, DAILY_METADATA_DIR / "daily_latest_trade_date.json")
+    write_json({"line": "daily", "next_trade_date": next_trade_date, "created_at": now_string()}, DAILY_METADATA_DIR / "daily_next_trade_date.json")
+    write_json(
+        {
+            "line": "daily",
+            "status": "PASS" if not missing else "FAIL",
+            "missing_core_files": missing,
+            "generated_at": now_string(),
+        },
+        DAILY_QUALITY_DIR / "daily_gaps_latest.json",
+    )
     write_json(
         {"line": "daily", "status": status, "missing": missing, "generated_at": now_string()},
         DAILY_QUALITY_DIR / "daily_quality_latest.json",

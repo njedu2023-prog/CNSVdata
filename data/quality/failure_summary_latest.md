@@ -2,53 +2,154 @@
 
 ## Overall Status
 
-PASS
-
-- Failed count: 0
-- Warning count: 0
+FAIL
 
 ## Blocking
 
-false
-
-- Blocking reason: None
-
-## Can CNSV Main Start?
-
-YES
+true
 
 ## Top Failures
 
-None
+### 1. required_file:data/processed/cnsv_1min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 2. required_file:data/processed/cnsv_5min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 3. required_file:data/processed/cnsv_15min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 4. required_file:data/processed/cnsv_30min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 5. required_file:data/processed/cnsv_60min.parquet
+
+- Source: quality
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 6. cnsv_1min.parquet_exists
+
+- Source: quality
+- Status: FAIL
+- Detail: missing file
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 7. field_contract:cnsv_1min:readable
+
+- Source: quality
+- Status: FAIL
+- Detail: dataset_not_readable
+- Suggested action: inspect the source report and rerun the affected data pipeline step
+
+### 8. field_contract:cnsv_moneyflow:nullable
+
+- Source: quality
+- Status: FAIL
+- Detail: 
+- Suggested action: rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks
+
+### 9. moneyflow_core_nulls
+
+- Source: quality
+- Status: FAIL
+- Detail: 
+- Suggested action: rerun fetch_moneyflow, build manifest, quality, acceptance, and smoke checks
+
+### 10. required_file:data/processed/cnsv_1min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 11. required_file:data/processed/cnsv_5min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 12. required_file:data/processed/cnsv_15min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 13. required_file:data/processed/cnsv_30min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 14. required_file:data/processed/cnsv_60min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 15. parquet_readable:cnsv_1min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 16. parquet_readable:cnsv_5min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 17. parquet_readable:cnsv_15min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 18. parquet_readable:cnsv_30min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 19. parquet_readable:cnsv_60min.parquet
+
+- Source: acceptance
+- Status: FAIL
+- Detail: missing
+- Suggested action: run detect_data_gaps and backfill_missing_data for the affected dataset
+
+### 20. latest_trade_date_consistency
+
+- Source: acceptance
+- Status: FAIL
+- Detail: minute latest date mismatch
+- Suggested action: rerun fetch_minute, build_minute_bars, quality, acceptance, and smoke checks
+
 ## Top Warnings
 
 None
-## Concrete Missing Dates
-
-None
-
-## Suggested Backfill Commands
-
-None
-
-## Minute Backfill Plan
-
-- SOP: `docs/minute_backfill_sop.md`
-- Decision: not_required_for_current_readiness
-- Reason: minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.
-- Coverage scope: available_window:2026-06-09..2026-06-18
-- Active missing trade dates: 0
-- Historical missing count: 3987
-- Command when required: `python scripts/backfill_missing_data.py --minute`
-
-## Allowed Usage
-
-- Develop CNSV main program: YES
-- Run daily ingest: YES
-- Run backtest/training: YES
-- Use moneyflow as strong factor: YES
-- Generate formal signal: NO
-
-## Next Action
-
-start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented

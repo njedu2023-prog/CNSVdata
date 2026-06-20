@@ -1,11 +1,23 @@
 {
   "line": "daily",
   "status": "PASS",
-  "generated_at": "2026-06-21 00:12:25",
+  "generated_at": "2026-06-21 01:12:27",
   "checks": [
-    {"name": "daily_ready_exists", "status": "PASS"},
-    {"name": "daily_ready_line", "status": "PASS"},
-    {"name": "intraday_not_enabled_by_daily", "status": "PASS"},
-    {"name": "formal_signal_disabled", "status": "PASS"}
+    {
+      "name": "daily_ready_exists",
+      "status": "PASS"
+    },
+    {
+      "name": "daily_ready_line",
+      "status": "PASS"
+    },
+    {
+      "name": "intraday_not_enabled_by_daily",
+      "status": "PASS"
+    },
+    {
+      "name": "formal_signal_disabled",
+      "status": "PASS"
+    }
   ]
 }

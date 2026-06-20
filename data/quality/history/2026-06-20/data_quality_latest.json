@@ -1,7 +1,7 @@
 {
-  "status": "PASS",
-  "generated_at": "2026-06-20 23:10:44",
-  "failed_count": 0,
+  "status": "FAIL",
+  "generated_at": "2026-06-19 15:28:01",
+  "failed_count": 7,
   "warn_count": 0,
   "checks": [
     {
@@ -16,28 +16,28 @@
     },
     {
       "name": "required_file:data/processed/cnsv_1min.parquet",
-      "status": "PASS",
-      "detail": "present"
+      "status": "FAIL",
+      "detail": "missing"
     },
     {
       "name": "required_file:data/processed/cnsv_5min.parquet",
-      "status": "PASS",
-      "detail": "present"
+      "status": "FAIL",
+      "detail": "missing"
     },
     {
       "name": "required_file:data/processed/cnsv_15min.parquet",
-      "status": "PASS",
-      "detail": "present"
+      "status": "FAIL",
+      "detail": "missing"
     },
     {
       "name": "required_file:data/processed/cnsv_30min.parquet",
-      "status": "PASS",
-      "detail": "present"
+      "status": "FAIL",
+      "detail": "missing"
     },
     {
       "name": "required_file:data/processed/cnsv_60min.parquet",
-      "status": "PASS",
-      "detail": "present"
+      "status": "FAIL",
+      "detail": "missing"
     },
     {
       "name": "required_file:data/processed/cnsv_moneyflow.parquet",
@@ -111,23 +111,8 @@
     },
     {
       "name": "cnsv_1min.parquet_exists",
-      "status": "PASS",
-      "rows": 1928
-    },
-    {
-      "name": "cnsv_1min.parquet_schema",
-      "status": "PASS",
-      "missing_columns": []
-    },
-    {
-      "name": "cnsv_1min.parquet_duplicates",
-      "status": "PASS",
-      "count": 0
-    },
-    {
-      "name": "cnsv_1min.parquet_ohlc",
-      "status": "PASS",
-      "count": 0
+      "status": "FAIL",
+      "detail": "missing file"
     },
     {
       "name": "cnsv_moneyflow.parquet_exists",
@@ -198,25 +183,9 @@
       }
     },
     {
-      "name": "field_contract:cnsv_1min:required_fields",
-      "status": "PASS",
-      "missing_columns": []
-    },
-    {
-      "name": "field_contract:cnsv_1min:nullable",
-      "status": "PASS",
-      "null_counts": {
-        "ts_code": 0,
-        "trade_time": 0,
-        "trade_date": 0,
-        "time": 0,
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "vol": 0,
-        "amount": 0
-      }
+      "name": "field_contract:cnsv_1min:readable",
+      "status": "FAIL",
+      "detail": "dataset_not_readable"
     },
     {
       "name": "field_contract:cnsv_moneyflow:required_fields",
@@ -249,30 +218,14 @@
       }
     },
     {
-      "name": "minute_core_nulls",
-      "status": "PASS",
-      "null_counts": {
-        "ts_code": 0,
-        "trade_time": 0,
-        "trade_date": 0,
-        "time": 0,
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "vol": 0,
-        "amount": 0
-      }
-    },
-    {
       "name": "moneyflow_core_nulls",
       "status": "PASS",
       "column": "net_mf_amount",
       "missing_dates": [],
       "missing_count": 0,
-      "detail": "no null moneyflow values",
-      "derived_count": 0,
-      "source_null_count": 0,
+      "detail": "derived_from_components",
+      "derived_count": 14,
+      "source_null_count": 14,
       "missing_component_columns": []
     },
     {
@@ -295,110 +248,18 @@
       "fail_count": 0
     },
     {
-      "name": "minute_numeric_validity",
-      "status": "PASS",
-      "error_counts": {
-        "open": 0,
-        "high": 0,
-        "low": 0,
-        "close": 0,
-        "pre_close": null,
-        "vol": 0,
-        "amount": 0
-      }
-    },
-    {
-      "name": "minute_pct_chg_extreme",
-      "status": "PASS",
-      "warn_count": 0,
-      "fail_count": 0
-    },
-    {
-      "name": "minute_coverage",
-      "status": "PASS",
-      "expected_minutes": 1936,
-      "actual_minutes": 1928,
-      "missing_minutes": [
-        "2026-06-09 13:00:00",
-        "2026-06-10 13:00:00",
-        "2026-06-11 13:00:00",
-        "2026-06-12 13:00:00",
-        "2026-06-15 13:00:00",
-        "2026-06-16 13:00:00",
-        "2026-06-17 13:00:00",
-        "2026-06-18 13:00:00"
-      ],
-      "duplicate_minutes": 0,
-      "coverage_ratio": 0.995868
-    },
-    {
-      "name": "minute_trading_session",
-      "status": "PASS",
-      "invalid_count": 0,
-      "invalid_examples": []
-    },
-    {
       "name": "latest_trade_date_consistency",
       "status": "PASS",
       "metadata_latest_trade_date": "2026-06-18",
       "daily_max_trade_date": "2026-06-18",
-      "minute_max_trade_date": "2026-06-18",
+      "minute_max_trade_date": null,
       "moneyflow_max_trade_date": "2026-06-18",
       "detail": "latest trade dates checked"
-    },
-    {
-      "name": "daily_close_vs_minute_last_close",
-      "status": "PASS",
-      "trade_date": "2026-06-18",
-      "tolerance": 0.01,
-      "daily_close": 36.14,
-      "minute_last_close": 36.14,
-      "abs_diff": 0.0,
-      "detail": "close checked"
-    },
-    {
-      "name": "daily_amount_vs_minute_amount_sum",
-      "status": "PASS",
-      "trade_date": "2026-06-18",
-      "detail": "amount unit checked",
-      "daily_amount": 4313475.328,
-      "minute_amount_sum": 4313475325.0,
-      "diff_ratio": 0.0
     },
     {
       "name": "moneyflow_effective",
       "status": "PASS",
       "detail": "core fields effective"
-    },
-    {
-      "name": "minute_aggregation_check",
-      "status": "PASS",
-      "detail": [
-        {
-          "freq": "5min",
-          "rows": 400,
-          "source_rows": 1928,
-          "source": "cnsv_1min.parquet"
-        },
-        {
-          "freq": "15min",
-          "rows": 144,
-          "source_rows": 1928,
-          "source": "cnsv_1min.parquet"
-        },
-        {
-          "freq": "30min",
-          "rows": 80,
-          "source_rows": 1928,
-          "source": "cnsv_1min.parquet"
-        },
-        {
-          "freq": "60min",
-          "rows": 48,
-          "source_rows": 1928,
-          "source": "cnsv_1min.parquet"
-        }
-      ]
     }
   ]
 }

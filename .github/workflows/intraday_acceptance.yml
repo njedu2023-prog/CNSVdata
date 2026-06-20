@@ -42,7 +42,7 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/quality/intraday data/preview/intraday metadata/intraday
+          git add data/intraday data/quality/intraday metadata/intraday
           git diff --cached --quiet || git commit -m "data: update intraday acceptance"
           git push
         if: always() && github.event_name != 'push'

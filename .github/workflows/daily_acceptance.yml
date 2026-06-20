@@ -1,0 +1,32 @@
+name: Daily acceptance
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 19:40 Beijing time / 11:40 UTC, Monday-Friday
+    - cron: "40 11 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  daily-acceptance:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python scripts/build_daily_manifest.py
+      - run: python scripts/build_daily_ready.py
+      - run: python scripts/daily_acceptance_check.py
+      - run: python scripts/daily_smoke_downstream_read.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/daily data/quality/daily metadata/daily
+          git diff --cached --quiet || git commit -m "data: update daily acceptance"
+          git push
