@@ -1,6 +1,6 @@
 {
-  "status": "FAIL",
-  "generated_at": "2026-06-19 17:14:03",
+  "status": "PASS",
+  "generated_at": "2026-06-21 02:41:08",
   "latest_trade_date": "2026-06-18",
   "checks": [
     {
@@ -17,37 +17,18 @@
     },
     {
       "name": "minute_missing_trade_dates",
-      "status": "FAIL",
-      "missing_dates": [
-        "2026-05-22",
-        "2026-05-25",
-        "2026-05-26",
-        "2026-05-27",
-        "2026-05-28",
-        "2026-05-29",
-        "2026-06-01",
-        "2026-06-02",
-        "2026-06-03",
-        "2026-06-04",
-        "2026-06-05",
-        "2026-06-08",
-        "2026-06-09",
-        "2026-06-10",
-        "2026-06-11",
-        "2026-06-12",
-        "2026-06-15",
-        "2026-06-16",
-        "2026-06-17",
-        "2026-06-18"
-      ],
-      "missing_count": 20,
-      "detail": "latest_trade_date_missing"
+      "status": "PASS",
+      "missing_dates": [],
+      "missing_count": 0,
+      "detail": "no gaps"
     },
     {
       "name": "minute_missing_minutes",
-      "status": "WARN",
-      "missing_minutes": [],
-      "coverage_ratio": 0,
+      "status": "PASS",
+      "missing_minutes": [
+        "2026-06-18 13:00:00"
+      ],
+      "coverage_ratio": 0.995868,
       "min_coverage_ratio": 0.99
     },
     {
@@ -67,37 +48,18 @@
   },
   "minute_missing_trade_dates": {
     "name": "minute_missing_trade_dates",
-    "status": "FAIL",
-    "missing_dates": [
-      "2026-05-22",
-      "2026-05-25",
-      "2026-05-26",
-      "2026-05-27",
-      "2026-05-28",
-      "2026-05-29",
-      "2026-06-01",
-      "2026-06-02",
-      "2026-06-03",
-      "2026-06-04",
-      "2026-06-05",
-      "2026-06-08",
-      "2026-06-09",
-      "2026-06-10",
-      "2026-06-11",
-      "2026-06-12",
-      "2026-06-15",
-      "2026-06-16",
-      "2026-06-17",
-      "2026-06-18"
-    ],
-    "missing_count": 20,
-    "detail": "latest_trade_date_missing"
+    "status": "PASS",
+    "missing_dates": [],
+    "missing_count": 0,
+    "detail": "no gaps"
   },
   "minute_missing_minutes": {
     "name": "minute_missing_minutes",
-    "status": "WARN",
-    "missing_minutes": [],
-    "coverage_ratio": 0,
+    "status": "PASS",
+    "missing_minutes": [
+      "2026-06-18 13:00:00"
+    ],
+    "coverage_ratio": 0.995868,
     "min_coverage_ratio": 0.99
   },
   "moneyflow_missing_trade_dates": {
@@ -109,7 +71,7 @@
   },
   "historical_reference": {
     "daily_missing_count": 156,
-    "minute_missing_count": 3995,
+    "minute_missing_count": 3987,
     "moneyflow_missing_count": 156,
     "status_impact": "informational_only"
   },
@@ -281,30 +243,9 @@
     "impact": ""
   },
   "minute": {
-    "status": "FAIL",
-    "missing_trade_dates": [
-      "2026-05-22",
-      "2026-05-25",
-      "2026-05-26",
-      "2026-05-27",
-      "2026-05-28",
-      "2026-05-29",
-      "2026-06-01",
-      "2026-06-02",
-      "2026-06-03",
-      "2026-06-04",
-      "2026-06-05",
-      "2026-06-08",
-      "2026-06-09",
-      "2026-06-10",
-      "2026-06-11",
-      "2026-06-12",
-      "2026-06-15",
-      "2026-06-16",
-      "2026-06-17",
-      "2026-06-18"
-    ],
-    "missing_count": 20,
+    "status": "PASS",
+    "missing_trade_dates": [],
+    "missing_count": 0,
     "historical_missing_trade_dates": [
       "2010-01-04",
       "2010-01-05",
@@ -4292,27 +4233,23 @@
       "2026-06-03",
       "2026-06-04",
       "2026-06-05",
-      "2026-06-08",
-      "2026-06-09",
-      "2026-06-10",
-      "2026-06-11",
-      "2026-06-12",
-      "2026-06-15",
-      "2026-06-16",
-      "2026-06-17",
-      "2026-06-18"
+      "2026-06-08"
     ],
-    "historical_missing_count": 3995,
-    "missing_minutes": [],
-    "coverage_ratio": 0,
-    "coverage_scope": "available_window:2026-05-22..2026-06-18",
-    "latest_trade_date_present": false,
+    "historical_missing_count": 3987,
+    "missing_minutes": [
+      "2026-06-18 13:00:00"
+    ],
+    "coverage_ratio": 0.995868,
+    "coverage_scope": "available_window:2026-06-09..2026-06-18",
+    "latest_trade_date_present": true,
     "latest_trade_date_coverage": {
-      "coverage_ratio": 0,
-      "missing_minutes": [],
-      "latest_trade_date_present": false
+      "coverage_ratio": 0.995868,
+      "missing_minutes": [
+        "2026-06-18 13:00:00"
+      ],
+      "latest_trade_date_present": true
     },
-    "impact": "historical minute gaps can affect intraday backtests and training"
+    "impact": ""
   },
   "moneyflow": {
     "status": "PASS",
@@ -4482,38 +4419,6 @@
     "latest_trade_date_present": true,
     "impact": ""
   },
-  "unresolved_gaps": [
-    {
-      "dataset": "minute",
-      "status": "FAIL",
-      "missing_dates": [
-        "2026-05-22",
-        "2026-05-25",
-        "2026-05-26",
-        "2026-05-27",
-        "2026-05-28",
-        "2026-05-29",
-        "2026-06-01",
-        "2026-06-02",
-        "2026-06-03",
-        "2026-06-04",
-        "2026-06-05",
-        "2026-06-08",
-        "2026-06-09",
-        "2026-06-10",
-        "2026-06-11",
-        "2026-06-12",
-        "2026-06-15",
-        "2026-06-16",
-        "2026-06-17",
-        "2026-06-18"
-      ],
-      "missing_count": 20,
-      "reason": "Tushare minute data may have a limited recent coverage window",
-      "impact": "historical minute gaps can affect intraday backtests and training"
-    }
-  ],
-  "suggested_backfill_commands": [
-    "python scripts/backfill_missing_data.py --minute"
-  ]
+  "unresolved_gaps": [],
+  "suggested_backfill_commands": []
 }

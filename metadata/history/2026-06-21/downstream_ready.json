@@ -1,12 +1,21 @@
 {
-  "ready": false,
-  "status": "FAIL",
-  "generated_at": "2026-06-19 03:01:24",
+  "ready": true,
+  "status": "PASS",
+  "generated_at": "2026-06-21 02:41:10",
   "latest_trade_date": "2026-06-18",
-  "quality_status": "FAIL",
-  "acceptance_status": "FAIL",
-  "smoke_status": "FAIL",
+  "quality_status": "PASS",
+  "data_gaps_status": "PASS",
+  "acceptance_status": "PASS",
+  "smoke_status": "PASS",
   "contract_version": "1.2.0",
-  "manifest_snapshot_id": "cnsvdata-2026-06-18-d82ebbe1bf53",
-  "blocking_reason": "core minute parquet missing"
+  "manifest_snapshot_id": "cnsvdata-2026-06-18-6840e2008875",
+  "blocking_reason": null,
+  "warnings": [],
+  "allowed_usage": {
+    "can_develop_cnsv_main_program": true,
+    "can_run_daily_ingest": true,
+    "can_run_backtest": true,
+    "can_use_moneyflow_as_strong_factor": true,
+    "can_generate_formal_signal": false
+  }
 }

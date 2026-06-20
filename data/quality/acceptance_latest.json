@@ -1,9 +1,9 @@
 {
-  "status": "FAIL",
-  "generated_at": "2026-06-19 03:00:25",
-  "snapshot_id": "cnsvdata-2026-06-18-d82ebbe1bf53",
+  "status": "PASS",
+  "generated_at": "2026-06-21 02:41:09",
+  "snapshot_id": "cnsvdata-2026-06-18-6840e2008875",
   "latest_trade_date": "2026-06-18",
-  "failed_count": 13,
+  "failed_count": 0,
   "warn_count": 0,
   "checks": [
     {
@@ -18,28 +18,28 @@
     },
     {
       "name": "required_file:data/processed/cnsv_1min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "detail": "present"
     },
     {
       "name": "required_file:data/processed/cnsv_5min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "detail": "present"
     },
     {
       "name": "required_file:data/processed/cnsv_15min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "detail": "present"
     },
     {
       "name": "required_file:data/processed/cnsv_30min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "detail": "present"
     },
     {
       "name": "required_file:data/processed/cnsv_60min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "detail": "present"
     },
     {
       "name": "required_file:data/processed/cnsv_moneyflow.parquet",
@@ -94,28 +94,43 @@
     },
     {
       "name": "parquet_readable:cnsv_1min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "rows": 1928,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
     },
     {
       "name": "parquet_readable:cnsv_5min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "rows": 400,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
     },
     {
       "name": "parquet_readable:cnsv_15min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "rows": 144,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
     },
     {
       "name": "parquet_readable:cnsv_30min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "rows": 80,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
     },
     {
       "name": "parquet_readable:cnsv_60min.parquet",
-      "status": "FAIL",
-      "detail": "missing"
+      "status": "PASS",
+      "rows": 48,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
     },
     {
       "name": "parquet_readable:cnsv_moneyflow.parquet",
@@ -143,12 +158,31 @@
     },
     {
       "name": "latest_trade_date_consistency",
-      "status": "FAIL",
+      "status": "PASS",
       "metadata_latest_trade_date": "2026-06-18",
       "daily_max_trade_date": "2026-06-18",
-      "minute_max_trade_date": null,
+      "minute_max_trade_date": "2026-06-18",
       "moneyflow_max_trade_date": "2026-06-18",
-      "detail": "minute latest date mismatch"
+      "detail": "latest trade dates checked"
+    },
+    {
+      "name": "daily_close_vs_minute_last_close",
+      "status": "PASS",
+      "trade_date": "2026-06-18",
+      "tolerance": 0.01,
+      "daily_close": 36.14,
+      "minute_last_close": 36.14,
+      "abs_diff": 0.0,
+      "detail": "close checked"
+    },
+    {
+      "name": "daily_amount_vs_minute_amount_sum",
+      "status": "PASS",
+      "trade_date": "2026-06-18",
+      "detail": "amount unit checked",
+      "daily_amount": 4313475.328,
+      "minute_amount_sum": 4313475325.0,
+      "diff_ratio": 0.0
     },
     {
       "name": "moneyflow_effective",
@@ -284,9 +318,25 @@
       }
     },
     {
-      "name": "field_contract:cnsv_1min:readable",
-      "status": "FAIL",
-      "detail": "dataset_not_readable"
+      "name": "field_contract:cnsv_1min:required_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "field_contract:cnsv_1min:nullable",
+      "status": "PASS",
+      "null_counts": {
+        "ts_code": 0,
+        "trade_time": 0,
+        "trade_date": 0,
+        "time": 0,
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "vol": 0,
+        "amount": 0
+      }
     },
     {
       "name": "field_contract:cnsv_moneyflow:required_fields",
@@ -305,8 +355,14 @@
     },
     {
       "name": "quality_status",
-      "status": "FAIL",
-      "quality_status": "FAIL"
+      "status": "PASS",
+      "quality_status": "PASS"
+    },
+    {
+      "name": "data_gaps_status",
+      "status": "PASS",
+      "data_gaps_status": "PASS",
+      "unresolved_gaps": 0
     }
   ]
 }
