@@ -1,13 +1,44 @@
 {
   "line": "intraday_1400",
-  "status": "FAIL",
-  "generated_at": "2026-06-21 01:09:07",
+  "status": "WARN",
+  "generated_at": "2026-06-21 02:51:44",
   "history_days_required": 150,
   "required_trade_days": 150,
-  "actual_trade_days": 0,
-  "generated_snapshots": 0,
+  "actual_trade_days": 6,
+  "generated_snapshots": 6,
   "reason": "insufficient_intraday_history",
-  "blocking_reason": "missing_intraday_minute_source",
   "can_train_model": false,
-  "source": "tushare"
+  "source": "intraday_raw",
+  "snapshots": [
+    {
+      "trade_date": "20260611",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260611/1400"
+    },
+    {
+      "trade_date": "20260612",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260612/1400"
+    },
+    {
+      "trade_date": "20260615",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260615/1400"
+    },
+    {
+      "trade_date": "20260616",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260616/1400"
+    },
+    {
+      "trade_date": "20260617",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260617/1400"
+    },
+    {
+      "trade_date": "20260618",
+      "status": "WARN",
+      "path": "data/intraday/replay/20260618/1400"
+    }
+  ]
 }

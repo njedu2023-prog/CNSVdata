@@ -1,7 +1,7 @@
 {
   "line": "intraday_1400",
-  "status": "FAIL",
-  "generated_at": "2026-06-21 01:12:45",
+  "status": "WARN",
+  "generated_at": "2026-06-21 02:51:46",
   "checks": [
     {
       "name": "ready_exists",
@@ -9,8 +9,8 @@
     },
     {
       "name": "raw_exists",
-      "status": "FAIL",
-      "reason": "missing_intraday_minute_source"
+      "status": "PASS",
+      "reason": null
     },
     {
       "name": "downstream_contract_exists",
@@ -78,21 +78,23 @@
     "repo": "CNSVdata",
     "ready": false,
     "status": "FAIL",
+    "trade_date": "20260618",
+    "asof_time": "14:00",
     "reason": [
-      "missing_intraday_minute_source",
-      "insufficient_intraday_history"
+      "manifest_missing_files"
     ],
-    "blocking_reason": "missing_intraday_minute_source",
-    "latest_snapshot_path": null,
-    "quality_path": "data/quality/intraday/intraday_quality_latest.json",
+    "blocking_reason": "manifest_missing_files",
+    "latest_snapshot_path": "data/intraday/replay/20260618/1400/",
+    "quality_path": "data/intraday/replay/20260618/1400/intraday_quality_1400.json",
     "manifest_path": "metadata/intraday/intraday_manifest_1400.json",
     "allowed_usage": {
       "can_run_daily_model": false,
       "can_run_intraday_model": false,
       "can_run_intraday_forecast": false,
+      "can_run_backtest": false,
       "can_train_model": false,
       "can_generate_formal_signal": false
     },
-    "created_at": "2026-06-21 01:09:07"
+    "created_at": "2026-06-21 02:51:44"
   }
 }
