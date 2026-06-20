@@ -457,12 +457,20 @@ def build_manifest(paths: IntradayPaths, trade_date: str, snapshot_type: str) ->
 
 
 def ready_payload(paths: IntradayPaths, quality: dict, manifest: dict) -> dict:
-    missing = [item["path"] for item in manifest.get("files", []) if not item.get("exists")]
+    self_ready_path = _display_path(paths.ready) if hasattr(paths, "ready") else ""
+    missing = [
+        item["path"]
+        for item in manifest.get("files", [])
+        if not item.get("exists") and item.get("path") != self_ready_path
+    ]
     status = "FAIL" if missing else quality.get("status", "FAIL")
     ready = status in {"PASS", "WARN"}
     reason = [check["name"] for check in quality.get("checks", []) if check.get("status") == "FAIL"]
+    warnings = [check["name"] for check in quality.get("checks", []) if check.get("status") == "WARN"]
     if missing:
         reason.append("manifest_missing_files")
+    snapshot_type = manifest.get("snapshot_type", "snapshots")
+    replay = snapshot_type == "replay"
     return {
         "line": "intraday_1400",
         "project": "CNSV intraday",
@@ -471,17 +479,20 @@ def ready_payload(paths: IntradayPaths, quality: dict, manifest: dict) -> dict:
         "status": status,
         "trade_date": manifest.get("trade_date", ""),
         "asof_time": ASOF_TIME_SHORT,
+        "snapshot_type": snapshot_type,
+        "replay": replay,
         "reason": reason,
+        "warnings": warnings,
         "blocking_reason": ";".join(reason) if not ready else None,
-        "latest_snapshot_path": str(paths.root.relative_to(ROOT)) + "/",
-        "quality_path": str(paths.quality.relative_to(ROOT)),
-        "manifest_path": "metadata/intraday/intraday_manifest_1400.json",
+        "latest_snapshot_path": _display_path(paths.root) + "/",
+        "quality_path": _display_path(paths.quality),
+        "manifest_path": _display_path(paths.manifest),
         "allowed_usage": {
             "can_run_daily_model": False,
             "can_run_intraday_model": ready,
             "can_run_intraday_forecast": ready,
-            "can_run_backtest": False,
-            "can_train_model": False,
+            "can_run_backtest": bool(ready and replay),
+            "can_train_model": bool(ready and replay),
             "can_generate_formal_signal": False,
         },
         "created_at": now_string(),
@@ -499,9 +510,10 @@ def write_snapshot_bundle(df: pd.DataFrame, trade_date: str, snapshot_type: str 
     quality = quality_report(minutes, snapshot_type)
     write_json(summary, paths.snapshot)
     write_json(quality, paths.quality)
-    manifest = build_manifest(paths, trade_date, snapshot_type)
-    ready = ready_payload(paths, quality, manifest)
+    manifest_probe = build_manifest(paths, trade_date, snapshot_type)
+    ready = ready_payload(paths, quality, manifest_probe)
     write_json(ready, paths.ready)
+    manifest = build_manifest(paths, trade_date, snapshot_type)
     write_json(manifest, paths.manifest)
     write_json(manifest, INTRADAY_METADATA_DIR / "intraday_manifest_1400.json")
     write_json(ready, INTRADAY_METADATA_DIR / "intraday_ready_1400.json")
@@ -707,6 +719,36 @@ def build_t1_intraday_trainset() -> pd.DataFrame:
     return trainset
 
 
+def _write_replay_metadata_ready(latest_ready: dict, replay_summary: dict, history_days: int) -> dict:
+    top_ready = dict(latest_ready)
+    actual = int(replay_summary.get("actual_trade_days", 0))
+    reason = list(top_ready.get("reason") or [])
+    if actual < history_days and INSUFFICIENT_HISTORY_REASON not in reason:
+        reason.append(INSUFFICIENT_HISTORY_REASON)
+    if actual < history_days and top_ready.get("ready"):
+        top_ready["status"] = "WARN"
+        top_ready["ready"] = True
+        top_ready["blocking_reason"] = None
+    elif reason:
+        top_ready["blocking_reason"] = ";".join(reason) if not top_ready.get("ready") else None
+    top_ready["reason"] = reason
+    top_ready["history_days_required"] = int(history_days)
+    top_ready["actual_trade_days"] = actual
+    top_ready["generated_snapshots"] = int(replay_summary.get("generated_snapshots", actual))
+    top_ready.setdefault("warnings", [])
+    top_ready["allowed_usage"] = {
+        "can_run_daily_model": False,
+        "can_run_intraday_model": bool(top_ready.get("ready")),
+        "can_run_intraday_forecast": bool(top_ready.get("ready")),
+        "can_run_backtest": bool(top_ready.get("ready")),
+        "can_train_model": bool(top_ready.get("ready") and actual >= history_days),
+        "can_generate_formal_signal": False,
+    }
+    write_json(top_ready, INTRADAY_METADATA_DIR / "intraday_ready_1400.json")
+    write_json(intraday_downstream_contract(top_ready), INTRADAY_METADATA_DIR / "intraday_downstream_contract.json")
+    return top_ready
+
+
 def replay_intraday_history(history_days: int = DEFAULT_HISTORY_DAYS) -> dict:
     source = read_source_minutes()
     if source.empty:
@@ -727,10 +769,12 @@ def replay_intraday_history(history_days: int = DEFAULT_HISTORY_DAYS) -> dict:
         build_missing_source_ready()
         return payload
     generated = []
+    latest_ready = {}
     dates = sorted(source["trade_date"].dropna().astype(str).map(compact_trade_date).unique())[-history_days:]
     for trade_date in dates:
         bundle = write_snapshot_bundle(source[source["trade_date"].astype(str).map(compact_trade_date) == trade_date], trade_date, "replay")
         generated.append({"trade_date": trade_date, "status": bundle["quality"]["status"], "path": _display_path(bundle["paths"].root)})
+        latest_ready = bundle["ready"]
     actual = len(generated)
     payload = {
         "line": "intraday_1400",
@@ -746,6 +790,8 @@ def replay_intraday_history(history_days: int = DEFAULT_HISTORY_DAYS) -> dict:
         "snapshots": generated,
     }
     write_json(payload, INTRADAY_QUALITY_DIR / "intraday_replay_latest.json")
+    if latest_ready:
+        _write_replay_metadata_ready(latest_ready, payload, history_days)
     build_t1_truth()
     build_t1_intraday_trainset()
     return payload

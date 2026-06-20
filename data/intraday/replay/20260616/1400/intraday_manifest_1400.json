@@ -5,49 +5,49 @@
   "trade_date": "20260616",
   "asof_time": "14:00",
   "snapshot_type": "replay",
-  "generated_at": "2026-06-21 02:51:44",
+  "generated_at": "2026-06-21 11:07:38",
   "files": [
     {
       "path": "data/intraday/replay/20260616/1400/cnsv_1min_asof_1400.parquet",
       "exists": true,
       "file_size": 23166,
-      "sha256": "545ffd8a2647dd4208d4aa427b86117c986bb83767f650ecf2f59f9cf32a2287",
+      "sha256": "a4e76f9b75e2d8595322b0804c814223db629f0d430ed84d0e2ba81286a6f221",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260616/1400/cnsv_5min_asof_1400.parquet",
       "exists": true,
       "file_size": 12485,
-      "sha256": "d3ae3ef78a051fe4f2416f4edc1274d3bfe4833e716f27c9293cc78b02b5e8fa",
+      "sha256": "694e1084a7eb1e8e17c31b537cfa6833cb6dbaddd232cadb77780700f8bbfc23",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260616/1400/cnsv_15min_asof_1400.parquet",
       "exists": true,
       "file_size": 11143,
-      "sha256": "84b20c5bc76852f69ee9657891b2b3df52a0c3fb18bb6f453bf6a62ec0ff4862",
+      "sha256": "a186690c7141eec9b668da21ee45a039588a3aa323309c5870a1acd9c77fbe76",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260616/1400/intraday_snapshot_1400.json",
       "exists": true,
       "file_size": 1159,
-      "sha256": "3ac8b95dde2c4275df465880123953814da92c0fa66290e8d769fce21b4b9382",
+      "sha256": "c759092fb97fff580f1d3a4e7122a3e66be211dc796b46f0cd8e442ce9f3c913",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260616/1400/intraday_quality_1400.json",
       "exists": true,
       "file_size": 1133,
-      "sha256": "3096b4121ef9eb3fa278c7ffe0adcae75b9de8817d3fd85e23932f4a831bbaf2",
+      "sha256": "ccdca8f3269ab01de53d43f8ad61cb86298a1982a3664b89694d19632cc9ead9",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260616/1400/intraday_ready_1400.json",
-      "exists": false,
-      "file_size": 0,
-      "sha256": "",
-      "status": "missing"
+      "exists": true,
+      "file_size": 817,
+      "sha256": "e4bd38c700fff816fd0c5b99fe009582b18e199988af62e1840b444698ecb608",
+      "status": "present"
     }
   ],
   "lineage": {
