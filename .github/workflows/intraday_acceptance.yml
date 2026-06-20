@@ -1,0 +1,52 @@
+name: Intraday acceptance
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 18:45 Beijing time / 10:45 UTC, Monday-Friday
+    - cron: "45 10 * * 1-5"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/intraday_acceptance.yml"
+      - "cnsvdata/intraday.py"
+      - "scripts/*intraday*"
+      - "scripts/*1400.py"
+      - "tests/test_intraday*"
+      - "tests/test_t1_truth_vs_1400.py"
+
+permissions:
+  contents: write
+
+jobs:
+  intraday-acceptance:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pytest
+      - run: python scripts/intraday_acceptance_check.py
+        if: always() && github.event_name != 'push'
+      - run: python scripts/intraday_smoke_downstream_read.py
+        if: always() && github.event_name != 'push'
+      - run: python scripts/build_intraday_ready_1400.py
+        if: always() && github.event_name != 'push'
+      - run: python scripts/build_intraday_preview_csv.py
+        if: always() && github.event_name != 'push'
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/quality/intraday data/preview/intraday metadata/intraday
+          git diff --cached --quiet || git commit -m "data: update intraday acceptance"
+          git push
+        if: always() && github.event_name != 'push'
+      - name: Fail if intraday ready is blocked
+        if: always() && github.event_name != 'push'
+        run: |
+          python -c "import json, pathlib, sys; p=pathlib.Path('metadata/intraday/intraday_ready_1400.json'); payload=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL','ready':False}; print('intraday_ready:', payload.get('status'), payload.get('reason', '')); sys.exit(1 if payload.get('status') == 'FAIL' or payload.get('ready') is False else 0)"

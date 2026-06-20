@@ -1,0 +1,32 @@
+name: Build intraday T+1 truth
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 18:30 Beijing time / 10:30 UTC, Monday-Friday
+    - cron: "30 10 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  build-t1-truth:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python scripts/build_t1_truth_vs_1400.py
+      - run: python scripts/build_t1_intraday_trainset.py
+      - run: python scripts/build_intraday_preview_csv.py
+      - run: python scripts/intraday_acceptance_check.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/labels data/ml_dataset data/preview/intraday data/quality/intraday metadata/intraday
+          git diff --cached --quiet || git commit -m "data: update intraday t1 truth"
+          git push

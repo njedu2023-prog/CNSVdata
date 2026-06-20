@@ -1,0 +1,39 @@
+name: Fetch intraday 14:00 data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 14:05 Beijing time / 06:05 UTC, Monday-Friday
+    - cron: "5 6 * * 1-5"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-intraday-1400:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      CNSVDATA_INTRADAY_HISTORY_DAYS: "150"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python scripts/fetch_intraday_1min_1400.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/build_intraday_bars_1400.py
+      - run: python scripts/build_intraday_snapshot_1400.py
+      - run: python scripts/check_intraday_quality_1400.py
+      - run: python scripts/build_intraday_manifest_1400.py
+      - run: python scripts/build_intraday_ready_1400.py
+      - run: python scripts/build_intraday_preview_csv.py
+      - run: pytest
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/intraday data/preview/intraday data/quality/intraday metadata/intraday
+          git diff --cached --quiet || git commit -m "data: update intraday 1400 snapshot"
+          git push
