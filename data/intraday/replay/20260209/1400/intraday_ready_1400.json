@@ -1,0 +1,28 @@
+{
+  "line": "intraday_1400",
+  "project": "CNSV intraday",
+  "repo": "CNSVdata",
+  "ready": true,
+  "status": "WARN",
+  "trade_date": "20260209",
+  "asof_time": "14:00",
+  "snapshot_type": "replay",
+  "replay": true,
+  "reason": [],
+  "warnings": [
+    "minute_window_coverage"
+  ],
+  "blocking_reason": null,
+  "latest_snapshot_path": "data/intraday/replay/20260209/1400/",
+  "quality_path": "data/intraday/replay/20260209/1400/intraday_quality_1400.json",
+  "manifest_path": "data/intraday/replay/20260209/1400/intraday_manifest_1400.json",
+  "allowed_usage": {
+    "can_run_daily_model": false,
+    "can_run_intraday_model": true,
+    "can_run_intraday_forecast": true,
+    "can_run_backtest": true,
+    "can_train_model": true,
+    "can_generate_formal_signal": false
+  },
+  "created_at": "2026-06-21 12:29:22"
+}

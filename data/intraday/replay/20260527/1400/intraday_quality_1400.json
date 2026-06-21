@@ -1,0 +1,60 @@
+{
+  "line": "intraday_1400",
+  "status": "WARN",
+  "generated_at": "2026-06-21 12:29:29",
+  "asof_time": "14:00",
+  "snapshot_type": "replay",
+  "expected_minute_count": 182,
+  "checks": [
+    {
+      "name": "intraday_1min_exists",
+      "status": "PASS",
+      "rows": 181
+    },
+    {
+      "name": "schema_complete",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate_minutes",
+      "status": "PASS"
+    },
+    {
+      "name": "positive_prices",
+      "status": "PASS"
+    },
+    {
+      "name": "ohlc_bounds",
+      "status": "PASS"
+    },
+    {
+      "name": "non_negative_volume",
+      "status": "PASS"
+    },
+    {
+      "name": "minute_window_coverage",
+      "status": "WARN",
+      "missing_minute_count": 1,
+      "missing_minutes": [
+        "13:00:00"
+      ]
+    },
+    {
+      "name": "morning_window_present",
+      "status": "PASS"
+    },
+    {
+      "name": "afternoon_window_present",
+      "status": "PASS"
+    },
+    {
+      "name": "asof_price_1400",
+      "status": "PASS"
+    },
+    {
+      "name": "last_valid_trade_time",
+      "status": "PASS",
+      "last_valid_time": "14:00:00"
+    }
+  ]
+}

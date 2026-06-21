@@ -1,7 +1,7 @@
 {
   "line": "intraday_1400",
-  "status": "WARN",
-  "generated_at": "2026-06-21 11:58:47",
+  "status": "PASS",
+  "generated_at": "2026-06-21 12:29:32",
   "checks": [
     {
       "name": "ready_exists",
@@ -22,8 +22,8 @@
     },
     {
       "name": "replay_history",
-      "status": "WARN",
-      "reason": "insufficient_intraday_history"
+      "status": "PASS",
+      "reason": null
     },
     {
       "name": "t1_truth_exists",
@@ -82,9 +82,7 @@
     "asof_time": "14:00",
     "snapshot_type": "replay",
     "replay": true,
-    "reason": [
-      "insufficient_intraday_history"
-    ],
+    "reason": [],
     "warnings": [
       "minute_window_coverage"
     ],
@@ -97,12 +95,12 @@
       "can_run_intraday_model": true,
       "can_run_intraday_forecast": true,
       "can_run_backtest": true,
-      "can_train_model": false,
+      "can_train_model": true,
       "can_generate_formal_signal": false
     },
-    "created_at": "2026-06-21 11:58:45",
+    "created_at": "2026-06-21 12:29:31",
     "history_days_required": 150,
-    "actual_trade_days": 6,
-    "generated_snapshots": 6
+    "actual_trade_days": 150,
+    "generated_snapshots": 150
   }
 }
