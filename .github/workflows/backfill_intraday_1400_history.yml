@@ -15,6 +15,13 @@ on:
         description: "Target ts_code. Empty uses config/target.yml."
         required: false
         default: ""
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/backfill_intraday_1400_history.yml"
+      - "scripts/backfill_intraday_1min_history.py"
+      - "tests/test_backfill_intraday_history.py"
 
 permissions:
   contents: write
