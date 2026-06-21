@@ -19,3 +19,12 @@ def test_quality_warns_on_small_missing_minute_gap():
     assert report["status"] == "WARN"
     coverage = next(check for check in report["checks"] if check["name"] == "minute_window_coverage")
     assert coverage["missing_minute_count"] == 1
+
+
+def test_quality_accepts_common_a_share_afternoon_start_at_1301():
+    df = sample_minutes()
+    df = df[df["trade_time"] != "2026-06-18 13:00:00"]
+    report = quality_report(normalize_intraday_minutes(df))
+    coverage = next(check for check in report["checks"] if check["name"] == "minute_window_coverage")
+    assert coverage["status"] == "PASS"
+    assert coverage["missing_minute_count"] == 0

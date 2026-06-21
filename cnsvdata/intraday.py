@@ -127,7 +127,7 @@ def _target() -> dict:
 def expected_minutes() -> list[str]:
     return (
         pd.date_range("09:30:00", "11:30:00", freq="min").strftime("%H:%M:%S").tolist()
-        + pd.date_range("13:00:00", ASOF_TIME, freq="min").strftime("%H:%M:%S").tolist()
+        + pd.date_range("13:01:00", ASOF_TIME, freq="min").strftime("%H:%M:%S").tolist()
     )
 
 
@@ -826,12 +826,31 @@ def intraday_acceptance_report() -> dict:
     ready = json.loads(ready_path.read_text(encoding="utf-8")) if ready_path.exists() else build_missing_source_ready()
     replay_path = INTRADAY_QUALITY_DIR / "intraday_replay_latest.json"
     replay = json.loads(replay_path.read_text(encoding="utf-8")) if replay_path.exists() else {}
+    replay_counts = {
+        "ready": len(list(REPLAY_ROOT.glob("*/1400/intraday_ready_1400.json"))),
+        "one_min": len(list(REPLAY_ROOT.glob("*/1400/cnsv_1min_asof_1400.parquet"))),
+        "five_min": len(list(REPLAY_ROOT.glob("*/1400/cnsv_5min_asof_1400.parquet"))),
+        "fifteen_min": len(list(REPLAY_ROOT.glob("*/1400/cnsv_15min_asof_1400.parquet"))),
+        "snapshot": len(list(REPLAY_ROOT.glob("*/1400/intraday_snapshot_1400.json"))),
+        "quality": len(list(REPLAY_ROOT.glob("*/1400/intraday_quality_1400.json"))),
+        "manifest": len(list(REPLAY_ROOT.glob("*/1400/intraday_manifest_1400.json"))),
+    }
     checks = [
         {"name": "ready_exists", "status": "PASS" if ready_path.exists() else "FAIL"},
         {"name": "raw_exists", "status": "PASS" if INTRADAY_RAW_PATH.exists() else "FAIL", "reason": None if INTRADAY_RAW_PATH.exists() else MISSING_SOURCE_REASON},
         {"name": "downstream_contract_exists", "status": "PASS" if (INTRADAY_METADATA_DIR / "intraday_downstream_contract.json").exists() else "WARN"},
         {"name": "manifest_exists", "status": "PASS" if (INTRADAY_METADATA_DIR / "intraday_manifest_1400.json").exists() else "FAIL"},
         {"name": "replay_history", "status": "PASS" if replay.get("actual_trade_days", 0) >= DEFAULT_HISTORY_DAYS else "WARN", "reason": None if replay.get("actual_trade_days", 0) >= DEFAULT_HISTORY_DAYS else INSUFFICIENT_HISTORY_REASON},
+        *[
+            {
+                "name": f"replay_file_count:{name}",
+                "status": "PASS" if count >= DEFAULT_HISTORY_DAYS else "WARN",
+                "actual_count": count,
+                "required_count": DEFAULT_HISTORY_DAYS,
+                "reason": None if count >= DEFAULT_HISTORY_DAYS else INSUFFICIENT_HISTORY_REASON,
+            }
+            for name, count in replay_counts.items()
+        ],
         {"name": "t1_truth_exists", "status": "PASS" if (LABEL_ROOT / "t1_truth_vs_1400_latest.parquet").exists() else "WARN"},
         {"name": "t1_truth_manifest_exists", "status": "PASS" if (LABEL_ROOT / "t1_truth_manifest.json").exists() else "WARN"},
         {"name": "trainset_exists", "status": "PASS" if (ML_ROOT / "t1_intraday_trainset.parquet").exists() else "WARN"},
@@ -843,7 +862,7 @@ def intraday_acceptance_report() -> dict:
         trainset = pd.read_parquet(ML_ROOT / "t1_intraday_trainset.parquet")
         checks.extend(check_trainset_no_future_leak(trainset)["checks"])
     status = "FAIL" if any(c["status"] == "FAIL" for c in checks) else ("WARN" if any(c["status"] == "WARN" for c in checks) else "PASS")
-    report = {"line": "intraday_1400", "status": status, "generated_at": now_string(), "checks": checks, "ready": ready}
+    report = {"line": "intraday_1400", "status": status, "generated_at": now_string(), "replay_file_counts": replay_counts, "checks": checks, "ready": ready}
     write_json(report, INTRADAY_QUALITY_DIR / "intraday_acceptance_latest.json")
     return report
 

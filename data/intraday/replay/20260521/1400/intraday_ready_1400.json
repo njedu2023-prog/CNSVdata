@@ -3,15 +3,13 @@
   "project": "CNSV intraday",
   "repo": "CNSVdata",
   "ready": true,
-  "status": "WARN",
+  "status": "PASS",
   "trade_date": "20260521",
   "asof_time": "14:00",
   "snapshot_type": "replay",
   "replay": true,
   "reason": [],
-  "warnings": [
-    "minute_window_coverage"
-  ],
+  "warnings": [],
   "blocking_reason": null,
   "latest_snapshot_path": "data/intraday/replay/20260521/1400/",
   "quality_path": "data/intraday/replay/20260521/1400/intraday_quality_1400.json",
@@ -24,5 +22,5 @@
     "can_train_model": true,
     "can_generate_formal_signal": false
   },
-  "created_at": "2026-06-21 12:29:29"
+  "created_at": "2026-06-21 13:28:23"
 }

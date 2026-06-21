@@ -1,10 +1,10 @@
 {
   "line": "intraday_1400",
-  "status": "WARN",
-  "generated_at": "2026-06-21 12:29:30",
+  "status": "PASS",
+  "generated_at": "2026-06-21 13:28:26",
   "asof_time": "14:00",
   "snapshot_type": "replay",
-  "expected_minute_count": 182,
+  "expected_minute_count": 181,
   "checks": [
     {
       "name": "intraday_1min_exists",
@@ -33,11 +33,9 @@
     },
     {
       "name": "minute_window_coverage",
-      "status": "WARN",
-      "missing_minute_count": 1,
-      "missing_minutes": [
-        "13:00:00"
-      ]
+      "status": "PASS",
+      "missing_minute_count": 0,
+      "missing_minutes": []
     },
     {
       "name": "morning_window_present",
