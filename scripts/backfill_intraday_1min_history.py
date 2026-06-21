@@ -91,17 +91,49 @@ def _empty_minutes(ts_code: str, trade_date: str) -> pd.DataFrame:
     return pd.DataFrame(columns=MINUTE_COLUMNS).assign(ts_code=ts_code, trade_date=trade_date)
 
 
+def _dashed_trade_date(trade_date: str) -> str:
+    compact = compact_trade_date(trade_date)
+    return f"{compact[:4]}-{compact[4:6]}-{compact[6:]}"
+
+
+def _minute_date_ranges(trade_date: str) -> list[tuple[str, str]]:
+    dashed = _dashed_trade_date(trade_date)
+    compact = compact_trade_date(trade_date)
+    return [
+        (f"{dashed} 09:30:00", f"{dashed} 14:00:00"),
+        (f"{compact} 09:30:00", f"{compact} 14:00:00"),
+        (compact, compact),
+    ]
+
+
 def fetch_one_day(pro, ts_code: str, trade_date: str, retry_times: int, retry_sleep_seconds: int) -> pd.DataFrame:
-    params = {
-        "ts_code": ts_code,
-        "freq": load_yaml("tushare.yml").get("tushare", {}).get("minute_freq", "1min"),
-        "start_date": trade_date,
-        "end_date": trade_date,
-    }
-    raw = call_with_retry(pro.stk_mins, retry_times=retry_times, sleep_seconds=retry_sleep_seconds, **params)
-    if raw is None or raw.empty:
-        return _empty_minutes(ts_code, trade_date)
-    return normalize_intraday_minutes(raw, source="tushare_stk_mins")
+    import tushare as ts
+
+    freq = load_yaml("tushare.yml").get("tushare", {}).get("minute_freq", "1min")
+    last_error: Exception | None = None
+    for start_date, end_date in _minute_date_ranges(trade_date):
+        params = {"ts_code": ts_code, "freq": freq, "start_date": start_date, "end_date": end_date}
+        strategies = [
+            ("tushare_stk_mins", pro.stk_mins, params),
+            ("tushare_pro_bar", ts.pro_bar, {**params, "api": pro, "asset": "E", "retry_count": retry_times}),
+        ]
+        for source, fn, kwargs in strategies:
+            try:
+                raw = call_with_retry(fn, retry_times=retry_times, sleep_seconds=retry_sleep_seconds, **kwargs)
+            except Exception as exc:
+                if _permission_error(exc):
+                    raise
+                last_error = exc
+                continue
+            if raw is None or raw.empty:
+                continue
+            normalized = normalize_intraday_minutes(raw, source=source)
+            normalized = normalized[normalized["trade_date"].astype(str) == compact_trade_date(trade_date)].copy()
+            if not normalized.empty:
+                return normalized
+    if last_error is not None:
+        raise last_error
+    return _empty_minutes(ts_code, trade_date)
 
 
 def existing_intraday_raw() -> pd.DataFrame:

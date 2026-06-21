@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import tushare as ts
 
 import scripts.backfill_intraday_1min_history as backfill
 
@@ -16,6 +17,7 @@ def _calendar(path):
 
 
 def _minutes(trade_date):
+    trade_date = str(trade_date).replace("-", "")[:8]
     return pd.DataFrame(
         [
             {
@@ -57,6 +59,11 @@ class FakePro:
         return _minutes(kwargs["start_date"])
 
 
+class EmptyPro:
+    def stk_mins(self, **kwargs):
+        return pd.DataFrame()
+
+
 def test_backfill_writes_1400_raw_and_filters_future_minutes(tmp_path, monkeypatch):
     cal_path = tmp_path / "trade_calendar.parquet"
     raw_path = tmp_path / "data" / "intraday" / "raw" / "cnsv_1min_intraday_1400.parquet"
@@ -77,6 +84,26 @@ def test_backfill_writes_1400_raw_and_filters_future_minutes(tmp_path, monkeypat
     assert out["trade_time"].str.endswith("14:01:00").sum() == 0
     assert out["trade_time"].str.endswith("14:00:00").sum() == 2
     assert {"trade_date", "trade_time", "ts_code", "name", "open", "high", "low", "close", "volume", "amount", "source", "created_at", "session", "bar_index"} <= set(out.columns)
+
+
+def test_backfill_falls_back_to_pro_bar_when_stk_mins_empty(tmp_path, monkeypatch):
+    cal_path = tmp_path / "trade_calendar.parquet"
+    raw_path = tmp_path / "data" / "intraday" / "raw" / "cnsv_1min_intraday_1400.parquet"
+    report_path = tmp_path / "data" / "quality" / "intraday" / "intraday_backfill_latest.json"
+    _calendar(cal_path)
+    monkeypatch.setattr(backfill, "calendar_path", lambda: cal_path)
+    monkeypatch.setattr(backfill, "INTRADAY_RAW_PATH", raw_path)
+    monkeypatch.setattr(backfill, "BACKFILL_REPORT_PATH", report_path)
+    monkeypatch.setattr(backfill, "get_tushare_pro", lambda: EmptyPro())
+    monkeypatch.setattr(backfill, "load_yaml", lambda name: {"target": {"ts_code": "600150.SH", "name": "中国船舶"}, "tushare": {"minute_freq": "1min", "retry_times": 1, "retry_sleep_seconds": 0}}[name.removesuffix(".yml")])
+    monkeypatch.setattr(ts, "pro_bar", lambda **kwargs: _minutes(kwargs["start_date"]))
+
+    report = backfill.backfill_intraday_1min_history(1, "20260618", "600150.SH")
+
+    out = pd.read_parquet(raw_path)
+    assert report["status"] == "PASS"
+    assert report["actual_trade_days"] == 1
+    assert out["source"].eq("tushare_pro_bar").all()
 
 
 def test_backfill_permission_failure_writes_fail_report(tmp_path, monkeypatch):
