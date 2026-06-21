@@ -1,0 +1,59 @@
+name: Backfill intraday 14:00 history
+
+on:
+  workflow_dispatch:
+    inputs:
+      history_days:
+        description: "A-share open trading days to backfill"
+        required: false
+        default: "150"
+      end_date:
+        description: "Backfill end date, YYYYMMDD. Empty uses latest_trade_date."
+        required: false
+        default: ""
+      ts_code:
+        description: "Target ts_code. Empty uses config/target.yml."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  backfill-intraday-1400-history:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      CNSVDATA_INTRADAY_HISTORY_DAYS: ${{ inputs.history_days || '150' }}
+      CNSVDATA_INTRADAY_END_DATE: ${{ inputs.end_date }}
+      CNSVDATA_TS_CODE: ${{ inputs.ts_code }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Backfill 1min intraday source
+        run: python scripts/backfill_intraday_1min_history.py --history-days "${{ inputs.history_days || '150' }}" --end-date "${{ inputs.end_date }}" --ts-code "${{ inputs.ts_code }}"
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - run: python scripts/replay_intraday_1400_history.py
+      - run: python scripts/build_t1_truth_vs_1400.py
+      - run: python scripts/build_t1_intraday_trainset.py
+      - run: python scripts/intraday_acceptance_check.py
+      - run: python scripts/intraday_smoke_downstream_read.py
+      - run: pytest
+      - name: Commit backfill outputs
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/intraday data/quality/intraday metadata/intraday
+          git diff --cached --quiet || git commit -m "data: backfill intraday 1400 history"
+          git push
+      - name: Fail if intraday history is still insufficient
+        if: always()
+        env:
+          REQUIRED_HISTORY_DAYS: ${{ inputs.history_days || '150' }}
+        run: |
+          python -c "import json, os, pathlib, sys; required=int(os.environ['REQUIRED_HISTORY_DAYS']); p=pathlib.Path('metadata/intraday/intraday_ready_1400.json'); payload=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'actual_trade_days':0,'generated_snapshots':0,'allowed_usage':{'can_train_model':False},'reason':['missing_ready']}; print('intraday_ready:', payload.get('status'), payload.get('actual_trade_days'), payload.get('generated_snapshots'), payload.get('reason')); sys.exit(1 if payload.get('actual_trade_days', 0) < required or payload.get('generated_snapshots', 0) < required or payload.get('allowed_usage', {}).get('can_train_model') is not True or 'insufficient_intraday_history' in (payload.get('reason') or []) else 0)"
