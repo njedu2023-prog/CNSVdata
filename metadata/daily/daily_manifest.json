@@ -1,7 +1,7 @@
 {
   "line": "daily",
   "repo": "CNSVdata",
-  "generated_at": "2026-06-21 11:08:26",
+  "generated_at": "2026-06-22 23:32:17",
   "manifest_path": "metadata/daily/daily_manifest.json",
   "quality_path": "data/quality/daily/daily_quality_latest.json",
   "legacy_compatibility": false,
@@ -13,8 +13,8 @@
       "legacy_path": "data/processed/cnsv_daily.parquet",
       "path": "data/daily/processed/cnsv_daily.parquet",
       "exists": true,
-      "sha256": "24680da14312d13f74450caad1ff583e159ef5e7d614a2686a249d032bd2d50a",
-      "size_bytes": 195519,
+      "sha256": "495bdbeb7a6dfe97178b29ee9b74a8ce435bbf53fba3e8e0d9823b215f10822f",
+      "size_bytes": 195537,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
@@ -24,8 +24,8 @@
       "legacy_path": "data/processed/cnsv_moneyflow.parquet",
       "path": "data/daily/processed/cnsv_moneyflow.parquet",
       "exists": true,
-      "sha256": "c733c2fab07484f89231b13af750dbee934b773e3dd77102b7d16f4008ce00ed",
-      "size_bytes": 277944,
+      "sha256": "4b8e9207fe6e581746ad02321869288286c8b48450ad2bb4766a759273b1b65b",
+      "size_bytes": 277995,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
