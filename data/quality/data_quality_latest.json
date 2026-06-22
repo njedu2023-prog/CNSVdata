@@ -1,8 +1,8 @@
 {
-  "status": "PASS",
-  "generated_at": "2026-06-21 13:31:13",
+  "status": "WARN",
+  "generated_at": "2026-06-23 00:16:26",
   "failed_count": 0,
-  "warn_count": 0,
+  "warn_count": 1,
   "checks": [
     {
       "name": "required_file:data/processed/trade_calendar.parquet",
@@ -112,7 +112,7 @@
     {
       "name": "cnsv_1min.parquet_exists",
       "status": "PASS",
-      "rows": 1928
+      "rows": 2169
     },
     {
       "name": "cnsv_1min.parquet_schema",
@@ -316,8 +316,8 @@
     {
       "name": "minute_coverage",
       "status": "PASS",
-      "expected_minutes": 1936,
-      "actual_minutes": 1928,
+      "expected_minutes": 2178,
+      "actual_minutes": 2169,
       "missing_minutes": [
         "2026-06-09 13:00:00",
         "2026-06-10 13:00:00",
@@ -326,7 +326,8 @@
         "2026-06-15 13:00:00",
         "2026-06-16 13:00:00",
         "2026-06-17 13:00:00",
-        "2026-06-18 13:00:00"
+        "2026-06-18 13:00:00",
+        "2026-06-22 13:00:00"
       ],
       "duplicate_minutes": 0,
       "coverage_ratio": 0.995868
@@ -339,12 +340,12 @@
     },
     {
       "name": "latest_trade_date_consistency",
-      "status": "PASS",
+      "status": "WARN",
       "metadata_latest_trade_date": "2026-06-18",
       "daily_max_trade_date": "2026-06-18",
-      "minute_max_trade_date": "2026-06-18",
+      "minute_max_trade_date": "2026-06-22",
       "moneyflow_max_trade_date": "2026-06-18",
-      "detail": "latest trade dates checked"
+      "detail": "minute latest date mismatch"
     },
     {
       "name": "daily_close_vs_minute_last_close",

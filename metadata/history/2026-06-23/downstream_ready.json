@@ -1,0 +1,21 @@
+{
+  "ready": true,
+  "status": "PASS",
+  "generated_at": "2026-06-21 13:31:15",
+  "latest_trade_date": "2026-06-18",
+  "quality_status": "PASS",
+  "data_gaps_status": "PASS",
+  "acceptance_status": "PASS",
+  "smoke_status": "PASS",
+  "contract_version": "1.2.0",
+  "manifest_snapshot_id": "cnsvdata-2026-06-18-4c7619afdb56",
+  "blocking_reason": null,
+  "warnings": [],
+  "allowed_usage": {
+    "can_develop_cnsv_main_program": true,
+    "can_run_daily_ingest": true,
+    "can_run_backtest": true,
+    "can_use_moneyflow_as_strong_factor": true,
+    "can_generate_formal_signal": false
+  }
+}
