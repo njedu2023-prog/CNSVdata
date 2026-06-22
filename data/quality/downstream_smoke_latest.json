@@ -1,8 +1,8 @@
 {
-  "status": "PASS",
-  "generated_at": "2026-06-21 13:31:15",
+  "status": "FAIL",
+  "generated_at": "2026-06-23 01:10:42",
   "latest_trade_date": "2026-06-18",
-  "failed_count": 0,
+  "failed_count": 2,
   "warn_count": 0,
   "checks": [
     {
@@ -19,18 +19,18 @@
     },
     {
       "name": "quality_not_fail",
-      "status": "PASS",
-      "quality_status": "PASS"
+      "status": "FAIL",
+      "quality_status": "FAIL"
     },
     {
       "name": "acceptance_not_fail",
-      "status": "PASS",
-      "acceptance_status": "PASS"
+      "status": "FAIL",
+      "acceptance_status": "FAIL"
     },
     {
       "name": "read_cnsv_daily",
       "status": "PASS",
-      "rows": 3839
+      "rows": 3840
     },
     {
       "name": "cnsv_daily_core_fields",
@@ -40,7 +40,7 @@
     {
       "name": "read_cnsv_1min",
       "status": "PASS",
-      "rows": 1928
+      "rows": 2169
     },
     {
       "name": "cnsv_1min_core_fields",
@@ -50,7 +50,7 @@
     {
       "name": "read_cnsv_moneyflow",
       "status": "PASS",
-      "rows": 3839
+      "rows": 3840
     },
     {
       "name": "cnsv_moneyflow_core_fields",

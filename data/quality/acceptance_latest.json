@@ -1,9 +1,9 @@
 {
-  "status": "PASS",
-  "generated_at": "2026-06-21 13:31:14",
-  "snapshot_id": "cnsvdata-2026-06-18-4c7619afdb56",
+  "status": "FAIL",
+  "generated_at": "2026-06-23 01:10:41",
+  "snapshot_id": "cnsvdata-2026-06-18-0d39b89aad64",
   "latest_trade_date": "2026-06-18",
-  "failed_count": 0,
+  "failed_count": 2,
   "warn_count": 0,
   "checks": [
     {
@@ -87,7 +87,7 @@
     {
       "name": "parquet_readable:cnsv_daily.parquet",
       "status": "PASS",
-      "rows": 3839,
+      "rows": 3840,
       "columns": 13,
       "empty_allowed": false,
       "detail": "readable"
@@ -95,7 +95,7 @@
     {
       "name": "parquet_readable:cnsv_1min.parquet",
       "status": "PASS",
-      "rows": 1928,
+      "rows": 2169,
       "columns": 12,
       "empty_allowed": false,
       "detail": "readable"
@@ -103,7 +103,7 @@
     {
       "name": "parquet_readable:cnsv_5min.parquet",
       "status": "PASS",
-      "rows": 400,
+      "rows": 450,
       "columns": 12,
       "empty_allowed": false,
       "detail": "readable"
@@ -111,7 +111,7 @@
     {
       "name": "parquet_readable:cnsv_15min.parquet",
       "status": "PASS",
-      "rows": 144,
+      "rows": 162,
       "columns": 12,
       "empty_allowed": false,
       "detail": "readable"
@@ -119,7 +119,7 @@
     {
       "name": "parquet_readable:cnsv_30min.parquet",
       "status": "PASS",
-      "rows": 80,
+      "rows": 90,
       "columns": 12,
       "empty_allowed": false,
       "detail": "readable"
@@ -127,7 +127,7 @@
     {
       "name": "parquet_readable:cnsv_60min.parquet",
       "status": "PASS",
-      "rows": 48,
+      "rows": 54,
       "columns": 12,
       "empty_allowed": false,
       "detail": "readable"
@@ -135,7 +135,7 @@
     {
       "name": "parquet_readable:cnsv_moneyflow.parquet",
       "status": "PASS",
-      "rows": 3839,
+      "rows": 3840,
       "columns": 15,
       "empty_allowed": false,
       "detail": "readable"
@@ -158,12 +158,12 @@
     },
     {
       "name": "latest_trade_date_consistency",
-      "status": "PASS",
+      "status": "FAIL",
       "metadata_latest_trade_date": "2026-06-18",
-      "daily_max_trade_date": "2026-06-18",
-      "minute_max_trade_date": "2026-06-18",
-      "moneyflow_max_trade_date": "2026-06-18",
-      "detail": "latest trade dates checked"
+      "daily_max_trade_date": "2026-06-22",
+      "minute_max_trade_date": "2026-06-22",
+      "moneyflow_max_trade_date": "2026-06-22",
+      "detail": "daily latest date mismatch"
     },
     {
       "name": "daily_close_vs_minute_last_close",
@@ -355,8 +355,8 @@
     },
     {
       "name": "quality_status",
-      "status": "PASS",
-      "quality_status": "PASS"
+      "status": "FAIL",
+      "quality_status": "FAIL"
     },
     {
       "name": "data_gaps_status",

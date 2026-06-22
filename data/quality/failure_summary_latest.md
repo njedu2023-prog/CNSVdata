@@ -2,24 +2,58 @@
 
 ## Overall Status
 
-PASS
+FAIL
 
-- Failed count: 0
+- Failed count: 5
 - Warning count: 0
 
 ## Blocking
 
-false
+true
 
-- Blocking reason: None
+- Blocking reason: latest_trade_date_consistency failed
 
 ## Can CNSV Main Start?
 
-YES
+NO
 
 ## Top Failures
 
-None
+### 1. latest_trade_date_consistency
+
+- Source: quality
+- Status: FAIL
+- Detail: daily or metadata latest date mismatch
+- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
+
+### 2. latest_trade_date_consistency
+
+- Source: acceptance
+- Status: FAIL
+- Detail: daily latest date mismatch
+- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
+
+### 3. quality_status
+
+- Source: acceptance
+- Status: FAIL
+- Detail: 
+- Suggested action: inspect the source report and rerun the affected data pipeline step
+
+### 4. quality_not_fail
+
+- Source: smoke
+- Status: FAIL
+- Detail: 
+- Suggested action: inspect the source report and rerun the affected data pipeline step
+
+### 5. acceptance_not_fail
+
+- Source: smoke
+- Status: FAIL
+- Detail: 
+- Suggested action: inspect the source report and rerun the affected data pipeline step
+
 ## Top Warnings
 
 None
@@ -43,12 +77,12 @@ None
 
 ## Allowed Usage
 
-- Develop CNSV main program: YES
-- Run daily ingest: YES
-- Run backtest/training: YES
-- Use moneyflow as strong factor: YES
+- Develop CNSV main program: NO
+- Run daily ingest: NO
+- Run backtest/training: NO
+- Use moneyflow as strong factor: NO
 - Generate formal signal: NO
 
 ## Next Action
 
-start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented
+rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
