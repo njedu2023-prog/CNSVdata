@@ -1,48 +1,12 @@
 {
-  "status": "FAIL",
-  "generated_at": "2026-06-23 01:10:43",
-  "blocking": true,
-  "blocking_reason": "latest_trade_date_consistency failed",
-  "can_cnsv_main_start": false,
-  "failed_count": 5,
+  "status": "PASS",
+  "generated_at": "2026-06-23 11:54:04",
+  "blocking": false,
+  "blocking_reason": null,
+  "can_cnsv_main_start": true,
+  "failed_count": 0,
   "warn_count": 0,
-  "top_failures": [
-    {
-      "source": "quality",
-      "name": "latest_trade_date_consistency",
-      "status": "FAIL",
-      "detail": "daily or metadata latest date mismatch",
-      "suggested_action": "rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks"
-    },
-    {
-      "source": "acceptance",
-      "name": "latest_trade_date_consistency",
-      "status": "FAIL",
-      "detail": "daily latest date mismatch",
-      "suggested_action": "rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks"
-    },
-    {
-      "source": "acceptance",
-      "name": "quality_status",
-      "status": "FAIL",
-      "detail": "",
-      "suggested_action": "inspect the source report and rerun the affected data pipeline step"
-    },
-    {
-      "source": "smoke",
-      "name": "quality_not_fail",
-      "status": "FAIL",
-      "detail": "",
-      "suggested_action": "inspect the source report and rerun the affected data pipeline step"
-    },
-    {
-      "source": "smoke",
-      "name": "acceptance_not_fail",
-      "status": "FAIL",
-      "detail": "",
-      "suggested_action": "inspect the source report and rerun the affected data pipeline step"
-    }
-  ],
+  "top_failures": [],
   "top_warnings": [],
   "concrete_missing_dates": {},
   "suggested_backfill_commands": [],
@@ -51,22 +15,22 @@
     "dataset": "minute",
     "decision": "not_required_for_current_readiness",
     "reason": "minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.",
-    "coverage_scope": "available_window:2026-06-09..2026-06-18",
+    "coverage_scope": "available_window:2026-06-09..2026-06-22",
     "active_missing_trade_dates": [],
     "active_missing_count": 0,
     "tolerated_missing_minutes": [
-      "2026-06-18 13:00:00"
+      "2026-06-22 13:00:00"
     ],
     "historical_missing_count": 3987,
     "command_when_required": "python scripts/backfill_missing_data.py --minute",
     "post_check": "pytest && python scripts/detect_data_gaps.py && python scripts/quality_check.py && python scripts/acceptance_check.py"
   },
   "allowed_usage": {
-    "can_develop_cnsv_main_program": false,
-    "can_run_daily_ingest": false,
-    "can_run_backtest": false,
-    "can_use_moneyflow_as_strong_factor": false,
+    "can_develop_cnsv_main_program": true,
+    "can_run_daily_ingest": true,
+    "can_run_backtest": true,
+    "can_use_moneyflow_as_strong_factor": true,
     "can_generate_formal_signal": false
   },
-  "next_action": "rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks"
+  "next_action": "start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented"
 }

@@ -1,8 +1,8 @@
 {
-  "status": "FAIL",
-  "generated_at": "2026-06-23 01:10:42",
-  "latest_trade_date": "2026-06-18",
-  "failed_count": 2,
+  "status": "PASS",
+  "generated_at": "2026-06-23 11:54:03",
+  "latest_trade_date": "2026-06-22",
+  "failed_count": 0,
   "warn_count": 0,
   "checks": [
     {
@@ -19,13 +19,13 @@
     },
     {
       "name": "quality_not_fail",
-      "status": "FAIL",
-      "quality_status": "FAIL"
+      "status": "PASS",
+      "quality_status": "PASS"
     },
     {
       "name": "acceptance_not_fail",
-      "status": "FAIL",
-      "acceptance_status": "FAIL"
+      "status": "PASS",
+      "acceptance_status": "PASS"
     },
     {
       "name": "read_cnsv_daily",
@@ -60,7 +60,7 @@
     {
       "name": "latest_trade_date_available",
       "status": "PASS",
-      "latest_trade_date": "2026-06-18"
+      "latest_trade_date": "2026-06-22"
     }
   ]
 }

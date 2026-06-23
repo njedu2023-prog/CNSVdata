@@ -1,7 +1,7 @@
 {
-  "status": "FAIL",
-  "generated_at": "2026-06-23 01:10:40",
-  "failed_count": 1,
+  "status": "PASS",
+  "generated_at": "2026-06-23 11:54:01",
+  "failed_count": 0,
   "warn_count": 0,
   "checks": [
     {
@@ -340,30 +340,30 @@
     },
     {
       "name": "latest_trade_date_consistency",
-      "status": "FAIL",
-      "metadata_latest_trade_date": "2026-06-18",
+      "status": "PASS",
+      "metadata_latest_trade_date": "2026-06-22",
       "daily_max_trade_date": "2026-06-22",
       "minute_max_trade_date": "2026-06-22",
       "moneyflow_max_trade_date": "2026-06-22",
-      "detail": "daily or metadata latest date mismatch"
+      "detail": "latest trade dates checked"
     },
     {
       "name": "daily_close_vs_minute_last_close",
       "status": "PASS",
-      "trade_date": "2026-06-18",
+      "trade_date": "2026-06-22",
       "tolerance": 0.01,
-      "daily_close": 36.14,
-      "minute_last_close": 36.14,
+      "daily_close": 37.33,
+      "minute_last_close": 37.33,
       "abs_diff": 0.0,
       "detail": "close checked"
     },
     {
       "name": "daily_amount_vs_minute_amount_sum",
       "status": "PASS",
-      "trade_date": "2026-06-18",
+      "trade_date": "2026-06-22",
       "detail": "amount unit checked",
-      "daily_amount": 4313475.328,
-      "minute_amount_sum": 4313475325.0,
+      "daily_amount": 4706572.379,
+      "minute_amount_sum": 4706572384.0,
       "diff_ratio": 0.0
     },
     {

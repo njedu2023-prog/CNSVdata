@@ -2,58 +2,24 @@
 
 ## Overall Status
 
-FAIL
+PASS
 
-- Failed count: 5
+- Failed count: 0
 - Warning count: 0
 
 ## Blocking
 
-true
+false
 
-- Blocking reason: latest_trade_date_consistency failed
+- Blocking reason: None
 
 ## Can CNSV Main Start?
 
-NO
+YES
 
 ## Top Failures
 
-### 1. latest_trade_date_consistency
-
-- Source: quality
-- Status: FAIL
-- Detail: daily or metadata latest date mismatch
-- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
-
-### 2. latest_trade_date_consistency
-
-- Source: acceptance
-- Status: FAIL
-- Detail: daily latest date mismatch
-- Suggested action: rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
-
-### 3. quality_status
-
-- Source: acceptance
-- Status: FAIL
-- Detail: 
-- Suggested action: inspect the source report and rerun the affected data pipeline step
-
-### 4. quality_not_fail
-
-- Source: smoke
-- Status: FAIL
-- Detail: 
-- Suggested action: inspect the source report and rerun the affected data pipeline step
-
-### 5. acceptance_not_fail
-
-- Source: smoke
-- Status: FAIL
-- Detail: 
-- Suggested action: inspect the source report and rerun the affected data pipeline step
-
+None
 ## Top Warnings
 
 None
@@ -70,19 +36,19 @@ None
 - SOP: `docs/minute_backfill_sop.md`
 - Decision: not_required_for_current_readiness
 - Reason: minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.
-- Coverage scope: available_window:2026-06-09..2026-06-18
+- Coverage scope: available_window:2026-06-09..2026-06-22
 - Active missing trade dates: 0
 - Historical missing count: 3987
 - Command when required: `python scripts/backfill_missing_data.py --minute`
 
 ## Allowed Usage
 
-- Develop CNSV main program: NO
-- Run daily ingest: NO
-- Run backtest/training: NO
-- Use moneyflow as strong factor: NO
+- Develop CNSV main program: YES
+- Run daily ingest: YES
+- Run backtest/training: YES
+- Use moneyflow as strong factor: YES
 - Generate formal signal: NO
 
 ## Next Action
 
-rerun fetch_cnsv_daily, build processed data, quality, acceptance, and smoke checks
+start CNSV main program connection development with formal-signal gate disabled and minute backfill SOP documented
