@@ -68,7 +68,7 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/raw data/processed data/preview data/quality/*.json data/quality/*.md metadata/data_manifest.json metadata/data_snapshot.json metadata/downstream_ready.json metadata/history || true
+          git add data/raw data/processed data/preview data/quality/*.json data/quality/*.md metadata/latest_trade_date.json metadata/next_trade_date.json metadata/data_manifest.json metadata/data_snapshot.json metadata/downstream_ready.json metadata/history || true
           git diff --cached --quiet || git commit -m "data: update acceptance and quality snapshots"
           git push
         if: always()
