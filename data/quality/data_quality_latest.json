@@ -1,8 +1,8 @@
 {
-  "status": "WARN",
-  "generated_at": "2026-06-23 22:03:27",
+  "status": "PASS",
+  "generated_at": "2026-06-23 23:21:11",
   "failed_count": 0,
-  "warn_count": 1,
+  "warn_count": 0,
   "checks": [
     {
       "name": "required_file:data/processed/trade_calendar.parquet",
@@ -92,7 +92,7 @@
     {
       "name": "cnsv_daily.parquet_exists",
       "status": "PASS",
-      "rows": 3840
+      "rows": 3841
     },
     {
       "name": "cnsv_daily.parquet_schema",
@@ -132,7 +132,7 @@
     {
       "name": "cnsv_moneyflow.parquet_exists",
       "status": "PASS",
-      "rows": 3840
+      "rows": 3841
     },
     {
       "name": "cnsv_moneyflow.parquet_schema",
@@ -341,30 +341,30 @@
     },
     {
       "name": "latest_trade_date_consistency",
-      "status": "WARN",
-      "metadata_latest_trade_date": "2026-06-22",
-      "daily_max_trade_date": "2026-06-22",
+      "status": "PASS",
+      "metadata_latest_trade_date": "2026-06-23",
+      "daily_max_trade_date": "2026-06-23",
       "minute_max_trade_date": "2026-06-23",
-      "moneyflow_max_trade_date": "2026-06-22",
-      "detail": "minute latest date mismatch"
+      "moneyflow_max_trade_date": "2026-06-23",
+      "detail": "latest trade dates checked"
     },
     {
       "name": "daily_close_vs_minute_last_close",
       "status": "PASS",
-      "trade_date": "2026-06-22",
+      "trade_date": "2026-06-23",
       "tolerance": 0.01,
-      "daily_close": 37.33,
-      "minute_last_close": 37.33,
+      "daily_close": 35.81,
+      "minute_last_close": 35.81,
       "abs_diff": 0.0,
       "detail": "close checked"
     },
     {
       "name": "daily_amount_vs_minute_amount_sum",
       "status": "PASS",
-      "trade_date": "2026-06-22",
+      "trade_date": "2026-06-23",
       "detail": "amount unit checked",
-      "daily_amount": 4706572.379,
-      "minute_amount_sum": 4706572384.0,
+      "daily_amount": 4571717.552,
+      "minute_amount_sum": 4571717556.0,
       "diff_ratio": 0.0
     },
     {
@@ -378,26 +378,26 @@
       "detail": [
         {
           "freq": "5min",
-          "rows": 450,
-          "source_rows": 2169,
+          "rows": 500,
+          "source_rows": 2410,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "15min",
-          "rows": 162,
-          "source_rows": 2169,
+          "rows": 180,
+          "source_rows": 2410,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "30min",
-          "rows": 90,
-          "source_rows": 2169,
+          "rows": 100,
+          "source_rows": 2410,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "60min",
-          "rows": 54,
-          "source_rows": 2169,
+          "rows": 60,
+          "source_rows": 2410,
           "source": "cnsv_1min.parquet"
         }
       ]

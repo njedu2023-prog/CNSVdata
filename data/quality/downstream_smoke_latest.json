@@ -1,7 +1,7 @@
 {
   "status": "PASS",
-  "generated_at": "2026-06-23 11:54:03",
-  "latest_trade_date": "2026-06-22",
+  "generated_at": "2026-06-23 23:21:12",
+  "latest_trade_date": "2026-06-23",
   "failed_count": 0,
   "warn_count": 0,
   "checks": [
@@ -30,7 +30,7 @@
     {
       "name": "read_cnsv_daily",
       "status": "PASS",
-      "rows": 3840
+      "rows": 3841
     },
     {
       "name": "cnsv_daily_core_fields",
@@ -40,7 +40,7 @@
     {
       "name": "read_cnsv_1min",
       "status": "PASS",
-      "rows": 2169
+      "rows": 2410
     },
     {
       "name": "cnsv_1min_core_fields",
@@ -50,7 +50,7 @@
     {
       "name": "read_cnsv_moneyflow",
       "status": "PASS",
-      "rows": 3840
+      "rows": 3841
     },
     {
       "name": "cnsv_moneyflow_core_fields",
@@ -60,7 +60,7 @@
     {
       "name": "latest_trade_date_available",
       "status": "PASS",
-      "latest_trade_date": "2026-06-22"
+      "latest_trade_date": "2026-06-23"
     }
   ]
 }
