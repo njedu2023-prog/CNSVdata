@@ -2,9 +2,6 @@ name: Intraday acceptance
 
 on:
   workflow_dispatch:
-  schedule:
-    # 18:45 Beijing time / 10:45 UTC, Monday-Friday
-    - cron: "45 10 * * 1-5"
   push:
     branches:
       - main
