@@ -2,9 +2,6 @@ name: Daily quality check
 
 on:
   workflow_dispatch:
-  schedule:
-    # 19:10 Beijing time / 11:10 UTC, Monday-Friday
-    - cron: "10 11 * * 1-5"
 
 permissions:
   contents: write
