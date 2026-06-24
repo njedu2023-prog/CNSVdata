@@ -1,0 +1,113 @@
+name: CNSVdata daily pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 20:30 Beijing time / 12:30 UTC, Monday-Friday.
+    # This is the single scheduled daily close-data entry for CNSVdata.
+    - cron: "30 12 * * 1-5"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cnsvdata-daily-pipeline-main
+  cancel-in-progress: false
+
+jobs:
+  daily-pipeline:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
+      - name: Fetch trade calendar
+        run: python scripts/fetch_trade_calendar.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - name: Fetch daily bars
+        run: python scripts/fetch_cnsv_daily.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - name: Fetch moneyflow
+        run: python scripts/fetch_moneyflow.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - name: Fetch 1min bars
+        run: python scripts/fetch_cnsv_1min.py
+        env:
+          TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+      - name: Build processed daily data
+        run: python scripts/build_processed_daily.py
+      - name: Build minute bars
+        run: python scripts/build_minute_bars.py
+      - name: Build corporate actions
+        run: python scripts/build_corporate_actions.py
+      - name: Build structural breaks
+        run: python scripts/build_structural_breaks.py
+      - name: Build daily contracts
+        run: |
+          python scripts/build_daily_manifest.py
+          python scripts/build_daily_ready.py
+      - name: Build intraday T+1 truth
+        run: |
+          python scripts/build_t1_truth_vs_1400.py
+          python scripts/build_t1_intraday_trainset.py
+          python scripts/build_intraday_preview_csv.py
+      - name: Build data manifests and previews
+        run: |
+          python scripts/build_data_manifest.py
+          python scripts/build_preview_csv.py
+      - name: Run daily acceptance
+        run: |
+          python scripts/daily_acceptance_check.py
+          python scripts/daily_smoke_downstream_read.py
+      - name: Run intraday acceptance
+        run: |
+          python scripts/intraday_acceptance_check.py
+          python scripts/intraday_smoke_downstream_read.py
+          python scripts/build_intraday_ready_1400.py
+      - name: Run full quality and downstream checks
+        if: always()
+        run: |
+          python scripts/detect_data_gaps.py
+          python scripts/quality_check.py
+          python scripts/build_data_manifest.py
+          python scripts/acceptance_check.py
+          python scripts/smoke_downstream_read.py
+          python scripts/build_downstream_ready.py
+          python scripts/build_failure_summary.py
+          python scripts/archive_quality_snapshot.py
+      - name: Commit CNSVdata daily updates
+        if: always()
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/raw data/processed data/preview data/daily data/intraday data/quality metadata || true
+          if git diff --cached --quiet; then
+            echo "No CNSVdata daily updates to commit"
+            exit 0
+          fi
+          git commit -m "data: update CNSVdata daily pipeline outputs"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = "3" ]; then
+              exit 1
+            fi
+            sleep 5
+          done
+      - name: Fail if downstream is not ready
+        if: always()
+        run: |
+          python -c "import json, pathlib, sys; p=pathlib.Path('metadata/downstream_ready.json'); payload=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {'status':'FAIL','blocking_reason':'missing downstream_ready.json'}; print('downstream_ready:', payload.get('status'), payload.get('blocking_reason', '')); sys.exit(1 if payload.get('status') == 'FAIL' or payload.get('ready') is False else 0)"
