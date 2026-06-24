@@ -2,9 +2,6 @@ name: Daily acceptance
 
 on:
   workflow_dispatch:
-  schedule:
-    # 19:40 Beijing time / 11:40 UTC, Monday-Friday
-    - cron: "40 11 * * 1-5"
 
 permissions:
   contents: write
