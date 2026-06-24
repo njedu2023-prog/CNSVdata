@@ -2,9 +2,6 @@ name: Build intraday T+1 truth
 
 on:
   workflow_dispatch:
-  schedule:
-    # 18:30 Beijing time / 10:30 UTC, Monday-Friday
-    - cron: "30 10 * * 1-5"
 
 permissions:
   contents: write
