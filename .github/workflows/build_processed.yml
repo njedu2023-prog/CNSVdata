@@ -2,8 +2,6 @@ name: Build processed data
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "10 11 * * 1-5"
 
 permissions:
   contents: write
