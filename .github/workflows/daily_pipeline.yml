@@ -2,10 +2,18 @@ name: CNSVdata daily pipeline
 
 on:
   workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/daily_pipeline.yml"
   schedule:
     # 20:30 Beijing time / 12:30 UTC, Monday-Friday.
-    # This is the single scheduled daily close-data entry for CNSVdata.
+    # Primary daily close-data entry after A-share close data should be available.
     - cron: "30 12 * * 1-5"
+    # 20:45 Beijing time fallback. GitHub scheduled workflows can be delayed or skipped.
+    - cron: "45 12 * * 1-5"
+    # 21:15 Beijing time fallback, still before CNSV mainline 22:00/22:15 Beijing runs.
+    - cron: "15 13 * * 1-5"
 
 permissions:
   contents: write
