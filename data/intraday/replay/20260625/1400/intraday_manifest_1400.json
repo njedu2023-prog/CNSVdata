@@ -1,0 +1,57 @@
+{
+  "line": "intraday_1400",
+  "project": "CNSV intraday",
+  "repo": "CNSVdata",
+  "trade_date": "20260625",
+  "asof_time": "14:00",
+  "snapshot_type": "replay",
+  "generated_at": "2026-06-27 13:47:36",
+  "files": [
+    {
+      "path": "data/intraday/replay/20260625/1400/cnsv_1min_asof_1400.parquet",
+      "exists": true,
+      "file_size": 23075,
+      "sha256": "088eb2ec1d70df4fe42e9b7e659c403533cfcb511b880bc2e5291fc1bb95dee3",
+      "status": "present"
+    },
+    {
+      "path": "data/intraday/replay/20260625/1400/cnsv_5min_asof_1400.parquet",
+      "exists": true,
+      "file_size": 12426,
+      "sha256": "e11521fe9fb2f1c0f1e1ed213ac30882d8249f7a85ea57a4def7d48b363e6575",
+      "status": "present"
+    },
+    {
+      "path": "data/intraday/replay/20260625/1400/cnsv_15min_asof_1400.parquet",
+      "exists": true,
+      "file_size": 11128,
+      "sha256": "56c58ae052cd903b7a5e8084a845f5431d5703e8e8b19f742e71f62776178f6c",
+      "status": "present"
+    },
+    {
+      "path": "data/intraday/replay/20260625/1400/intraday_snapshot_1400.json",
+      "exists": true,
+      "file_size": 1167,
+      "sha256": "4cf069da2d77b77a8a6b589aa0e95320c9dfc4ad11d5792bf19dfc6ef138c739",
+      "status": "present"
+    },
+    {
+      "path": "data/intraday/replay/20260625/1400/intraday_quality_1400.json",
+      "exists": true,
+      "file_size": 1107,
+      "sha256": "93c709ff8b69429fdc2ccca09e377de05502c3c260043a359779f7c3b3f451b8",
+      "status": "present"
+    },
+    {
+      "path": "data/intraday/replay/20260625/1400/intraday_ready_1400.json",
+      "exists": true,
+      "file_size": 785,
+      "sha256": "b04d50db4bf8ca0e51f1776fa23c4d13985b0d2f9cfea2140ce050aed71835f9",
+      "status": "present"
+    }
+  ],
+  "lineage": {
+    "feature_window": "09:30-11:30,13:00-14:00",
+    "future_data_guard": "trade_time <= 14:00"
+  }
+}
