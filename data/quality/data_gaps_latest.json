@@ -1,12 +1,12 @@
 {
   "status": "PASS",
-  "generated_at": "2026-06-30 00:42:00",
-  "latest_trade_date": "2026-06-29",
+  "generated_at": "2026-06-30 23:13:01",
+  "latest_trade_date": "2026-06-30",
   "checks": [
     {
       "name": "trade_calendar_available",
       "status": "PASS",
-      "open_trade_dates": 4001
+      "open_trade_dates": 4002
     },
     {
       "name": "daily_missing_trade_dates",
@@ -26,7 +26,7 @@
       "name": "minute_missing_minutes",
       "status": "PASS",
       "missing_minutes": [
-        "2026-06-29 13:00:00"
+        "2026-06-30 13:00:00"
       ],
       "coverage_ratio": 0.995868,
       "min_coverage_ratio": 0.99
@@ -57,7 +57,7 @@
     "name": "minute_missing_minutes",
     "status": "PASS",
     "missing_minutes": [
-      "2026-06-29 13:00:00"
+      "2026-06-30 13:00:00"
     ],
     "coverage_ratio": 0.995868,
     "min_coverage_ratio": 0.99
@@ -4237,15 +4237,15 @@
     ],
     "historical_missing_count": 3987,
     "missing_minutes": [
-      "2026-06-29 13:00:00"
+      "2026-06-30 13:00:00"
     ],
     "coverage_ratio": 0.995868,
-    "coverage_scope": "available_window:2026-06-09..2026-06-29",
+    "coverage_scope": "available_window:2026-06-09..2026-06-30",
     "latest_trade_date_present": true,
     "latest_trade_date_coverage": {
       "coverage_ratio": 0.995868,
       "missing_minutes": [
-        "2026-06-29 13:00:00"
+        "2026-06-30 13:00:00"
       ],
       "latest_trade_date_present": true
     },

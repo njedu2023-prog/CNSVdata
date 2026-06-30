@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at": "2026-06-30 00:42:02",
+  "generated_at": "2026-06-30 23:13:03",
   "blocking": false,
   "blocking_reason": null,
   "can_cnsv_main_start": true,
@@ -15,11 +15,11 @@
     "dataset": "minute",
     "decision": "not_required_for_current_readiness",
     "reason": "minute active coverage window is complete enough for current downstream readiness; historical gaps remain informational.",
-    "coverage_scope": "available_window:2026-06-09..2026-06-29",
+    "coverage_scope": "available_window:2026-06-09..2026-06-30",
     "active_missing_trade_dates": [],
     "active_missing_count": 0,
     "tolerated_missing_minutes": [
-      "2026-06-29 13:00:00"
+      "2026-06-30 13:00:00"
     ],
     "historical_missing_count": 3987,
     "command_when_required": "python scripts/backfill_missing_data.py --minute",
