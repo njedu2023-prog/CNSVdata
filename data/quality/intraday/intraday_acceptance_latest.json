@@ -1,15 +1,15 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-07-10 23:40:39",
+  "generated_at": "2026-07-11 12:56:57",
   "replay_file_counts": {
-    "ready": 160,
-    "one_min": 160,
-    "five_min": 160,
-    "fifteen_min": 160,
-    "snapshot": 160,
-    "quality": 160,
-    "manifest": 160
+    "ready": 165,
+    "one_min": 165,
+    "five_min": 165,
+    "fifteen_min": 165,
+    "snapshot": 165,
+    "quality": 165,
+    "manifest": 165
   },
   "checks": [
     {
@@ -37,49 +37,49 @@
     {
       "name": "replay_file_count:ready",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:one_min",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:five_min",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:fifteen_min",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:snapshot",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:quality",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:manifest",
       "status": "PASS",
-      "actual_count": 160,
+      "actual_count": 165,
       "required_count": 150,
       "reason": null
     },
@@ -138,22 +138,25 @@
     "status": "PASS",
     "trade_date": "20260710",
     "asof_time": "14:00",
-    "snapshot_type": "snapshots",
-    "replay": false,
+    "snapshot_type": "replay",
+    "replay": true,
     "reason": [],
     "warnings": [],
     "blocking_reason": null,
-    "latest_snapshot_path": "data/intraday/snapshots/20260710/1400/",
-    "quality_path": "data/intraday/snapshots/20260710/1400/intraday_quality_1400.json",
-    "manifest_path": "data/intraday/snapshots/20260710/1400/intraday_manifest_1400.json",
+    "latest_snapshot_path": "data/intraday/replay/20260710/1400/",
+    "quality_path": "data/intraday/replay/20260710/1400/intraday_quality_1400.json",
+    "manifest_path": "data/intraday/replay/20260710/1400/intraday_manifest_1400.json",
     "allowed_usage": {
       "can_run_daily_model": false,
       "can_run_intraday_model": true,
       "can_run_intraday_forecast": true,
-      "can_run_backtest": false,
-      "can_train_model": false,
+      "can_run_backtest": true,
+      "can_train_model": true,
       "can_generate_formal_signal": false
     },
-    "created_at": "2026-07-10 23:19:00"
+    "created_at": "2026-07-11 12:56:55",
+    "history_days_required": 150,
+    "actual_trade_days": 150,
+    "generated_snapshots": 150
   }
 }
