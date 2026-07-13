@@ -5,48 +5,48 @@
   "trade_date": "20260713",
   "asof_time": "14:00",
   "snapshot_type": "snapshots",
-  "generated_at": "2026-07-13 23:34:24",
+  "generated_at": "2026-07-13 23:51:28",
   "files": [
     {
       "path": "data/intraday/snapshots/20260713/1400/cnsv_1min_asof_1400.parquet",
       "exists": true,
       "file_size": 23567,
-      "sha256": "d0a0235a6c1a50d3d8baa17a0d0202514e72e198b8aac5fd2d81eeb597eae63f",
+      "sha256": "66eef9b02010f1bd379f4d121be0d1f5977ce65fc3ed3b9eef9cb5a5b67051b1",
       "status": "present"
     },
     {
       "path": "data/intraday/snapshots/20260713/1400/cnsv_5min_asof_1400.parquet",
       "exists": true,
       "file_size": 12479,
-      "sha256": "a41224d02e492613a93fa3e7a6f8b8307be295aa62140b9dc319adbddd6fa836",
+      "sha256": "b98f2d03537f4c0c91062ff10a803cb71dc004338743c22bebc35c9ee198f788",
       "status": "present"
     },
     {
       "path": "data/intraday/snapshots/20260713/1400/cnsv_15min_asof_1400.parquet",
       "exists": true,
       "file_size": 11134,
-      "sha256": "90ae495a9083207b4510142929e64fc43056b6fd4f470555e990435ce8129008",
+      "sha256": "bbbdbf35feeff672f621a741ce0e9f8ff3ea0ecaadca283f78834329d2f2b0c1",
       "status": "present"
     },
     {
       "path": "data/intraday/snapshots/20260713/1400/intraday_snapshot_1400.json",
       "exists": true,
       "file_size": 1174,
-      "sha256": "28f5fda7ab766114b862d0d647073cc0ec3bb501947eb01f274b33405ca351ae",
+      "sha256": "6bb03c403706dd087a1e2ac0828615f3792506e688a2002c7ecb3df9026e79af",
       "status": "present"
     },
     {
       "path": "data/intraday/snapshots/20260713/1400/intraday_quality_1400.json",
       "exists": true,
       "file_size": 1110,
-      "sha256": "19010c9b821abf78421d1a62c278552f8de91336aad72d6e49b4ab763b9f2680",
+      "sha256": "357d2913d3ac5e89be088cc9377fec1532ffd161a7531826716b656c8f7e010c",
       "status": "present"
     },
     {
       "path": "data/intraday/snapshots/20260713/1400/intraday_ready_1400.json",
       "exists": true,
       "file_size": 800,
-      "sha256": "66629e51229357a26b68c2f864d76e591d12e8609d172b77204fce19aae42d1a",
+      "sha256": "62c0fddb0b03b66906ad71c29c06e3256c7c1ac43c10d36c55dfc17cc9c86e95",
       "status": "present"
     }
   ],
