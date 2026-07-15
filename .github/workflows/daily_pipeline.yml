@@ -193,8 +193,13 @@ jobs:
           fi
           git commit -m "data: update CNSVdata daily pipeline outputs"
           for attempt in 1 2 3; do
-            if git pull --rebase origin main && git push origin HEAD:main; then
-              break
+            # During a rebase, "theirs" is the fresh daily commit being replayed.
+            if git pull --rebase -X theirs origin main; then
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+            else
+              git rebase --abort || true
             fi
             if [ "$attempt" = "3" ]; then
               exit 1
