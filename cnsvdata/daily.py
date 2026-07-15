@@ -66,7 +66,7 @@ def _daily_trade_dates() -> tuple[str | None, str | None]:
     daily = _read_first_existing("cnsv_daily")
     latest = None
     if not daily.empty and "trade_date" in daily.columns:
-        dates = sorted(daily["trade_date"].dropna().astype(str).str[:10].str.replace("-", "", regex=False).unique())
+        dates = sorted(filter(None, daily["trade_date"].dropna().map(_iso_date).unique()))
         latest = dates[-1] if dates else None
     calendar = _read_first_existing("trade_calendar")
     next_trade_date = None
@@ -76,10 +76,17 @@ def _daily_trade_dates() -> tuple[str | None, str | None]:
             cal = calendar.copy()
             if "is_open" in cal.columns:
                 cal = cal[pd.to_numeric(cal["is_open"], errors="coerce") == 1]
-            dates = sorted(cal[column].dropna().astype(str).str[:10].str.replace("-", "", regex=False).unique())
+            dates = sorted(filter(None, cal[column].dropna().map(_iso_date).unique()))
             next_dates = [date for date in dates if date > latest]
             next_trade_date = next_dates[0] if next_dates else None
     return latest, next_trade_date
+
+
+def _iso_date(value: object) -> str | None:
+    text = str(value or "")[:10].replace("-", "")
+    if len(text) == 8 and text.isdigit():
+        return f"{text[:4]}-{text[4:6]}-{text[6:8]}"
+    return None
 
 
 def build_daily_manifest() -> dict:

@@ -6,14 +6,20 @@ on:
     branches: ["main"]
     paths:
       - ".github/workflows/daily_pipeline.yml"
+      - "cnsvdata/**"
+      - "scripts/**"
+      - "config/**"
+      - "tests/**"
+      - "requirements.txt"
   schedule:
-    # 20:30 Beijing time / 12:30 UTC, Monday-Friday.
-    # Primary daily close-data entry after A-share close data should be available.
-    - cron: "30 12 * * 1-5"
-    # 20:45 Beijing time fallback. GitHub scheduled workflows can be delayed or skipped.
-    - cron: "45 12 * * 1-5"
-    # 21:15 Beijing time fallback, still before CNSV mainline 22:00/22:15 Beijing runs.
-    - cron: "15 13 * * 1-5"
+    # Beijing 20:04 primary, then 20:19 / 20:34 / 20:49 / 21:04 fallbacks every day.
+    # Multiple entries reduce GitHub schedule-delay and upstream-latency risk.
+    # A freshness gate rejects a run until the current completed trading day is present.
+    - cron: "4 12 * * *"
+    - cron: "19 12 * * *"
+    - cron: "34 12 * * *"
+    - cron: "49 12 * * *"
+    - cron: "4 13 * * *"
 
 permissions:
   contents: write
@@ -23,8 +29,53 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  daily-pipeline:
+  check-needed:
     runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.freshness.outputs.should_run }}
+      reason: ${{ steps.freshness.outputs.reason }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check whether close data needs refreshing
+        id: freshness
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          def iso_date(value):
+              text = str(value or "")[:10].replace("-", "")
+              return f"{text[:4]}-{text[4:6]}-{text[6:8]}" if len(text) == 8 and text.isdigit() else ""
+
+          if os.environ["EVENT_NAME"] != "schedule":
+              print("should_run=true")
+              print("reason=manual_or_workflow_change")
+              raise SystemExit(0)
+
+          latest_path = Path("metadata/daily/daily_latest_trade_date.json")
+          next_path = Path("metadata/daily/daily_next_trade_date.json")
+          latest_payload = json.loads(latest_path.read_text(encoding="utf-8")) if latest_path.exists() else {}
+          next_payload = json.loads(next_path.read_text(encoding="utf-8")) if next_path.exists() else {}
+          latest = iso_date(latest_payload.get("latest_trade_date"))
+          next_trade = iso_date(next_payload.get("next_trade_date"))
+          now = datetime.now(ZoneInfo("Asia/Shanghai"))
+          today = now.date().isoformat()
+          after_close = now.hour * 60 + now.minute >= 16 * 60 + 30
+          should_run = not latest or not next_trade or (after_close and today >= next_trade and latest < next_trade)
+          print(f"should_run={str(should_run).lower()}")
+          print(f"reason={'close_data_due' if should_run else 'already_fresh_or_non_trading_day'}")
+          PY
+
+  daily-pipeline:
+    needs: check-needed
+    if: needs.check-needed.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       PYTHONPATH: ${{ github.workspace }}
     steps:
@@ -94,8 +145,43 @@ jobs:
           python scripts/build_downstream_ready.py
           python scripts/build_failure_summary.py
           python scripts/archive_quality_snapshot.py
-      - name: Commit CNSVdata daily updates
+      - name: Check expected close-data freshness
+        id: close_freshness
         if: always()
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          manifest_path = Path("metadata/data_manifest.json")
+          if not manifest_path.exists():
+              print("::error::metadata/data_manifest.json is missing")
+              raise SystemExit(1)
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          def iso_date(value):
+              text = str(value or "")[:10].replace("-", "")
+              return f"{text[:4]}-{text[4:6]}-{text[6:8]}" if len(text) == 8 and text.isdigit() else ""
+
+          latest = iso_date(manifest.get("latest_trade_date"))
+          next_trade = iso_date(manifest.get("next_trade_date"))
+          now = datetime.now(ZoneInfo("Asia/Shanghai"))
+          today = now.date().isoformat()
+          after_close_availability = now.hour * 60 + now.minute >= 16 * 60 + 30
+          if not latest or not next_trade:
+              print(f"::error::invalid trade dates: latest={latest!r}, next={next_trade!r}")
+              raise SystemExit(1)
+          expected_missing = today > next_trade or (today == next_trade and after_close_availability)
+          if expected_missing and latest < next_trade:
+              print(f"::error::close data is stale: Beijing today={today}, latest={latest}, expected={next_trade}")
+              print("A later scheduled fallback will retry after the upstream close data is available.")
+              raise SystemExit(1)
+          print(f"close data freshness PASS: Beijing today={today}, latest={latest}, next={next_trade}")
+          PY
+      - name: Commit CNSVdata daily updates
+        if: always() && steps.close_freshness.outcome == 'success'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
