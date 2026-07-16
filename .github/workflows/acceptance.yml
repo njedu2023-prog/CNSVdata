@@ -79,6 +79,7 @@ jobs:
             exit 0
           fi
           git commit -m "data: update acceptance and quality snapshots"
+          git stash push --include-untracked --message "acceptance post-commit workspace" || true
           for attempt in 1 2 3; do
             if git pull --rebase -X theirs origin main && git push origin HEAD:main; then
               exit 0
