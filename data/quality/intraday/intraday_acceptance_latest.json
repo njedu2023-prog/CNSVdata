@@ -1,7 +1,7 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-07-15 21:55:29",
+  "generated_at": "2026-07-16 21:39:58",
   "replay_file_counts": {
     "ready": 165,
     "one_min": 165,
@@ -136,16 +136,16 @@
     "repo": "CNSVdata",
     "ready": true,
     "status": "PASS",
-    "trade_date": "20260714",
+    "trade_date": "20260715",
     "asof_time": "14:00",
     "snapshot_type": "snapshots",
     "replay": false,
     "reason": [],
     "warnings": [],
     "blocking_reason": null,
-    "latest_snapshot_path": "data/intraday/snapshots/20260714/1400/",
-    "quality_path": "data/intraday/snapshots/20260714/1400/intraday_quality_1400.json",
-    "manifest_path": "data/intraday/snapshots/20260714/1400/intraday_manifest_1400.json",
+    "latest_snapshot_path": "data/intraday/snapshots/20260715/1400/",
+    "quality_path": "data/intraday/snapshots/20260715/1400/intraday_quality_1400.json",
+    "manifest_path": "data/intraday/snapshots/20260715/1400/intraday_manifest_1400.json",
     "allowed_usage": {
       "can_run_daily_model": false,
       "can_run_intraday_model": true,
@@ -154,6 +154,6 @@
       "can_train_model": false,
       "can_generate_formal_signal": false
     },
-    "created_at": "2026-07-15 16:32:17"
+    "created_at": "2026-07-16 16:29:37"
   }
 }
