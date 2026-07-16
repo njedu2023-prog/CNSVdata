@@ -28,7 +28,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: cnsvdata-daily-pipeline-main
+  group: cnsvdata-intraday-writes-main
   cancel-in-progress: false
 
 jobs:
