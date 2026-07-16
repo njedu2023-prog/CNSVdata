@@ -16,6 +16,7 @@ def test_t1_truth_calculates_next_close_vs_1400(tmp_path, monkeypatch):
     monkeypatch.setattr(intraday, "LABEL_ROOT", label_root)
     monkeypatch.setattr(intraday, "INTRADAY_REFERENCE_ROOT", reference_root)
     monkeypatch.setattr(intraday, "T1_REFERENCE_PATH", reference_root / "t1_close_reference.parquet")
+    monkeypatch.setattr(intraday, "DAILY_REFERENCE_CANDIDATES", ())
     path = replay_root / "20260618" / "1400"
     path.mkdir(parents=True)
     (path / "intraday_snapshot_1400.json").write_text(
