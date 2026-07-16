@@ -1,7 +1,7 @@
 {
   "line": "daily",
   "repo": "CNSVdata",
-  "generated_at": "2026-07-17 00:46:05",
+  "generated_at": "2026-07-17 01:14:42",
   "manifest_path": "metadata/daily/daily_manifest.json",
   "quality_path": "data/quality/daily/daily_quality_latest.json",
   "legacy_compatibility": false,
@@ -13,7 +13,7 @@
       "legacy_path": "data/processed/cnsv_daily.parquet",
       "path": "data/daily/processed/cnsv_daily.parquet",
       "exists": true,
-      "sha256": "14ad46dae8d86b0b585e89da724c27a61a055bd04d576d3d1f843469f6a2a349",
+      "sha256": "07b1d5e0f7cf4ec94b6937daef2f09e3a88886636c0e3212c272f84244f0f52d",
       "size_bytes": 196396,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -24,7 +24,7 @@
       "legacy_path": "data/processed/cnsv_moneyflow.parquet",
       "path": "data/daily/processed/cnsv_moneyflow.parquet",
       "exists": true,
-      "sha256": "84c8585bb80c1909401b709db8622d4c9a03b92de9cb0c27f4ad04b7216792df",
+      "sha256": "7dc4657ef24b91f5adfa467ff00ef064845301237b4aa31ca7126e1b5cd5d1cb",
       "size_bytes": 279372,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -35,7 +35,7 @@
       "legacy_path": "data/processed/corporate_actions.parquet",
       "path": "data/daily/processed/corporate_actions.parquet",
       "exists": true,
-      "sha256": "8274bfc8deb11a3cc2bbd1f16d1064414b74093caa98fe09e7e9de31e52168af",
+      "sha256": "31e7690f8feef1514c5e083fab4c36a1d622b5b70d9c242d5e29a4c762de269b",
       "size_bytes": 6083,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -46,7 +46,7 @@
       "legacy_path": "data/processed/structural_breaks.parquet",
       "path": "data/daily/processed/structural_breaks.parquet",
       "exists": true,
-      "sha256": "a2afe46f5cde0ae5242fdec895570862a567091887a389328e59345bb7143422",
+      "sha256": "c16a3815c64a6dc39c95ab5a7211ccb36f2aa0377c6d2d74b402166b9b04c703",
       "size_bytes": 5938,
       "legacy_compatibility": false,
       "canonical_line": "daily"
