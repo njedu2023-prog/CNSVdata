@@ -12,14 +12,17 @@ on:
       - "tests/**"
       - "requirements.txt"
   schedule:
-    # Beijing 20:04 primary, then 20:19 / 20:34 / 20:49 / 21:04 fallbacks every day.
-    # Multiple entries reduce GitHub schedule-delay and upstream-latency risk.
-    # A freshness gate rejects a run until the current completed trading day is present.
+    # Prewake at Beijing 18:04 and 19:04. A scheduled runner that starts early
+    # waits until 20:04, which absorbs the long delays seen in GitHub's scheduler.
+    # Later entries are independent recovery attempts if an earlier event is dropped.
+    - cron: "4 10 * * *"
+    - cron: "4 11 * * *"
     - cron: "4 12 * * *"
-    - cron: "19 12 * * *"
     - cron: "34 12 * * *"
-    - cron: "49 12 * * *"
     - cron: "4 13 * * *"
+    - cron: "34 13 * * *"
+    - cron: "4 14 * * *"
+    - cron: "34 14 * * *"
 
 permissions:
   contents: write
@@ -31,10 +34,28 @@ concurrency:
 jobs:
   check-needed:
     runs-on: ubuntu-latest
+    timeout-minutes: 140
     outputs:
       should_run: ${{ steps.freshness.outputs.should_run }}
       reason: ${{ steps.freshness.outputs.reason }}
     steps:
+      - name: Hold prewarmed runner until Beijing 20:04
+        if: github.event_name == 'schedule'
+        run: |
+          python - <<'PY'
+          import time
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          now = datetime.now(ZoneInfo("Asia/Shanghai"))
+          target = now.replace(hour=20, minute=4, second=0, microsecond=0)
+          wait_seconds = (target - now).total_seconds()
+          if 0 < wait_seconds <= 2 * 60 * 60 + 5 * 60:
+              print(f"Prewarmed at {now.isoformat()}; waiting {wait_seconds:.0f}s until {target.isoformat()}")
+              time.sleep(wait_seconds)
+          else:
+              print(f"No prewarm wait needed at {now.isoformat()}")
+          PY
       - uses: actions/checkout@v4
       - name: Check whether close data needs refreshing
         id: freshness
