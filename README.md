@@ -60,7 +60,7 @@ acceptance.yml          20:10 BJT / 12:10 UTC
 盘中线独立工作流：
 
 ```text
-fetch_intraday_1400.yml      14:05 BJT / 06:05 UTC
+fetch_intraday_realtime.yml  09:50-11:30、13:10-15:10 每 20 分钟；20:04 终局刷新
 build_t1_truth.yml           18:30 BJT / 10:30 UTC
 intraday_acceptance.yml      18:45 BJT / 10:45 UTC
 build_intraday_trainset.yml  Saturday 10:00 BJT / 02:00 UTC
@@ -71,12 +71,14 @@ build_intraday_trainset.yml  Saturday 10:00 BJT / 02:00 UTC
 盘中线只负责数据，不生成预测、不输出交易建议、不生成 formal signal。CNSV 主程序读取盘中数据前必须先读取：
 
 ```text
-metadata/intraday/intraday_ready_1400.json
+metadata/intraday/intraday_realtime_ready.json
 ```
 
 核心输出：
 
 ```text
+data/intraday/raw/cnsv_1min_history.parquet
+metadata/intraday/intraday_realtime_ready.json
 data/intraday/snapshots/YYYYMMDD/1400/cnsv_1min_asof_1400.parquet
 data/intraday/snapshots/YYYYMMDD/1400/cnsv_5min_asof_1400.parquet
 data/intraday/snapshots/YYYYMMDD/1400/cnsv_15min_asof_1400.parquet
