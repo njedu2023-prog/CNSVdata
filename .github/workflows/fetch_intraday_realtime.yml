@@ -1,25 +1,10 @@
-name: Fetch realtime intraday data
+name: Archive final intraday history
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-    paths:
-      - ".github/workflows/fetch_intraday_realtime.yml"
-      - "cnsvdata/intraday.py"
-      - "scripts/fetch_intraday_1min_1400.py"
-      - "scripts/build_intraday_realtime_ready.py"
-      - "tests/test_intraday_realtime.py"
   schedule:
-    # Beijing 09:50-11:30 and 13:10-15:10, every 20 minutes.
-    - cron: "50 1 * * 1-5"
-    - cron: "10,30,50 2 * * 1-5"
-    - cron: "10,30 3 * * 1-5"
-    - cron: "10,30,50 5 * * 1-5"
-    - cron: "10,30,50 6 * * 1-5"
-    - cron: "10 7 * * 1-5"
-    # Final daily refresh at Beijing 20:04.
-    - cron: "4 12 * * 1-5"
+    # Beijing 20:34 archive. CNSV itself fetches Tushare realtime data in-session.
+    - cron: "34 12 * * 1-5"
 
 permissions:
   contents: write
@@ -29,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  fetch-realtime-intraday:
+  archive-final-intraday:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -42,24 +27,24 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - name: Fetch current-day 1min bars from Tushare
+      - name: Fetch final current-day 1min bars from Tushare
         run: python scripts/fetch_intraday_1min_1400.py
         env:
           TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
-      - name: Publish realtime freshness contract
+      - name: Publish archive freshness metadata
         run: python scripts/build_intraday_realtime_ready.py
       - run: pytest -q tests/test_intraday_realtime.py tests/test_intraday_no_future_leak.py
-      - name: Commit realtime intraday update
+      - name: Commit final intraday archive
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/intraday/raw metadata/intraday/intraday_realtime_ready.json
           if git diff --cached --quiet; then
-            echo "No realtime intraday update"
+            echo "No final intraday archive update"
             exit 0
           fi
-          git commit -m "data: refresh realtime intraday bars"
+          git commit -m "data: archive final intraday bars"
           for attempt in 1 2 3; do
             if git pull --rebase origin main && git push origin HEAD:main; then
               exit 0

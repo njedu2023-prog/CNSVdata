@@ -60,7 +60,7 @@ acceptance.yml          20:10 BJT / 12:10 UTC
 盘中线独立工作流：
 
 ```text
-fetch_intraday_realtime.yml  09:50-11:30、13:10-15:10 每 20 分钟；20:04 终局刷新
+fetch_intraday_realtime.yml  20:34 归档当日最终分钟历史；盘中实时数据由 CNSV 直取 Tushare
 build_t1_truth.yml           18:30 BJT / 10:30 UTC
 intraday_acceptance.yml      18:45 BJT / 10:45 UTC
 build_intraday_trainset.yml  Saturday 10:00 BJT / 02:00 UTC

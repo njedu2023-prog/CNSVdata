@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pandas as pd
@@ -110,3 +111,13 @@ def test_realtime_ready_uses_previous_open_day_before_market_open(tmp_path, monk
     assert payload["trade_date"] == "20260716"
     assert payload["expected_trade_date"] == "20260716"
     assert payload["blocking_reason"] is None
+
+
+def test_cnsvdata_only_archives_intraday_history_after_main_program_final_run():
+    root = Path(__file__).resolve().parents[1]
+    workflow = (root / ".github/workflows/fetch_intraday_realtime.yml").read_text(encoding="utf-8")
+
+    assert workflow.count("- cron:") == 1
+    assert '- cron: "34 12 * * 1-5"' in workflow
+    assert "CNSV itself fetches Tushare realtime data in-session" in workflow
+    assert 'cron: "4 12 * * 1-5"' not in workflow
