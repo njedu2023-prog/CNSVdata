@@ -3,7 +3,9 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -13,7 +15,10 @@ from cnsvdata.paths import DATA_DIR, METADATA_DIR, QUALITY_DIR, ROOT
 ASOF_LABEL = "1400"
 ASOF_TIME = "14:00:00"
 ASOF_TIME_SHORT = "14:00"
+MARKET_CLOSE_TIME = "15:00:00"
+BEIJING_TIMEZONE = ZoneInfo("Asia/Shanghai")
 DEFAULT_HISTORY_DAYS = 150
+MIN_INTRADAY_TRAIN_ROWS = 60
 FEATURE_VERSION = "intraday_1400_v1"
 LABEL_VERSION = "t1_close_vs_1400_v1"
 MISSING_SOURCE_REASON = "missing_intraday_minute_source"
@@ -28,6 +33,10 @@ REPLAY_ROOT = INTRADAY_DIR / "replay"
 INTRADAY_REFERENCE_ROOT = INTRADAY_DIR / "reference"
 T1_REFERENCE_PATH = INTRADAY_REFERENCE_ROOT / "t1_close_reference.parquet"
 TRADE_CALENDAR_REFERENCE_PATH = INTRADAY_REFERENCE_ROOT / "trade_calendar.parquet"
+DAILY_REFERENCE_CANDIDATES = (
+    DATA_DIR / "daily" / "processed" / "cnsv_daily.parquet",
+    DATA_DIR / "processed" / "cnsv_daily.parquet",
+)
 LABEL_ROOT = INTRADAY_DIR / "labels" / "t1_truth"
 ML_ROOT = INTRADAY_DIR / "ml_dataset" / "t1_intraday"
 PREVIEW_ROOT = INTRADAY_DIR / "preview"
@@ -134,7 +143,7 @@ def expected_minutes() -> list[str]:
 def session_of_time(value: str) -> str:
     if "09:30:00" <= value <= "11:30:00":
         return "morning"
-    if "13:00:00" <= value <= ASOF_TIME:
+    if "13:00:00" <= value <= MARKET_CLOSE_TIME:
         return "afternoon"
     return "outside"
 
@@ -144,7 +153,11 @@ def snapshot_paths(trade_date: str, snapshot_type: str = "snapshots") -> Intrada
     return IntradayPaths(root / compact_trade_date(trade_date) / ASOF_LABEL)
 
 
-def normalize_intraday_minutes(df: pd.DataFrame, source: str = "tushare") -> pd.DataFrame:
+def normalize_intraday_minutes(
+    df: pd.DataFrame,
+    source: str = "tushare",
+    asof_time: str = ASOF_TIME,
+) -> pd.DataFrame:
     frame = pd.DataFrame() if df is None else df.copy()
     if frame.empty:
         return pd.DataFrame(columns=MINUTE_COLUMNS)
@@ -161,7 +174,7 @@ def normalize_intraday_minutes(df: pd.DataFrame, source: str = "tushare") -> pd.
     frame["trade_date"] = frame["trade_time"].dt.strftime("%Y%m%d")
     frame["time"] = frame["trade_time"].dt.strftime("%H:%M:%S")
     frame["session"] = frame["time"].map(session_of_time)
-    frame = frame[(frame["session"] != "outside") & (frame["time"] <= ASOF_TIME)].copy()
+    frame = frame[(frame["session"] != "outside") & (frame["time"] <= asof_time)].copy()
 
     target = _target()
     frame["name"] = frame["name"] if "name" in frame.columns else target.get("name", "")
@@ -216,27 +229,89 @@ def fetch_intraday_from_tushare(history_days: int = DEFAULT_HISTORY_DAYS) -> pd.
     from cnsvdata.tushare_client import call_with_retry, get_tushare_pro
 
     cfg = load_yaml("tushare.yml").get("tushare", {})
-    start = os.getenv("CNSVDATA_INTRADAY_START_DATE", "")
-    end = os.getenv("CNSVDATA_INTRADAY_END_DATE", "")
-    if not start or not end:
-        default_start, default_end, _ = latest_150_trade_window(history_days=history_days)
-        start = start or default_start
-        end = end or default_end
+    now = datetime.now(BEIJING_TIMEZONE)
+    start = os.getenv("CNSVDATA_INTRADAY_START_DATE", "") or now.strftime("%Y%m%d")
+    end = os.getenv("CNSVDATA_INTRADAY_END_DATE", "") or now.strftime("%Y%m%d")
+    start_day = compact_trade_date(start)
+    end_day = compact_trade_date(end)
+    end_clock = min(now.strftime("%H:%M:%S"), MARKET_CLOSE_TIME) if end_day == now.strftime("%Y%m%d") else MARKET_CLOSE_TIME
     params = {"ts_code": _target()["ts_code"], "freq": cfg.get("minute_freq", "1min")}
-    if start:
-        params["start_date"] = start
-    if end:
-        params["end_date"] = end
-    return normalize_intraday_minutes(call_with_retry(get_tushare_pro().stk_mins, **params))
+    params["start_date"] = f"{start_day[:4]}-{start_day[4:6]}-{start_day[6:]} 09:30:00"
+    params["end_date"] = f"{end_day[:4]}-{end_day[4:6]}-{end_day[6:]} {end_clock}"
+    raw = call_with_retry(get_tushare_pro().stk_mins, **params)
+    minutes = normalize_intraday_minutes(raw, asof_time=MARKET_CLOSE_TIME)
+    if end_day == now.strftime("%Y%m%d") and not minutes.empty:
+        cutoff = now.replace(tzinfo=None)
+        parsed = pd.to_datetime(minutes["trade_time"], errors="coerce")
+        minutes = minutes[parsed <= cutoff].copy()
+    return minutes
 
 
 def write_latest_intraday_minutes(df: pd.DataFrame) -> Path:
-    merged = normalize_intraday_minutes(df)
+    merged = normalize_intraday_minutes(df, asof_time=MARKET_CLOSE_TIME)
     if INTRADAY_RAW_PATH.exists():
         old = pd.read_parquet(INTRADAY_RAW_PATH)
-        merged = normalize_intraday_minutes(pd.concat([old, merged], ignore_index=True), "merged")
+        merged = normalize_intraday_minutes(
+            pd.concat([old, merged], ignore_index=True),
+            "merged",
+            asof_time=MARKET_CLOSE_TIME,
+        )
     write_parquet(merged, INTRADAY_RAW_PATH)
     return INTRADAY_RAW_PATH
+
+
+def read_realtime_source_minutes() -> pd.DataFrame:
+    if not INTRADAY_RAW_PATH.exists():
+        return pd.DataFrame(columns=MINUTE_COLUMNS)
+    return normalize_intraday_minutes(
+        pd.read_parquet(INTRADAY_RAW_PATH),
+        source=INTRADAY_RAW_PATH.name,
+        asof_time=MARKET_CLOSE_TIME,
+    )
+
+
+def build_intraday_realtime_ready(now: datetime | None = None) -> dict:
+    current = (now or datetime.now(BEIJING_TIMEZONE)).astimezone(BEIJING_TIMEZONE)
+    minutes = read_realtime_source_minutes()
+    latest_date = select_latest_trade_date(minutes)
+    current_day = current.strftime("%Y%m%d")
+    latest = minutes[minutes["trade_date"].astype(str).map(compact_trade_date) == latest_date].copy()
+    latest = latest.dropna(subset=["close"]).sort_values("trade_time")
+    last_row = latest.tail(1)
+    last_trade_time = str(last_row.iloc[0]["trade_time"]) if not last_row.empty else ""
+    asof_price = float(last_row.iloc[0]["close"]) if not last_row.empty else None
+    parsed_last = pd.to_datetime(last_trade_time, errors="coerce")
+    lag_minutes = None
+    if pd.notna(parsed_last):
+        lag_minutes = max(0.0, (current.replace(tzinfo=None) - parsed_last.to_pydatetime()).total_seconds() / 60.0)
+    same_trade_day = latest_date == current_day
+    ready = bool(same_trade_day and not last_row.empty)
+    in_session = (
+        "09:30:00" <= current.strftime("%H:%M:%S") <= "11:40:00"
+        or "13:00:00" <= current.strftime("%H:%M:%S") <= "15:20:00"
+    )
+    stale = bool(ready and in_session and lag_minutes is not None and lag_minutes > 30)
+    status = "PASS" if ready and not stale else ("WARN" if ready else "FAIL")
+    payload = {
+        "line": "intraday_realtime_20m",
+        "status": status,
+        "ready": ready,
+        "trade_date": latest_date,
+        "asof_time": last_trade_time[-8:] if last_trade_time else "",
+        "last_valid_trade_time": last_trade_time,
+        "asof_price": asof_price,
+        "minute_rows_today": int(len(latest)),
+        "lag_minutes": round(lag_minutes, 2) if lag_minutes is not None else None,
+        "refresh_interval_minutes": 20,
+        "source_path": _display_path(INTRADAY_RAW_PATH),
+        "prediction_target": "next_trading_day_close_vs_current_asof_price",
+        "future_data_guard": "each prediction uses trade_time <= reported asof_time",
+        "blocking_reason": None if ready else "latest_intraday_trade_date_is_not_beijing_today",
+        "warnings": ["source_lag_exceeds_30_minutes"] if stale else [],
+        "created_at": now_string(),
+    }
+    write_json(payload, INTRADAY_METADATA_DIR / "intraday_realtime_ready.json")
+    return payload
 
 
 def build_missing_source_ready(reason: str = MISSING_SOURCE_REASON) -> dict:
@@ -551,6 +626,18 @@ def read_t1_reference() -> pd.DataFrame:
     return reference[["trade_date", "ts_code", "close"]].dropna(subset=["trade_date", "close"]).sort_values("trade_date")
 
 
+def refresh_t1_reference_from_daily() -> pd.DataFrame:
+    """Refresh the label reference from the canonical daily close history."""
+    for path in DAILY_REFERENCE_CANDIDATES:
+        if not path.exists():
+            continue
+        daily = pd.read_parquet(path)
+        if daily.empty or not {"trade_date", "close"}.issubset(daily.columns):
+            continue
+        return build_t1_reference_from_daily(daily)
+    return read_t1_reference()
+
+
 def _snapshot_records() -> pd.DataFrame:
     rows = []
     for root in [REPLAY_ROOT, SNAPSHOT_ROOT]:
@@ -566,7 +653,7 @@ def _snapshot_records() -> pd.DataFrame:
 
 def build_t1_truth() -> pd.DataFrame:
     snapshots = _snapshot_records()
-    reference = read_t1_reference()
+    reference = refresh_t1_reference_from_daily()
     rows = []
     if not snapshots.empty and not reference.empty:
         for code, daily in reference.groupby("ts_code"):
@@ -636,12 +723,23 @@ def check_trainset_no_future_leak(trainset: pd.DataFrame) -> dict:
         {"name": "feature_version_present", "status": "PASS" if "feature_version" in columns else "FAIL"},
         {"name": "label_version_present", "status": "PASS" if "label_version" in columns else "FAIL"},
         {"name": "professional_feature_columns_present", "status": "PASS" if set(FEATURE_COLUMNS).issubset(columns) else "FAIL"},
+        {
+            "name": "minimum_training_rows",
+            "status": "PASS" if len(trainset) >= MIN_INTRADAY_TRAIN_ROWS else "WARN",
+            "actual_rows": int(len(trainset)),
+            "required_rows": MIN_INTRADAY_TRAIN_ROWS,
+        },
     ]
+    has_failure = any(check["status"] == "FAIL" for check in checks)
+    has_warning = any(check["status"] == "WARN" for check in checks)
+    status = "FAIL" if has_failure else ("WARN" if has_warning else "PASS")
     return {
         "line": "intraday_1400",
-        "status": "FAIL" if any(check["status"] == "FAIL" for check in checks) else "PASS",
+        "status": status,
         "generated_at": now_string(),
         "rows": int(len(trainset)),
+        "minimum_training_rows": MIN_INTRADAY_TRAIN_ROWS,
+        "can_train_model": status == "PASS",
         "checks": checks,
     }
 

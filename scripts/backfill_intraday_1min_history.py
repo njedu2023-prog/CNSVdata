@@ -9,11 +9,11 @@ import pandas as pd
 
 from cnsvdata.common import load_yaml, now_string, write_json, write_parquet
 from cnsvdata.intraday import (
-    ASOF_TIME,
     DEFAULT_HISTORY_DAYS,
     INSUFFICIENT_HISTORY_REASON,
     INTRADAY_QUALITY_DIR,
     INTRADAY_RAW_PATH,
+    MARKET_CLOSE_TIME,
     MINUTE_COLUMNS,
     compact_trade_date,
     normalize_intraday_minutes,
@@ -100,8 +100,8 @@ def _minute_date_ranges(trade_date: str) -> list[tuple[str, str]]:
     dashed = _dashed_trade_date(trade_date)
     compact = compact_trade_date(trade_date)
     return [
-        (f"{dashed} 09:30:00", f"{dashed} 14:00:00"),
-        (f"{compact} 09:30:00", f"{compact} 14:00:00"),
+        (f"{dashed} 09:30:00", f"{dashed} 15:00:00"),
+        (f"{compact} 09:30:00", f"{compact} 15:00:00"),
         (compact, compact),
     ]
 
@@ -127,7 +127,7 @@ def fetch_one_day(pro, ts_code: str, trade_date: str, retry_times: int, retry_sl
                 continue
             if raw is None or raw.empty:
                 continue
-            normalized = normalize_intraday_minutes(raw, source=source)
+            normalized = normalize_intraday_minutes(raw, source=source, asof_time=MARKET_CLOSE_TIME)
             normalized = normalized[normalized["trade_date"].astype(str) == compact_trade_date(trade_date)].copy()
             if not normalized.empty:
                 return normalized
@@ -139,7 +139,11 @@ def fetch_one_day(pro, ts_code: str, trade_date: str, retry_times: int, retry_sl
 def existing_intraday_raw() -> pd.DataFrame:
     if not INTRADAY_RAW_PATH.exists():
         return pd.DataFrame(columns=MINUTE_COLUMNS)
-    return normalize_intraday_minutes(pd.read_parquet(INTRADAY_RAW_PATH), source=INTRADAY_RAW_PATH.name)
+    return normalize_intraday_minutes(
+        pd.read_parquet(INTRADAY_RAW_PATH),
+        source=INTRADAY_RAW_PATH.name,
+        asof_time=MARKET_CLOSE_TIME,
+    )
 
 
 def write_backfill_report(
@@ -167,7 +171,7 @@ def write_backfill_report(
         "ts_code": ts_code,
         "output_path": str(output_path),
         "source": "tushare.stk_mins",
-        "asof_time": ASOF_TIME,
+        "asof_time": MARKET_CLOSE_TIME,
         "created_at": now_string(),
     }
     write_json(payload, BACKFILL_REPORT_PATH)
@@ -217,7 +221,11 @@ def backfill_intraday_1min_history(history_days: int, end_date: str = "", ts_cod
         frames.append(day)
         fetched.append(trade_date)
 
-    merged = normalize_intraday_minutes(pd.concat(frames, ignore_index=True), "intraday_backfill") if frames else pd.DataFrame(columns=MINUTE_COLUMNS)
+    merged = normalize_intraday_minutes(
+        pd.concat(frames, ignore_index=True),
+        "intraday_backfill",
+        asof_time=MARKET_CLOSE_TIME,
+    ) if frames else pd.DataFrame(columns=MINUTE_COLUMNS)
     if not merged.empty:
         merged = merged[merged["trade_date"].astype(str).isin(dates)].copy()
         merged = merged.drop_duplicates(subset=["trade_date", "trade_time", "ts_code"], keep="last")
@@ -248,7 +256,7 @@ def backfill_intraday_1min_history(history_days: int, end_date: str = "", ts_cod
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Backfill CNSV intraday 1min history through 14:00.")
+    parser = argparse.ArgumentParser(description="Backfill CNSV intraday 1min history through market close.")
     parser.add_argument("--history-days", type=int, default=int(os.getenv("CNSVDATA_INTRADAY_HISTORY_DAYS", DEFAULT_HISTORY_DAYS)))
     parser.add_argument("--end-date", default=os.getenv("CNSVDATA_INTRADAY_END_DATE", ""))
     parser.add_argument("--ts-code", default=os.getenv("CNSVDATA_TS_CODE", ""))

@@ -26,6 +26,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: cnsvdata-intraday-writes-main
+  cancel-in-progress: false
+
 jobs:
   backfill-intraday-1400-history:
     runs-on: ubuntu-latest

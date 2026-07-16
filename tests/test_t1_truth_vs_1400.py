@@ -36,3 +36,35 @@ def test_t1_truth_calculates_next_close_vs_1400(tmp_path, monkeypatch):
     assert row["actual_return_vs_1400"] == pytest.approx(0.1)
     assert row["actual_up_label"] == 1
     assert bool(row["truth_ready"]) is True
+
+
+def test_t1_truth_refreshes_reference_from_canonical_daily(tmp_path, monkeypatch):
+    replay_root = tmp_path / "replay"
+    label_root = tmp_path / "intraday" / "labels" / "t1_truth"
+    reference_path = tmp_path / "intraday" / "reference" / "t1_close_reference.parquet"
+    daily_path = tmp_path / "daily" / "processed" / "cnsv_daily.parquet"
+    daily_path.parent.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {"trade_date": "20260618", "ts_code": "600150.SH", "close": 10.5},
+            {"trade_date": "20260619", "ts_code": "600150.SH", "close": 11.0},
+        ]
+    ).to_parquet(daily_path, index=False)
+    snapshot_path = replay_root / "20260618" / "1400" / "intraday_snapshot_1400.json"
+    snapshot_path.parent.mkdir(parents=True)
+    snapshot_path.write_text(
+        json.dumps({"trade_date": "20260618", "asof_time": "14:00", "ts_code": "600150.SH", "asof_price_1400": 10.0}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(intraday, "SNAPSHOT_ROOT", tmp_path / "snapshots")
+    monkeypatch.setattr(intraday, "REPLAY_ROOT", replay_root)
+    monkeypatch.setattr(intraday, "LABEL_ROOT", label_root)
+    monkeypatch.setattr(intraday, "T1_REFERENCE_PATH", reference_path)
+    monkeypatch.setattr(intraday, "DAILY_REFERENCE_CANDIDATES", (daily_path,))
+
+    truth = intraday.build_t1_truth()
+
+    assert reference_path.exists()
+    assert len(truth) == 1
+    assert truth.iloc[0]["next_trade_date"] == "20260619"
+    assert truth.iloc[0]["next_close"] == pytest.approx(11.0)

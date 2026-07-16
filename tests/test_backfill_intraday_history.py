@@ -42,11 +42,19 @@ def _minutes(trade_date):
             },
             {
                 "trade_time": f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]} 14:01:00",
-                "ts_code": "600150.SH",
-                "open": 99.0,
-                "high": 99.0,
-                "low": 99.0,
-                "close": 99.0,
+                "ts_code": "600150.SH", "open": 10.2, "high": 10.3, "low": 10.1, "close": 10.2,
+                "vol": 1,
+                "amount": 10.2,
+            },
+            {
+                "trade_time": f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]} 15:00:00",
+                "ts_code": "600150.SH", "open": 10.2, "high": 10.4, "low": 10.1, "close": 10.3,
+                "vol": 100,
+                "amount": 1030,
+            },
+            {
+                "trade_time": f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]} 15:01:00",
+                "ts_code": "600150.SH", "open": 99.0, "high": 99.0, "low": 99.0, "close": 99.0,
                 "vol": 1,
                 "amount": 99,
             },
@@ -64,7 +72,7 @@ class EmptyPro:
         return pd.DataFrame()
 
 
-def test_backfill_writes_1400_raw_and_filters_future_minutes(tmp_path, monkeypatch):
+def test_backfill_writes_full_session_and_filters_after_close(tmp_path, monkeypatch):
     cal_path = tmp_path / "trade_calendar.parquet"
     raw_path = tmp_path / "data" / "intraday" / "raw" / "cnsv_1min_intraday_1400.parquet"
     report_path = tmp_path / "data" / "quality" / "intraday" / "intraday_backfill_latest.json"
@@ -81,8 +89,10 @@ def test_backfill_writes_1400_raw_and_filters_future_minutes(tmp_path, monkeypat
     assert report["status"] == "PASS"
     assert report["actual_trade_days"] == 2
     assert report["can_train_model"] is True
-    assert out["trade_time"].str.endswith("14:01:00").sum() == 0
+    assert out["trade_time"].str.endswith("14:01:00").sum() == 2
     assert out["trade_time"].str.endswith("14:00:00").sum() == 2
+    assert out["trade_time"].str.endswith("15:00:00").sum() == 2
+    assert out["trade_time"].str.endswith("15:01:00").sum() == 0
     assert {"trade_date", "trade_time", "ts_code", "name", "open", "high", "low", "close", "volume", "amount", "source", "created_at", "session", "bar_index"} <= set(out.columns)
 
 
