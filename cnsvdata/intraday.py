@@ -37,6 +37,11 @@ DAILY_REFERENCE_CANDIDATES = (
     DATA_DIR / "daily" / "processed" / "cnsv_daily.parquet",
     DATA_DIR / "processed" / "cnsv_daily.parquet",
 )
+TRADE_CALENDAR_CANDIDATES = (
+    TRADE_CALENDAR_REFERENCE_PATH,
+    DATA_DIR / "daily" / "processed" / "trade_calendar.parquet",
+    DATA_DIR / "processed" / "trade_calendar.parquet",
+)
 LABEL_ROOT = INTRADAY_DIR / "labels" / "t1_truth"
 ML_ROOT = INTRADAY_DIR / "ml_dataset" / "t1_intraday"
 PREVIEW_ROOT = INTRADAY_DIR / "preview"
@@ -219,6 +224,39 @@ def select_latest_trade_date(df: pd.DataFrame) -> str:
     return dates[-1] if dates else ""
 
 
+def expected_latest_intraday_trade_date(current: datetime) -> str:
+    current = current.astimezone(BEIJING_TIMEZONE)
+    current_day = current.strftime("%Y%m%d")
+    before_open = current.strftime("%H:%M:%S") < "09:30:00"
+    for path in TRADE_CALENDAR_CANDIDATES:
+        if not path.exists():
+            continue
+        calendar = pd.read_parquet(path)
+        column = "cal_date" if "cal_date" in calendar.columns else "trade_date"
+        if column not in calendar.columns:
+            continue
+        if "is_open" in calendar.columns:
+            calendar = calendar[pd.to_numeric(calendar["is_open"], errors="coerce") == 1]
+        dates = sorted(calendar[column].dropna().astype(str).map(compact_trade_date).unique())
+        eligible = [date for date in dates if date <= current_day and not (before_open and date == current_day)]
+        if eligible:
+            return eligible[-1]
+
+    for path in DAILY_REFERENCE_CANDIDATES:
+        if not path.exists():
+            continue
+        daily = pd.read_parquet(path)
+        if "trade_date" not in daily.columns:
+            continue
+        dates = sorted(daily["trade_date"].dropna().astype(str).map(compact_trade_date).unique())
+        eligible = [date for date in dates if date <= current_day]
+        if eligible:
+            return eligible[-1]
+    if current.weekday() < 5 and not before_open:
+        return current_day
+    return ""
+
+
 def read_source_minutes() -> pd.DataFrame:
     if not INTRADAY_RAW_PATH.exists():
         return pd.DataFrame(columns=MINUTE_COLUMNS)
@@ -275,6 +313,7 @@ def build_intraday_realtime_ready(now: datetime | None = None) -> dict:
     minutes = read_realtime_source_minutes()
     latest_date = select_latest_trade_date(minutes)
     current_day = current.strftime("%Y%m%d")
+    expected_trade_date = expected_latest_intraday_trade_date(current)
     latest = minutes[minutes["trade_date"].astype(str).map(compact_trade_date) == latest_date].copy()
     latest = latest.dropna(subset=["close"]).sort_values("trade_time")
     last_row = latest.tail(1)
@@ -284,19 +323,32 @@ def build_intraday_realtime_ready(now: datetime | None = None) -> dict:
     lag_minutes = None
     if pd.notna(parsed_last):
         lag_minutes = max(0.0, (current.replace(tzinfo=None) - parsed_last.to_pydatetime()).total_seconds() / 60.0)
-    same_trade_day = latest_date == current_day
-    ready = bool(same_trade_day and not last_row.empty)
+    ready = bool(expected_trade_date and latest_date == expected_trade_date and not last_row.empty)
     in_session = (
-        "09:30:00" <= current.strftime("%H:%M:%S") <= "11:40:00"
-        or "13:00:00" <= current.strftime("%H:%M:%S") <= "15:20:00"
+        expected_trade_date == current_day
+        and (
+            "09:30:00" <= current.strftime("%H:%M:%S") <= "11:40:00"
+            or "13:00:00" <= current.strftime("%H:%M:%S") <= "15:20:00"
+        )
     )
     stale = bool(ready and in_session and lag_minutes is not None and lag_minutes > 30)
     status = "PASS" if ready and not stale else ("WARN" if ready else "FAIL")
+    if ready:
+        blocking_reason = None
+    elif not expected_trade_date:
+        blocking_reason = "expected_trade_date_unavailable"
+    elif not latest_date:
+        blocking_reason = "intraday_minutes_unavailable"
+    else:
+        blocking_reason = (
+            f"latest_intraday_trade_date_mismatch:expected={expected_trade_date},actual={latest_date}"
+        )
     payload = {
         "line": "intraday_realtime_20m",
         "status": status,
         "ready": ready,
         "trade_date": latest_date,
+        "expected_trade_date": expected_trade_date,
         "asof_time": last_trade_time[-8:] if last_trade_time else "",
         "last_valid_trade_time": last_trade_time,
         "asof_price": asof_price,
@@ -304,9 +356,9 @@ def build_intraday_realtime_ready(now: datetime | None = None) -> dict:
         "lag_minutes": round(lag_minutes, 2) if lag_minutes is not None else None,
         "refresh_interval_minutes": 20,
         "source_path": _display_path(INTRADAY_RAW_PATH),
-        "prediction_target": "next_trading_day_close_vs_current_asof_price",
+        "prediction_target": "next_trading_day_close_vs_current_trade_day_close",
         "future_data_guard": "each prediction uses trade_time <= reported asof_time",
-        "blocking_reason": None if ready else "latest_intraday_trade_date_is_not_beijing_today",
+        "blocking_reason": blocking_reason,
         "warnings": ["source_lag_exceeds_30_minutes"] if stale else [],
         "created_at": now_string(),
     }

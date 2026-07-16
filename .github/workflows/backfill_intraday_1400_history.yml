@@ -51,6 +51,7 @@ jobs:
       - run: python scripts/replay_intraday_1400_history.py
       - run: python scripts/build_t1_truth_vs_1400.py
       - run: python scripts/build_t1_intraday_trainset.py
+      - run: python scripts/build_intraday_realtime_ready.py
       - run: python scripts/intraday_acceptance_check.py
       - run: python scripts/intraday_smoke_downstream_read.py
       - run: pytest

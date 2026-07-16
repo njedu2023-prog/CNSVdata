@@ -44,6 +44,7 @@ jobs:
       - run: python scripts/check_intraday_quality_1400.py
       - run: python scripts/build_intraday_manifest_1400.py
       - run: python scripts/build_intraday_ready_1400.py
+      - run: python scripts/build_intraday_realtime_ready.py
       - name: Refresh T+1 truth and training set
         run: |
           python scripts/build_t1_truth_vs_1400.py
