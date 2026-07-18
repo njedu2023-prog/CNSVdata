@@ -1,7 +1,7 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-07-17 00:08:25",
+  "generated_at": "2026-07-18 12:41:21",
   "history_days_required": 150,
   "required_trade_days": 150,
   "actual_trade_days": 150,
@@ -10,11 +10,6 @@
   "can_train_model": true,
   "source": "intraday_raw",
   "snapshots": [
-    {
-      "trade_date": "20251202",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251202/1400"
-    },
     {
       "trade_date": "20251203",
       "status": "PASS",
@@ -759,6 +754,11 @@
       "trade_date": "20260716",
       "status": "PASS",
       "path": "data/intraday/replay/20260716/1400"
+    },
+    {
+      "trade_date": "20260717",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260717/1400"
     }
   ]
 }
