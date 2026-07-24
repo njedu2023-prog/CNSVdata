@@ -3,26 +3,26 @@
   "checks": [
     {
       "freq": "5min",
-      "rows": 1600,
-      "source_rows": 7712,
+      "rows": 1650,
+      "source_rows": 7953,
       "source": "cnsv_1min.parquet"
     },
     {
       "freq": "15min",
-      "rows": 576,
-      "source_rows": 7712,
+      "rows": 594,
+      "source_rows": 7953,
       "source": "cnsv_1min.parquet"
     },
     {
       "freq": "30min",
-      "rows": 320,
-      "source_rows": 7712,
+      "rows": 330,
+      "source_rows": 7953,
       "source": "cnsv_1min.parquet"
     },
     {
       "freq": "60min",
-      "rows": 192,
-      "source_rows": 7712,
+      "rows": 198,
+      "source_rows": 7953,
       "source": "cnsv_1min.parquet"
     }
   ]
