@@ -1,7 +1,7 @@
 {
   "line": "daily",
   "repo": "CNSVdata",
-  "generated_at": "2026-07-30 20:04:40",
+  "generated_at": "2026-07-31 20:07:16",
   "manifest_path": "metadata/daily/daily_manifest.json",
   "quality_path": "data/quality/daily/daily_quality_latest.json",
   "legacy_compatibility": false,
@@ -13,8 +13,8 @@
       "legacy_path": "data/processed/cnsv_daily.parquet",
       "path": "data/daily/processed/cnsv_daily.parquet",
       "exists": true,
-      "sha256": "98b39a1d27904ec972b8e8b52ff6591f3bef6884852ccda38eb36fb703e6952a",
-      "size_bytes": 196814,
+      "sha256": "32475f8ca1cce6d631deef6f7eaf00170aa7d44fb7610d432c25029d41dc175f",
+      "size_bytes": 196847,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
@@ -24,8 +24,8 @@
       "legacy_path": "data/processed/cnsv_moneyflow.parquet",
       "path": "data/daily/processed/cnsv_moneyflow.parquet",
       "exists": true,
-      "sha256": "03f3ecd85c01e7235b6b0f6dd2778f75d90ac40a092ff89988643a3871468b08",
-      "size_bytes": 280041,
+      "sha256": "b4600b8eaccecd87db30274eac496d97eb1827566a4bffbf79fe912189207141",
+      "size_bytes": 280095,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
@@ -35,7 +35,7 @@
       "legacy_path": "data/processed/corporate_actions.parquet",
       "path": "data/daily/processed/corporate_actions.parquet",
       "exists": true,
-      "sha256": "e64dc795eb11c69dd2ca406c2defcb7c1e1d15d8176108b33525e637bcfe659f",
+      "sha256": "03c09ff99a2b5b61b8fbf7e0fdee0ec23e6194717711c978f17e4a4de1e34f0d",
       "size_bytes": 6083,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -46,7 +46,7 @@
       "legacy_path": "data/processed/structural_breaks.parquet",
       "path": "data/daily/processed/structural_breaks.parquet",
       "exists": true,
-      "sha256": "e77e8cdd947f76cc999abb561827bfd0f30a6a26e637531f4bb3ae84468e67cf",
+      "sha256": "c80d7ffde46314f31245dbaa80c5d3fb7ae39a8f7e16f442ef9e0cbe0e075f30",
       "size_bytes": 5938,
       "legacy_compatibility": false,
       "canonical_line": "daily"
