@@ -5,48 +5,48 @@
   "trade_date": "20260120",
   "asof_time": "14:00",
   "snapshot_type": "replay",
-  "generated_at": "2026-08-01 13:20:12",
+  "generated_at": "2026-08-08 11:17:09",
   "files": [
     {
       "path": "data/intraday/replay/20260120/1400/cnsv_1min_asof_1400.parquet",
       "exists": true,
       "file_size": 22281,
-      "sha256": "c972ac7c2fdb89803aa863dddac4519fb0f08e6fa25fff0d3b6ad8cffb0edf76",
+      "sha256": "9f6123e2947e07bae1450c43d07473f7c158183e77ebe8e0cb9390050a7296d3",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260120/1400/cnsv_5min_asof_1400.parquet",
       "exists": true,
       "file_size": 12255,
-      "sha256": "1dd985b1f24c19a91bf3670548993bf89250fbf36038463f011eac57a6b7584f",
+      "sha256": "6ea9dd237a9c39c11b1d8b0619ab6c2f88be614c0ca4b80c50ca1e55b01385a8",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260120/1400/cnsv_15min_asof_1400.parquet",
       "exists": true,
       "file_size": 11054,
-      "sha256": "51a164deac2035ddd6daab9f940025b6a76b244a1c3d53463d632fd61e654615",
+      "sha256": "4539d59578dbf3d52985f4e3a01c77171b5c7e3421dee71eba8a28ab728b8b28",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260120/1400/intraday_snapshot_1400.json",
       "exists": true,
       "file_size": 1176,
-      "sha256": "276aaa6d36d1ff6b588f251fd58e981a11c8be90d90bbdcd634049b6d2995cde",
+      "sha256": "626db7162ccfcddc924c46306d77051de832dd4d1452103c574128e21c5a81a8",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260120/1400/intraday_quality_1400.json",
       "exists": true,
       "file_size": 1107,
-      "sha256": "1ebb0e26358d45d3ad8485d4d42f8d71f13bdfab4f4b62aaa5b8615c9144b0b1",
+      "sha256": "2057bcbeeac041254e10ecfa9cb322c8d75118a4927549bb4cbe515fdab75609",
       "status": "present"
     },
     {
       "path": "data/intraday/replay/20260120/1400/intraday_ready_1400.json",
       "exists": true,
       "file_size": 785,
-      "sha256": "121a05f2853b2f5713ba02b69b18eea662f15c51d9577f53e3b808fc58f500ce",
+      "sha256": "5c4b12342d8c0eb15fa8ba9a87b3f5ce06bd5e45a2a30f276d3ac8088976146a",
       "status": "present"
     }
   ],
