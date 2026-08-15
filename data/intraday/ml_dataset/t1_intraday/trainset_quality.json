@@ -1,8 +1,8 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-08-14 20:05:46",
-  "rows": 222,
+  "generated_at": "2026-08-15 10:44:32",
+  "rows": 227,
   "minimum_training_rows": 60,
   "can_train_model": true,
   "checks": [
@@ -31,7 +31,7 @@
     {
       "name": "minimum_training_rows",
       "status": "PASS",
-      "actual_rows": 222,
+      "actual_rows": 227,
       "required_rows": 60
     }
   ]

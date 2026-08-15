@@ -1,7 +1,7 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-08-08 11:17:22",
+  "generated_at": "2026-08-15 10:44:30",
   "history_days_required": 150,
   "required_trade_days": 150,
   "actual_trade_days": 150,
@@ -10,31 +10,6 @@
   "can_train_model": true,
   "source": "intraday_raw",
   "snapshots": [
-    {
-      "trade_date": "20251224",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251224/1400"
-    },
-    {
-      "trade_date": "20251225",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251225/1400"
-    },
-    {
-      "trade_date": "20251226",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251226/1400"
-    },
-    {
-      "trade_date": "20251229",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251229/1400"
-    },
-    {
-      "trade_date": "20251230",
-      "status": "PASS",
-      "path": "data/intraday/replay/20251230/1400"
-    },
     {
       "trade_date": "20251231",
       "status": "PASS",
@@ -759,6 +734,31 @@
       "trade_date": "20260807",
       "status": "PASS",
       "path": "data/intraday/replay/20260807/1400"
+    },
+    {
+      "trade_date": "20260810",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260810/1400"
+    },
+    {
+      "trade_date": "20260811",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260811/1400"
+    },
+    {
+      "trade_date": "20260812",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260812/1400"
+    },
+    {
+      "trade_date": "20260813",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260813/1400"
+    },
+    {
+      "trade_date": "20260814",
+      "status": "PASS",
+      "path": "data/intraday/replay/20260814/1400"
     }
   ]
 }
