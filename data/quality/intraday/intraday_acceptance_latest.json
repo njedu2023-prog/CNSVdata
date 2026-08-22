@@ -1,15 +1,15 @@
 {
   "line": "intraday_1400",
   "status": "PASS",
-  "generated_at": "2026-08-21 20:05:50",
+  "generated_at": "2026-08-22 10:47:28",
   "replay_file_counts": {
-    "ready": 190,
-    "one_min": 190,
-    "five_min": 190,
-    "fifteen_min": 190,
-    "snapshot": 190,
-    "quality": 190,
-    "manifest": 190
+    "ready": 195,
+    "one_min": 195,
+    "five_min": 195,
+    "fifteen_min": 195,
+    "snapshot": 195,
+    "quality": 195,
+    "manifest": 195
   },
   "checks": [
     {
@@ -37,49 +37,49 @@
     {
       "name": "replay_file_count:ready",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:one_min",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:five_min",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:fifteen_min",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:snapshot",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:quality",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
     {
       "name": "replay_file_count:manifest",
       "status": "PASS",
-      "actual_count": 190,
+      "actual_count": 195,
       "required_count": 150,
       "reason": null
     },
@@ -132,7 +132,7 @@
     {
       "name": "minimum_training_rows",
       "status": "PASS",
-      "actual_rows": 232,
+      "actual_rows": 237,
       "required_rows": 60
     }
   ],
@@ -142,24 +142,27 @@
     "repo": "CNSVdata",
     "ready": true,
     "status": "PASS",
-    "trade_date": "20260819",
+    "trade_date": "20260821",
     "asof_time": "14:00",
-    "snapshot_type": "snapshots",
-    "replay": false,
+    "snapshot_type": "replay",
+    "replay": true,
     "reason": [],
     "warnings": [],
     "blocking_reason": null,
-    "latest_snapshot_path": "data/intraday/snapshots/20260819/1400/",
-    "quality_path": "data/intraday/snapshots/20260819/1400/intraday_quality_1400.json",
-    "manifest_path": "data/intraday/snapshots/20260819/1400/intraday_manifest_1400.json",
+    "latest_snapshot_path": "data/intraday/replay/20260821/1400/",
+    "quality_path": "data/intraday/replay/20260821/1400/intraday_quality_1400.json",
+    "manifest_path": "data/intraday/replay/20260821/1400/intraday_manifest_1400.json",
     "allowed_usage": {
       "can_run_daily_model": false,
       "can_run_intraday_model": true,
       "can_run_intraday_forecast": true,
-      "can_run_backtest": false,
-      "can_train_model": false,
+      "can_run_backtest": true,
+      "can_train_model": true,
       "can_generate_formal_signal": false
     },
-    "created_at": "2026-08-20 20:05:46"
+    "created_at": "2026-08-22 10:47:26",
+    "history_days_required": 150,
+    "actual_trade_days": 150,
+    "generated_snapshots": 150
   }
 }
