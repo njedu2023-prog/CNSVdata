@@ -1,0 +1,368 @@
+{
+  "status": "PASS",
+  "generated_at": "2026-09-02 22:19:28",
+  "snapshot_id": "cnsvdata-2026-09-02-9103eafbefc0",
+  "latest_trade_date": "2026-09-02",
+  "failed_count": 0,
+  "warn_count": 0,
+  "checks": [
+    {
+      "name": "required_file:data/processed/trade_calendar.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_daily.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_1min.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_5min.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_15min.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_30min.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_60min.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/cnsv_moneyflow.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/corporate_actions.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/processed/structural_breaks.parquet",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:metadata/latest_trade_date.json",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:metadata/next_trade_date.json",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:metadata/data_manifest.json",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "required_file:data/quality/data_quality_latest.json",
+      "status": "PASS",
+      "detail": "present"
+    },
+    {
+      "name": "parquet_readable:trade_calendar.parquet",
+      "status": "PASS",
+      "rows": 6574,
+      "columns": 4,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_daily.parquet",
+      "status": "PASS",
+      "rows": 3892,
+      "columns": 13,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_1min.parquet",
+      "status": "PASS",
+      "rows": 14701,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_5min.parquet",
+      "status": "PASS",
+      "rows": 3050,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_15min.parquet",
+      "status": "PASS",
+      "rows": 1098,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_30min.parquet",
+      "status": "PASS",
+      "rows": 610,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_60min.parquet",
+      "status": "PASS",
+      "rows": 366,
+      "columns": 12,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:cnsv_moneyflow.parquet",
+      "status": "PASS",
+      "rows": 3892,
+      "columns": 15,
+      "empty_allowed": false,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:corporate_actions.parquet",
+      "status": "PASS",
+      "rows": 1,
+      "columns": 9,
+      "empty_allowed": true,
+      "detail": "readable"
+    },
+    {
+      "name": "parquet_readable:structural_breaks.parquet",
+      "status": "PASS",
+      "rows": 3,
+      "columns": 8,
+      "empty_allowed": true,
+      "detail": "readable"
+    },
+    {
+      "name": "latest_trade_date_consistency",
+      "status": "PASS",
+      "metadata_latest_trade_date": "2026-09-02",
+      "daily_max_trade_date": "2026-09-02",
+      "minute_max_trade_date": "2026-09-02",
+      "moneyflow_max_trade_date": "2026-09-02",
+      "detail": "latest trade dates checked"
+    },
+    {
+      "name": "daily_close_vs_minute_last_close",
+      "status": "PASS",
+      "trade_date": "2026-09-02",
+      "tolerance": 0.01,
+      "daily_close": 33.93,
+      "minute_last_close": 33.93,
+      "abs_diff": 0.0,
+      "detail": "close checked"
+    },
+    {
+      "name": "daily_amount_vs_minute_amount_sum",
+      "status": "PASS",
+      "trade_date": "2026-09-02",
+      "detail": "amount unit checked",
+      "daily_amount": 2417258.71,
+      "minute_amount_sum": 2417258710.0,
+      "diff_ratio": 0.0
+    },
+    {
+      "name": "moneyflow_effective",
+      "status": "PASS",
+      "detail": "core fields effective"
+    },
+    {
+      "name": "manifest_exists",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest_field:snapshot_id",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest_field:generated_at",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest_field:latest_trade_date",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest_field:files",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest_covers_required_files",
+      "status": "PASS",
+      "missing": []
+    },
+    {
+      "name": "manifest_item:data/processed/trade_calendar.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_daily.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_1min.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_5min.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_15min.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_30min.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_60min.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/cnsv_moneyflow.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/corporate_actions.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/processed/structural_breaks.parquet",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:metadata/latest_trade_date.json",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:metadata/next_trade_date.json",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:metadata/data_manifest.json",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "manifest_item:data/quality/data_quality_latest.json",
+      "status": "PASS",
+      "missing_fields": []
+    },
+    {
+      "name": "field_contract:trade_calendar:required_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "field_contract:trade_calendar:nullable",
+      "status": "PASS",
+      "null_counts": {
+        "cal_date": 0,
+        "is_open": 0
+      }
+    },
+    {
+      "name": "field_contract:cnsv_daily:required_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "field_contract:cnsv_daily:nullable",
+      "status": "PASS",
+      "null_counts": {
+        "ts_code": 0,
+        "trade_date": 0,
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "pre_close": 0,
+        "vol": 0,
+        "amount": 0
+      }
+    },
+    {
+      "name": "field_contract:cnsv_1min:required_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "field_contract:cnsv_1min:nullable",
+      "status": "PASS",
+      "null_counts": {
+        "ts_code": 0,
+        "trade_time": 0,
+        "trade_date": 0,
+        "time": 0,
+        "open": 0,
+        "high": 0,
+        "low": 0,
+        "close": 0,
+        "vol": 0,
+        "amount": 0
+      }
+    },
+    {
+      "name": "field_contract:cnsv_moneyflow:required_fields",
+      "status": "PASS",
+      "missing_columns": []
+    },
+    {
+      "name": "field_contract:cnsv_moneyflow:nullable",
+      "status": "PASS",
+      "null_counts": {
+        "ts_code": 0,
+        "trade_date": 0,
+        "source_version": 0,
+        "field_definition": 0
+      }
+    },
+    {
+      "name": "quality_status",
+      "status": "PASS",
+      "quality_status": "PASS"
+    },
+    {
+      "name": "data_gaps_status",
+      "status": "PASS",
+      "data_gaps_status": "PASS",
+      "unresolved_gaps": 0
+    }
+  ]
+}
