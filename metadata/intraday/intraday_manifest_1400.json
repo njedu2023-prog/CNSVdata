@@ -4,49 +4,49 @@
   "repo": "CNSVdata",
   "trade_date": "20260826",
   "asof_time": "14:00",
-  "snapshot_type": "replay",
-  "generated_at": "2026-09-19 14:52:39",
+  "snapshot_type": "snapshots",
+  "generated_at": "2026-09-22 22:39:44",
   "files": [
     {
-      "path": "data/intraday/replay/20260826/1400/cnsv_1min_asof_1400.parquet",
+      "path": "data/intraday/snapshots/20260826/1400/cnsv_1min_asof_1400.parquet",
       "exists": true,
       "file_size": 21861,
-      "sha256": "49a0d9021b847a6a69d1f79f95cf74d4f5490c1cf0475a85f1c7c589ac32bdef",
+      "sha256": "5792f326507d6aeb935cf06358f9ae727a7ecd2611b88c079f268d9c627bb6c6",
       "status": "present"
     },
     {
-      "path": "data/intraday/replay/20260826/1400/cnsv_5min_asof_1400.parquet",
+      "path": "data/intraday/snapshots/20260826/1400/cnsv_5min_asof_1400.parquet",
       "exists": true,
       "file_size": 12301,
-      "sha256": "f8a7b84d615ec3810294f7774362c13f810c0a15d4bed36bfd543494a8a6f728",
+      "sha256": "c061ea005fdd0a0a75f95d2c1552b6acb1b8f04818a15ff0b357a5d8798c51bc",
       "status": "present"
     },
     {
-      "path": "data/intraday/replay/20260826/1400/cnsv_15min_asof_1400.parquet",
+      "path": "data/intraday/snapshots/20260826/1400/cnsv_15min_asof_1400.parquet",
       "exists": true,
       "file_size": 11083,
-      "sha256": "b2e4605eb79b11e3cd0a2c1ac15b57c5234d37250ce84f64021ab01d0828aa55",
+      "sha256": "7bd8237830c3ec1fe6d9f37672dab6d6af30b31ab85024eac6535810e053924c",
       "status": "present"
     },
     {
-      "path": "data/intraday/replay/20260826/1400/intraday_snapshot_1400.json",
+      "path": "data/intraday/snapshots/20260826/1400/intraday_snapshot_1400.json",
       "exists": true,
-      "file_size": 1173,
-      "sha256": "6318a69d359673118a2192b33547efaeb5308339d0c7c1c5bc3850710c1f8dee",
+      "file_size": 1177,
+      "sha256": "e729904c1b6111f3bcadc2cba87e9cb315c2eaed084b6c18472f59c8adc5f72d",
       "status": "present"
     },
     {
-      "path": "data/intraday/replay/20260826/1400/intraday_quality_1400.json",
+      "path": "data/intraday/snapshots/20260826/1400/intraday_quality_1400.json",
       "exists": true,
-      "file_size": 1107,
-      "sha256": "fe0a360583a43bd62e0de9828702a33bd618b4070ac5856c0828ec44675024e3",
+      "file_size": 1110,
+      "sha256": "c0ebfc0c99d61210134814ba1add92d482c212cbb357793097a5c73919a4b85f",
       "status": "present"
     },
     {
-      "path": "data/intraday/replay/20260826/1400/intraday_ready_1400.json",
+      "path": "data/intraday/snapshots/20260826/1400/intraday_ready_1400.json",
       "exists": true,
-      "file_size": 785,
-      "sha256": "eea7c8ed75449e764a5fc8f19d180c7a81a4fd342aac81e37a86820cd2e6c3b7",
+      "file_size": 800,
+      "sha256": "224eb23f19c1245f8271fa73910647f29ec0860f346b7124ce58b2de42c6abd3",
       "status": "present"
     }
   ],
