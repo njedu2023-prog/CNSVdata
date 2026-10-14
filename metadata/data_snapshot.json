@@ -1,9 +1,9 @@
 {
-  "data_snapshot_id": "cnsvdata-2026-10-09-40921c8e48c9",
-  "data_snapshot_hash": "40921c8e48c9a3aeb0fe64086e354d18519689ced907a4f524aae01bda93643a",
-  "generated_at": "2026-10-10 23:50:11",
-  "latest_trade_date": "2026-10-09",
-  "next_trade_date": "2026-10-12",
+  "data_snapshot_id": "cnsvdata-2026-10-14-919f07a86b90",
+  "data_snapshot_hash": "919f07a86b9063f8814009ffc40771e16e53eb754dce7c77191b1969907fb916",
+  "generated_at": "2026-10-14 22:59:50",
+  "latest_trade_date": "2026-10-14",
+  "next_trade_date": "2026-10-15",
   "contract_version": "1.2.0",
   "quality_status": "PASS",
   "ready_status": "PASS",
@@ -22,14 +22,14 @@
       "file_size": 67108,
       "min_trade_date": "2010-01-01",
       "max_trade_date": "2027-12-31",
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_daily.parquet",
       "exists": true,
-      "rows": 3913,
+      "rows": 3916,
       "columns": [
         "ts_code",
         "trade_date",
@@ -45,18 +45,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "6b5a1b1c3f5089ec02250916730b7c1e062edcf1b9918f36ed26bc6905a5e7f3",
-      "file_size": 198972,
+      "sha256": "5a0c65ef8a020d39e45a32f1ccf492c583acacbce4414b2b209873d500cb596f",
+      "file_size": 199061,
       "min_trade_date": "2010-01-04",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_1min.parquet",
       "exists": true,
-      "rows": 19762,
+      "rows": 20485,
       "columns": [
         "ts_code",
         "trade_time",
@@ -71,18 +71,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "4513a92defd572f890956185462216a244fdb1c1ec11767c09c86325abe8253a",
-      "file_size": 507835,
+      "sha256": "4e84a39544987822dd3e98a3f19d02c543d1ce24b3b8f19b9e7eb9f8f1f76334",
+      "file_size": 526041,
       "min_trade_date": "2026-06-09",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_5min.parquet",
       "exists": true,
-      "rows": 4100,
+      "rows": 4250,
       "columns": [
         "ts_code",
         "trade_time",
@@ -97,18 +97,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "6a47359a5642bfad56c9fe122eb35a359125fdce9a135974e609f3e0408275b0",
-      "file_size": 126985,
+      "sha256": "9fea2e0ef5226658ac4f3a7c65eb27ccf9743ab7a448a37c39313127529a5e09",
+      "file_size": 131530,
       "min_trade_date": "2026-06-09",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_15min.parquet",
       "exists": true,
-      "rows": 1476,
+      "rows": 1530,
       "columns": [
         "ts_code",
         "trade_time",
@@ -123,18 +123,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "9c9cd5d2442ee443abeb2b78c0ef9bca392d7626c73ac144e328c23d8342fc40",
-      "file_size": 56829,
+      "sha256": "9f44347485802baa71aeb716cc46c6a2132f95db2094dd40e546eeb33cb04d29",
+      "file_size": 58518,
       "min_trade_date": "2026-06-09",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_30min.parquet",
       "exists": true,
-      "rows": 820,
+      "rows": 850,
       "columns": [
         "ts_code",
         "trade_time",
@@ -149,18 +149,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "281615d5743985c239373cdd059c615b27b5b503d5cf462542c16687933b3f98",
-      "file_size": 36864,
+      "sha256": "ffb9b46b488b95878d461ebc09cf526f0236a740b6d803e58f422e3b2e501f84",
+      "file_size": 37903,
       "min_trade_date": "2026-06-09",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_60min.parquet",
       "exists": true,
-      "rows": 492,
+      "rows": 510,
       "columns": [
         "ts_code",
         "trade_time",
@@ -175,18 +175,18 @@
         "source",
         "fetched_at"
       ],
-      "sha256": "0a0a08a22ad1dc00b913a45fcc932eabbe0ecf3952c4fa824c1b4404f95ab4b8",
-      "file_size": 26774,
+      "sha256": "dd524179cab525044c534a0c5dcf948a292e05d93eeb31856c04b9a6695b8077",
+      "file_size": 27428,
       "min_trade_date": "2026-06-09",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
     {
       "path": "data/processed/cnsv_moneyflow.parquet",
       "exists": true,
-      "rows": 3913,
+      "rows": 3916,
       "columns": [
         "ts_code",
         "trade_date",
@@ -204,11 +204,11 @@
         "field_definition",
         "fetched_at"
       ],
-      "sha256": "50b98b188266c8748474c659e401477b156f403593a7f86382362e27ca42d4c6",
-      "file_size": 283311,
+      "sha256": "88ee601bb8138e1fda5c254b5265662b6f65acd975309cfdd1ffe8666f17dd52",
+      "file_size": 283488,
       "min_trade_date": "2010-01-04",
-      "max_trade_date": "2026-10-09",
-      "updated_at": "2026-10-10 23:50:11",
+      "max_trade_date": "2026-10-14",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -227,11 +227,11 @@
         "impact_level",
         "created_at"
       ],
-      "sha256": "972673d5b0fa63947faec0ba6802df4d1da32b02ecad72cdab26594d08073665",
+      "sha256": "54afefe2289de2df91d6dec7ecc989e0a1a949c85c21ecb44f949a1985b705ca",
       "file_size": 6083,
       "min_trade_date": "2025-09-01",
       "max_trade_date": "2025-09-01",
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -249,11 +249,11 @@
         "model_action",
         "created_at"
       ],
-      "sha256": "6fb70af0ca149cb106c9187c4eeaefa240015914fef78c6fb3447a36f6789dd2",
+      "sha256": "b3248852d47d19f214235f8414217d8ba9222f51461f3bb59137352d95308145",
       "file_size": 5938,
       "min_trade_date": "2010-01-01",
       "max_trade_date": "2027-01-01",
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -267,11 +267,11 @@
         "generated_at",
         "timezone"
       ],
-      "sha256": "d4c5049dcc523fdbd3afbd4dd7824295e87a1a9ea89f0edd43d6f1c9eb01ba9a",
+      "sha256": "9e6a76933ed3750fff01ee86c8cff1027490e976871c70e7b458fe5e2a507a04",
       "file_size": 150,
       "min_trade_date": null,
       "max_trade_date": null,
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -286,11 +286,11 @@
         "generated_at",
         "timezone"
       ],
-      "sha256": "5a25298098ffa44a2e340b6381d9b05bafb5503d601d23d42bd56b4360a1944e",
+      "sha256": "a28dde83b40aad2f431d2d2ce832014ee7562432200deb2608338c7db775f591",
       "file_size": 201,
       "min_trade_date": null,
       "max_trade_date": null,
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -309,11 +309,11 @@
         "source",
         "files"
       ],
-      "sha256": "79631b46f11c10c1800df4b945e93d62948b12e3b96f5e9740d1b7183d780f1f",
+      "sha256": "e09b9938773500f20c8e786373bd7a8c3c1266191ca3cfddf87ea3ac3389a9e3",
       "file_size": 8661,
       "min_trade_date": null,
       "max_trade_date": null,
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     },
@@ -328,11 +328,11 @@
         "warn_count",
         "checks"
       ],
-      "sha256": "503b60cf0ef3aded2dbc9d148b002d6265c979144d92590d5376d39621b050d5",
-      "file_size": 11514,
+      "sha256": "05fe8a025e5e7e6623c5f63db5592c70d9e4fda4ef46d2da0c0121a7cb6d2085",
+      "file_size": 11607,
       "min_trade_date": null,
       "max_trade_date": null,
-      "updated_at": "2026-10-10 23:50:11",
+      "updated_at": "2026-10-14 22:59:50",
       "source": "tushare",
       "status": "PASS"
     }
