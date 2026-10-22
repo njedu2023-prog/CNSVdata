@@ -1,7 +1,7 @@
 {
   "line": "daily",
   "repo": "CNSVdata",
-  "generated_at": "2026-10-21 23:02:10",
+  "generated_at": "2026-10-22 23:02:04",
   "manifest_path": "metadata/daily/daily_manifest.json",
   "quality_path": "data/quality/daily/daily_quality_latest.json",
   "legacy_compatibility": false,
@@ -13,8 +13,8 @@
       "legacy_path": "data/processed/cnsv_daily.parquet",
       "path": "data/daily/processed/cnsv_daily.parquet",
       "exists": true,
-      "sha256": "b88827f9efa8a3f382dac2e64694d478e6b50f8350fd7a16e1295e8df0245400",
-      "size_bytes": 199328,
+      "sha256": "6b39514f3a8c0741052c40887b906ebd41cd2ea8facb51edc7f5f40372f68fb8",
+      "size_bytes": 199367,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
@@ -24,8 +24,8 @@
       "legacy_path": "data/processed/cnsv_moneyflow.parquet",
       "path": "data/daily/processed/cnsv_moneyflow.parquet",
       "exists": true,
-      "sha256": "bd9907b7afff2b5f8b7c5991fdeec0a33f90ca206d7d0a1e56b5a935550c7303",
-      "size_bytes": 283884,
+      "sha256": "35eb22c955a73afb8ddc68d1e2b409acbb3c6767cf16017ca86976078eb006cd",
+      "size_bytes": 283950,
       "legacy_compatibility": false,
       "canonical_line": "daily"
     },
@@ -35,7 +35,7 @@
       "legacy_path": "data/processed/corporate_actions.parquet",
       "path": "data/daily/processed/corporate_actions.parquet",
       "exists": true,
-      "sha256": "7b0a18806617a14fc7b1712d6444baf2bcf6d55212d22d78ca2a7fce406485eb",
+      "sha256": "42ff03e0408b22793e1c792767b2829b7bd01b12690fb0e5906a8d0650bc997a",
       "size_bytes": 6083,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -46,7 +46,7 @@
       "legacy_path": "data/processed/structural_breaks.parquet",
       "path": "data/daily/processed/structural_breaks.parquet",
       "exists": true,
-      "sha256": "0e91326b56da7a07f0f32a87aa10b026317f1ccf8fe1db31f17c99a63ab90fe5",
+      "sha256": "a195675690cf8dea1bdc53a121f2e7f4bda0e52330057a3143c2dbafdb9fd033",
       "size_bytes": 5938,
       "legacy_compatibility": false,
       "canonical_line": "daily"
@@ -57,7 +57,7 @@
       "legacy_path": "data/processed/trade_calendar.parquet",
       "path": "data/daily/processed/trade_calendar.parquet",
       "exists": true,
-      "sha256": "dd33873be09bf13e4e16467555ece144399d260faa47ce5fd95609dbd3845710",
+      "sha256": "865518da8b6e5c97e08d0747b60957ca11f5ce0fb48ce468b917e92c74986c83",
       "size_bytes": 67108,
       "legacy_compatibility": false,
       "canonical_line": "daily"
