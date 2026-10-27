@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at": "2026-10-23 22:53:57",
+  "generated_at": "2026-10-27 23:50:00",
   "failed_count": 0,
   "warn_count": 0,
   "checks": [
@@ -92,7 +92,7 @@
     {
       "name": "cnsv_daily.parquet_exists",
       "status": "PASS",
-      "rows": 3923
+      "rows": 3925
     },
     {
       "name": "cnsv_daily.parquet_schema",
@@ -112,7 +112,7 @@
     {
       "name": "cnsv_1min.parquet_exists",
       "status": "PASS",
-      "rows": 22172
+      "rows": 22654
     },
     {
       "name": "cnsv_1min.parquet_schema",
@@ -132,7 +132,7 @@
     {
       "name": "cnsv_moneyflow.parquet_exists",
       "status": "PASS",
-      "rows": 3923
+      "rows": 3925
     },
     {
       "name": "cnsv_moneyflow.parquet_schema",
@@ -316,8 +316,8 @@
     {
       "name": "minute_coverage",
       "status": "PASS",
-      "expected_minutes": 22264,
-      "actual_minutes": 22172,
+      "expected_minutes": 22748,
+      "actual_minutes": 22654,
       "missing_minutes": [
         "2026-06-09 13:00:00",
         "2026-06-10 13:00:00",
@@ -410,7 +410,9 @@
         "2026-10-20 13:00:00",
         "2026-10-21 13:00:00",
         "2026-10-22 13:00:00",
-        "2026-10-23 13:00:00"
+        "2026-10-23 13:00:00",
+        "2026-10-26 13:00:00",
+        "2026-10-27 13:00:00"
       ],
       "duplicate_minutes": 0,
       "coverage_ratio": 0.995868
@@ -424,29 +426,29 @@
     {
       "name": "latest_trade_date_consistency",
       "status": "PASS",
-      "metadata_latest_trade_date": "2026-10-23",
-      "daily_max_trade_date": "2026-10-23",
-      "minute_max_trade_date": "2026-10-23",
-      "moneyflow_max_trade_date": "2026-10-23",
+      "metadata_latest_trade_date": "2026-10-27",
+      "daily_max_trade_date": "2026-10-27",
+      "minute_max_trade_date": "2026-10-27",
+      "moneyflow_max_trade_date": "2026-10-27",
       "detail": "latest trade dates checked"
     },
     {
       "name": "daily_close_vs_minute_last_close",
       "status": "PASS",
-      "trade_date": "2026-10-23",
+      "trade_date": "2026-10-27",
       "tolerance": 0.01,
-      "daily_close": 35.1,
-      "minute_last_close": 35.1,
+      "daily_close": 34.64,
+      "minute_last_close": 34.64,
       "abs_diff": 0.0,
       "detail": "close checked"
     },
     {
       "name": "daily_amount_vs_minute_amount_sum",
       "status": "PASS",
-      "trade_date": "2026-10-23",
+      "trade_date": "2026-10-27",
       "detail": "amount unit checked",
-      "daily_amount": 3176323.911,
-      "minute_amount_sum": 3176323908.0,
+      "daily_amount": 1921836.014,
+      "minute_amount_sum": 1921836009.0,
       "diff_ratio": 0.0
     },
     {
@@ -460,26 +462,26 @@
       "detail": [
         {
           "freq": "5min",
-          "rows": 4600,
-          "source_rows": 22172,
+          "rows": 4700,
+          "source_rows": 22654,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "15min",
-          "rows": 1656,
-          "source_rows": 22172,
+          "rows": 1692,
+          "source_rows": 22654,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "30min",
-          "rows": 920,
-          "source_rows": 22172,
+          "rows": 940,
+          "source_rows": 22654,
           "source": "cnsv_1min.parquet"
         },
         {
           "freq": "60min",
-          "rows": 552,
-          "source_rows": 22172,
+          "rows": 564,
+          "source_rows": 22654,
           "source": "cnsv_1min.parquet"
         }
       ]
